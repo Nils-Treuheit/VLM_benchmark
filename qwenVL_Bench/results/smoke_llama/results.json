@@ -1,0 +1,68 @@
+{
+  "generated_at": "2026-10-28 17:44:35 +0100",
+  "samples_per_task": 1,
+  "seed": 3407,
+  "memory_cap_gib": 30.0,
+  "models": [
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {
+        "ai2d": {
+          "requested_n": 1,
+          "completed_n": 1,
+          "score": 1.0,
+          "mean_wall_s": 20.6078,
+          "generated_tokens_per_s": 0.24262702332549216,
+          "peak_gpu_used_gib": 19.997,
+          "items": [
+            {
+              "index": 232,
+              "score": 1.0,
+              "prediction": "C",
+              "output": "C) earthworm",
+              "input_tokens": 227,
+              "output_tokens": 5,
+              "wall_s": 20.6078
+            }
+          ]
+        },
+        "textvqa": {
+          "requested_n": 1,
+          "completed_n": 1,
+          "score": 1.0,
+          "mean_wall_s": 0.1369,
+          "generated_tokens_per_s": 29.220150964151056,
+          "peak_gpu_used_gib": 19.997,
+          "items": [
+            {
+              "index": 465,
+              "score": 1.0,
+              "prediction": "fajita",
+              "output": "fajita",
+              "input_tokens": 808,
+              "output_tokens": 4,
+              "wall_s": 0.1369
+            }
+          ]
+        }
+      },
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.154.730 I srv  llama_server: initializing ...\n0.00.154.743 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.154.869 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.156.871 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-GGUF/snapshots/8dcb98e52a1d1d02dce9249e5ab15bae8121c666/Qwen3-VL-2B-Instruct-UD-Q4_K_XL.gguf'\n0.00.650.513 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.741.422 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.070.202 I cmn          init: llama threadpool init, n_threads = 12\n0.01.223.757 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-GGUF/snapshots/8dcb98e52a1d1d02dce9249e5ab15bae8121c666/Qwen3-VL-2B-Instruct-UD-Q4_K_XL.gguf'\n0.01.223.762 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.01.223.762 E common_speculative_init_result: failed to create MTP context\n0.01.223.766 E srv    load_model: failed to create MTP context\n0.01.223.768 I srv    operator(): operator(): cleaning up before exit...\n0.01.224.291 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (startup did not accept draft-mtp)",
+      "status": "complete",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Instruct-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "peak_gpu_used_gib": 19.997
+    }
+  ]
+}

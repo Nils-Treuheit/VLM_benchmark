@@ -1,0 +1,15 @@
+[project]
+name = "vlm-version-benchmark"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "accelerate",
+    "bitsandbytes",
+    "datasets",
+    "hqq>=0.2.8.post1",
+    "Pillow",
+    "qwen-vl-utils>=0.0.14",
+    "torch>=2.7",
+    "torchvision>=0.29.1",
+    "transformers>=4.57.1,<5",
+]

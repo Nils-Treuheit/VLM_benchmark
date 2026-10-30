@@ -1,0 +1,1196 @@
+{
+  "generated_at": "2026-10-29 16:14:20 +0100",
+  "samples_per_task": 25,
+  "seed": 3407,
+  "memory_cap_gib": 30.0,
+  "task_names": [
+    "vqa_truth",
+    "vqa_count",
+    "vqa_description",
+    "vqa_affordance",
+    "vqa_negation"
+  ],
+  "profile_context_only": true,
+  "models": [
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Instruct-1M-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.079.755 I srv  llama_server: initializing ...\n0.00.079.767 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.079.904 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.081.955 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.562.751 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.562.778 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.636.697 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.06.373.904 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.06.388.919 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.06.388.925 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.06.401.420 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.06.401.425 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.06.401.428 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.06.401.431 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.06.401.433 I srv    operator(): operator(): cleaning up before exit...\n0.06.401.871 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.060.157 I srv  llama_server: initializing ...\n0.00.060.171 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.285 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.147 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.344.237 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.412.848 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.594.504 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.00.609.501 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.609.507 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.00.611.228 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.611.233 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.611.236 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.611.239 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.611.242 I srv    operator(): operator(): cleaning up before exit...\n0.00.611.791 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.059.501 I srv  llama_server: initializing ...\n0.00.059.514 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.059.632 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.061.491 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.450.500 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.450.527 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.519.527 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.700.520 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.700.525 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.700.991 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.700.995 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.700.998 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.701.001 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.701.003 I srv    operator(): operator(): cleaning up before exit...\n0.00.701.484 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.061.215 I srv  llama_server: initializing ...\n0.00.061.227 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.337 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.220 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.337.737 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.406.950 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.591.348 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.591.353 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.591.833 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.591.838 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.591.842 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.591.845 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.591.847 I srv    operator(): operator(): cleaning up before exit...\n0.00.592.285 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.061.333 I srv  llama_server: initializing ...\n0.00.061.346 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.456 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.366 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.451.786 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.520.509 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.826.852 I cmn          init: llama threadpool init, n_threads = 12\n0.00.912.323 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.912.328 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.00.912.328 E common_speculative_init_result: failed to create MTP context\n0.00.912.332 E srv    load_model: failed to create MTP context\n0.00.912.334 I srv    operator(): operator(): cleaning up before exit...\n0.00.912.884 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Instruct-1M-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 5.66
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.07
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.06
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 20.062,
+      "profile_peak_gpu_delta_gib": 18.947
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Instruct-1M-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.064.808 I srv  llama_server: initializing ...\n0.00.064.823 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.064.963 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.067.053 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.506.818 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.506.847 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.583.926 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.12.321.128 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.12.336.490 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.12.336.495 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.12.338.285 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.12.338.289 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.12.338.292 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.12.338.295 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.12.338.297 I srv    operator(): operator(): cleaning up before exit...\n0.12.338.917 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.060.035 I srv  llama_server: initializing ...\n0.00.060.047 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.175 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.051 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.337.468 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.406.550 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.726.357 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.00.741.236 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.741.241 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.00.742.939 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.742.943 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.742.946 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.742.949 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.742.952 I srv    operator(): operator(): cleaning up before exit...\n0.00.743.549 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.060.542 I srv  llama_server: initializing ...\n0.00.060.554 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.664 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.527 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.451.637 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.451.665 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.519.991 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.844.128 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.844.134 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.844.589 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.844.594 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.844.597 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.844.600 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.844.602 I srv    operator(): operator(): cleaning up before exit...\n0.00.845.071 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.060.626 I srv  llama_server: initializing ...\n0.00.060.639 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.757 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.637 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.323.562 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.392.516 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.718.759 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.718.764 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.719.211 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.719.216 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.719.220 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.719.223 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.719.226 I srv    operator(): operator(): cleaning up before exit...\n0.00.719.656 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.059.245 I srv  llama_server: initializing ...\n0.00.059.257 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.059.372 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.061.406 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.00.444.040 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.513.215 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.974.580 I cmn          init: llama threadpool init, n_threads = 12\n0.01.092.062 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-1M-GGUF/snapshots/087152757aef54719b22c5fadd867bf4c26a92e2/Qwen3-VL-2B-Instruct-1M-UD-Q8_K_XL.gguf'\n0.01.092.068 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.01.092.068 E common_speculative_init_result: failed to create MTP context\n0.01.092.071 E srv    load_model: failed to create MTP context\n0.01.092.075 I srv    operator(): operator(): cleaning up before exit...\n0.01.092.611 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Instruct-1M-GGUF_UD-Q8_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 6.82
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.23
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.22
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 21.221,
+      "profile_peak_gpu_delta_gib": 20.105
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.060.107 I srv  llama_server: initializing ...\n0.00.060.122 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.241 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.130 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-GGUF/snapshots/8dcb98e52a1d1d02dce9249e5ab15bae8121c666/Qwen3-VL-2B-Instruct-UD-Q4_K_XL.gguf'\n0.00.512.175 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.580.747 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.06.454.173 I cmn          init: llama threadpool init, n_threads = 12\n0.06.539.780 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-GGUF/snapshots/8dcb98e52a1d1d02dce9249e5ab15bae8121c666/Qwen3-VL-2B-Instruct-UD-Q4_K_XL.gguf'\n0.06.539.785 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.06.539.785 E common_speculative_init_result: failed to create MTP context\n0.06.539.788 E srv    load_model: failed to create MTP context\n0.06.539.791 I srv    operator(): operator(): cleaning up before exit...\n0.06.540.624 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Instruct-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 5.66
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.07
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.07
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 20.061,
+      "profile_peak_gpu_delta_gib": 18.945
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.061.002 I srv  llama_server: initializing ...\n0.00.061.015 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.130 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.994 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-GGUF/snapshots/8dcb98e52a1d1d02dce9249e5ab15bae8121c666/Qwen3-VL-2B-Instruct-UD-Q8_K_XL.gguf'\n0.00.519.876 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.590.831 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.12.371.519 I cmn          init: llama threadpool init, n_threads = 12\n0.12.484.620 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Instruct-GGUF/snapshots/8dcb98e52a1d1d02dce9249e5ab15bae8121c666/Qwen3-VL-2B-Instruct-UD-Q8_K_XL.gguf'\n0.12.484.626 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.12.484.626 E common_speculative_init_result: failed to create MTP context\n0.12.484.629 E srv    load_model: failed to create MTP context\n0.12.484.632 I srv    operator(): operator(): cleaning up before exit...\n0.12.485.150 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Instruct-GGUF_UD-Q8_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 6.82
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.23
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.23
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 21.221,
+      "profile_peak_gpu_delta_gib": 20.105
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Thinking-1M-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.064.269 I srv  llama_server: initializing ...\n0.00.064.283 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.064.406 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.066.421 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.525.382 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.525.408 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.593.156 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.06.446.858 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.06.463.011 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.06.463.016 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.06.465.221 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.06.465.225 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.06.465.229 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.06.465.233 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.06.465.235 I srv    operator(): operator(): cleaning up before exit...\n0.06.465.705 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.060.810 I srv  llama_server: initializing ...\n0.00.060.823 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.938 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.806 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.344.260 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.413.249 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.609.661 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.00.625.071 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.625.077 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.00.626.872 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.626.877 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.626.881 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.626.884 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.626.886 I srv    operator(): operator(): cleaning up before exit...\n0.00.627.398 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.061.076 I srv  llama_server: initializing ...\n0.00.061.090 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.205 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.036 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.452.425 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.452.454 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.521.480 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.714.883 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.714.888 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.715.358 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.715.362 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.715.364 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.715.368 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.715.370 I srv    operator(): operator(): cleaning up before exit...\n0.00.717.025 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.061.741 I srv  llama_server: initializing ...\n0.00.061.755 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.874 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.792 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.330.435 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.399.293 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.593.644 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.593.650 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.594.103 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.594.107 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.594.110 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.594.113 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.594.115 I srv    operator(): operator(): cleaning up before exit...\n0.00.594.545 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.060.767 I srv  llama_server: initializing ...\n0.00.060.780 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.890 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.763 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.437.994 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.506.371 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.826.912 I cmn          init: llama threadpool init, n_threads = 12\n0.00.917.807 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.917.812 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.00.917.812 E common_speculative_init_result: failed to create MTP context\n0.00.917.815 E srv    load_model: failed to create MTP context\n0.00.917.818 I srv    operator(): operator(): cleaning up before exit...\n0.00.918.596 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Thinking-1M-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 5.66
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.07
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.06
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 20.064,
+      "profile_peak_gpu_delta_gib": 18.949
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Thinking-1M-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.062.614 I srv  llama_server: initializing ...\n0.00.062.627 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.751 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.742 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.548.234 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.548.260 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.622.023 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.12.656.649 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.12.673.820 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.12.673.825 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.12.675.902 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.12.675.907 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.12.675.911 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.12.675.914 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.12.675.917 I srv    operator(): operator(): cleaning up before exit...\n0.12.676.400 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.076.548 I srv  llama_server: initializing ...\n0.00.076.561 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.076.674 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.078.574 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.462.736 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.532.415 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.902.026 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.00.918.156 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 60928.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.918.162 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 63887638528\n0.00.919.995 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.920.000 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.920.004 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.920.007 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.920.009 I srv    operator(): operator(): cleaning up before exit...\n0.00.920.559 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.062.017 I srv  llama_server: initializing ...\n0.00.062.028 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.137 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.018 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.454.229 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.454.257 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.523.439 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.893.767 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.893.773 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.894.226 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.894.230 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.894.233 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.894.236 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.894.238 I srv    operator(): operator(): cleaning up before exit...\n0.00.894.814 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.064.092 I srv  llama_server: initializing ...\n0.00.064.105 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.064.217 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.066.109 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.340.538 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.409.791 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.782.505 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 30464.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.782.510 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 31943819264\n0.00.782.959 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.782.963 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.782.966 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.782.969 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.782.972 I srv    operator(): operator(): cleaning up before exit...\n0.00.783.452 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.062.699 I srv  llama_server: initializing ...\n0.00.062.711 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.820 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.742 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.00.460.841 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.540.088 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.044.465 I cmn          init: llama threadpool init, n_threads = 12\n0.01.212.732 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-1M-GGUF/snapshots/0b69024fe0f1a7713d02aca0d31b5e3128cad6b8/Qwen3-VL-2B-Thinking-1M-UD-Q8_K_XL.gguf'\n0.01.212.738 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.01.212.738 E common_speculative_init_result: failed to create MTP context\n0.01.212.741 E srv    load_model: failed to create MTP context\n0.01.212.744 I srv    operator(): operator(): cleaning up before exit...\n0.01.213.279 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Thinking-1M-GGUF_UD-Q8_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 6.82
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.23
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.22
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 21.221,
+      "profile_peak_gpu_delta_gib": 20.105
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.061.706 I srv  llama_server: initializing ...\n0.00.061.718 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.834 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.683 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-GGUF/snapshots/1718fd9de24f2a91e72a5eaa87ea31b9dca69ac9/Qwen3-VL-2B-Thinking-UD-Q4_K_XL.gguf'\n0.00.565.875 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.634.652 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.06.401.010 I cmn          init: llama threadpool init, n_threads = 12\n0.06.504.860 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-GGUF/snapshots/1718fd9de24f2a91e72a5eaa87ea31b9dca69ac9/Qwen3-VL-2B-Thinking-UD-Q4_K_XL.gguf'\n0.06.504.865 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.06.504.866 E common_speculative_init_result: failed to create MTP context\n0.06.504.868 E srv    load_model: failed to create MTP context\n0.06.504.871 I srv    operator(): operator(): cleaning up before exit...\n0.06.505.560 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Thinking-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 5.66
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.07
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 20.07
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 20.064,
+      "profile_peak_gpu_delta_gib": 18.949
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-2B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.062.658 I srv  llama_server: initializing ...\n0.00.062.673 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.813 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.954 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-GGUF/snapshots/1718fd9de24f2a91e72a5eaa87ea31b9dca69ac9/Qwen3-VL-2B-Thinking-UD-Q8_K_XL.gguf'\n0.00.536.991 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.605.639 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.12.416.815 I cmn          init: llama threadpool init, n_threads = 12\n0.12.535.943 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-2B-Thinking-GGUF/snapshots/1718fd9de24f2a91e72a5eaa87ea31b9dca69ac9/Qwen3-VL-2B-Thinking-UD-Q8_K_XL.gguf'\n0.12.535.949 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.12.535.949 E common_speculative_init_result: failed to create MTP context\n0.12.535.952 E srv    load_model: failed to create MTP context\n0.12.535.955 I srv    operator(): operator(): cleaning up before exit...\n0.12.536.633 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-2B-Thinking-GGUF_UD-Q8_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 6.72
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.13
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 21.13
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 21.125,
+      "profile_peak_gpu_delta_gib": 20.01
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-4B-Instruct-1M-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-4B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.062.848 I srv  llama_server: initializing ...\n0.00.062.863 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.997 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.065.018 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.587.167 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.587.197 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.657.355 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.13.658.085 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.13.674.847 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.13.674.853 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.13.676.984 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.13.676.989 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.13.676.992 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.13.676.995 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.13.676.998 I srv    operator(): operator(): cleaning up before exit...\n0.13.677.538 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.062.626 I srv  llama_server: initializing ...\n0.00.062.638 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.747 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.665 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.356.480 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.433.166 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.848.809 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.00.865.551 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.865.557 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.00.867.546 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.867.551 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.867.555 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.867.559 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.867.561 I srv    operator(): operator(): cleaning up before exit...\n0.00.868.009 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.062.408 I srv  llama_server: initializing ...\n0.00.062.420 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.528 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.420 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.458.553 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.458.579 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.527.349 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.935.137 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.935.143 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.00.935.585 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.935.590 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.935.593 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.935.596 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.935.599 I srv    operator(): operator(): cleaning up before exit...\n0.00.936.117 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.060.009 I srv  llama_server: initializing ...\n0.00.060.023 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.137 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.020 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.328.920 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.405.376 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.821.351 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.821.357 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.00.821.816 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.821.820 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.821.823 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.821.826 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.821.828 I srv    operator(): operator(): cleaning up before exit...\n0.00.822.316 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.061.148 I srv  llama_server: initializing ...\n0.00.061.161 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.287 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.272 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.447.337 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.516.527 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.070.724 I cmn          init: llama threadpool init, n_threads = 12\n0.01.160.973 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-1M-GGUF/snapshots/d2eed5304942e9a03f01858ee15bcdb74952110c/Qwen3-VL-4B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.160.978 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.01.160.978 E common_speculative_init_result: failed to create MTP context\n0.01.160.981 E srv    load_model: failed to create MTP context\n0.01.160.984 I srv    operator(): operator(): cleaning up before exit...\n0.01.161.517 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-4B-Instruct-1M-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 7.05
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.58
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.57
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 25.572,
+      "profile_peak_gpu_delta_gib": 24.457
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-4B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.060.742 I srv  llama_server: initializing ...\n0.00.060.753 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.867 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.747 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-GGUF/snapshots/00c00da0690c4b14b5539b02c4ea5d7c9102b35e/Qwen3-VL-4B-Instruct-UD-Q4_K_XL.gguf'\n0.00.519.784 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.588.348 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.13.814.037 I cmn          init: llama threadpool init, n_threads = 12\n0.13.917.599 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-GGUF/snapshots/00c00da0690c4b14b5539b02c4ea5d7c9102b35e/Qwen3-VL-4B-Instruct-UD-Q4_K_XL.gguf'\n0.13.917.604 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.13.917.604 E common_speculative_init_result: failed to create MTP context\n0.13.917.607 E srv    load_model: failed to create MTP context\n0.13.917.610 I srv    operator(): operator(): cleaning up before exit...\n0.13.918.669 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-4B-Instruct-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 7.05
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.58
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.58
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 25.572,
+      "profile_peak_gpu_delta_gib": 24.457
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-4B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.062.286 I srv  llama_server: initializing ...\n0.00.062.297 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.411 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.292 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-GGUF/snapshots/00c00da0690c4b14b5539b02c4ea5d7c9102b35e/Qwen3-VL-4B-Instruct-UD-Q8_K_XL.gguf'\n0.00.508.147 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.579.503 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.26.507.730 I cmn          init: llama threadpool init, n_threads = 12\n0.26.660.247 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Instruct-GGUF/snapshots/00c00da0690c4b14b5539b02c4ea5d7c9102b35e/Qwen3-VL-4B-Instruct-UD-Q8_K_XL.gguf'\n0.26.660.253 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.26.660.253 E common_speculative_init_result: failed to create MTP context\n0.26.660.256 E srv    load_model: failed to create MTP context\n0.26.660.259 I srv    operator(): operator(): cleaning up before exit...\n0.26.660.868 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-4B-Instruct-GGUF_UD-Q8_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 9.42
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 27.95
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 27.95
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 27.939,
+      "profile_peak_gpu_delta_gib": 26.824
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-4B-Thinking-1M-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-4B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.062.242 I srv  llama_server: initializing ...\n0.00.062.256 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.370 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.274 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.573.956 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.573.983 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.643.150 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.13.904.220 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.13.919.698 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.13.919.705 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.13.921.553 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.13.921.559 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.13.921.562 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.13.921.565 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.13.921.568 I srv    operator(): operator(): cleaning up before exit...\n0.13.922.104 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.062.158 I srv  llama_server: initializing ...\n0.00.062.170 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.284 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.192 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.349.471 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.419.408 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.812.967 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.00.828.612 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.828.618 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.00.830.552 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.830.560 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.830.563 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.830.568 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.830.570 I srv    operator(): operator(): cleaning up before exit...\n0.00.831.293 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.062.713 I srv  llama_server: initializing ...\n0.00.062.726 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.851 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.862 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.459.373 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.459.401 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.539.546 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.936.664 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.936.671 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.00.937.135 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.937.140 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.937.143 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.937.146 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.937.148 I srv    operator(): operator(): cleaning up before exit...\n0.00.937.710 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.059.496 I srv  llama_server: initializing ...\n0.00.059.508 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.059.627 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.061.488 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.329.686 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.398.823 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.00.791.298 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.00.791.304 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.00.791.789 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.00.791.793 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.791.797 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.791.800 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.791.802 I srv    operator(): operator(): cleaning up before exit...\n0.00.792.225 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.063.899 I srv  llama_server: initializing ...\n0.00.063.911 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.064.024 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.065.964 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.461.954 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.532.717 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.058.066 I cmn          init: llama threadpool init, n_threads = 12\n0.01.154.323 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-1M-GGUF/snapshots/6b10c2abc1572f5b4eb0e680f86972fcfff3fb55/Qwen3-VL-4B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.154.329 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.01.154.329 E common_speculative_init_result: failed to create MTP context\n0.01.154.332 E srv    load_model: failed to create MTP context\n0.01.154.334 I srv    operator(): operator(): cleaning up before exit...\n0.01.154.982 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-4B-Thinking-1M-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 7.04
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.57
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.56
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 25.562,
+      "profile_peak_gpu_delta_gib": 24.447
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-4B-Thinking-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-4B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.064.379 I srv  llama_server: initializing ...\n0.00.064.392 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.064.508 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.066.490 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-GGUF/snapshots/caf45addb53a3704ba67e3af0cf6624e987aa54a/Qwen3-VL-4B-Thinking-UD-Q4_K_XL.gguf'\n0.00.547.480 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.617.460 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.13.961.014 I cmn          init: llama threadpool init, n_threads = 12\n0.14.053.246 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-GGUF/snapshots/caf45addb53a3704ba67e3af0cf6624e987aa54a/Qwen3-VL-4B-Thinking-UD-Q4_K_XL.gguf'\n0.14.053.251 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.14.053.251 E common_speculative_init_result: failed to create MTP context\n0.14.053.254 E srv    load_model: failed to create MTP context\n0.14.053.257 I srv    operator(): operator(): cleaning up before exit...\n0.14.053.856 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-4B-Thinking-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 7.04
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.57
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 25.57
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 25.562,
+      "profile_peak_gpu_delta_gib": 24.447
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-4B-Thinking-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-4B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.063.233 I srv  llama_server: initializing ...\n0.00.063.246 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.063.360 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.065.273 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-GGUF/snapshots/caf45addb53a3704ba67e3af0cf6624e987aa54a/Qwen3-VL-4B-Thinking-UD-Q8_K_XL.gguf'\n0.00.513.229 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.582.714 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.26.472.475 I cmn          init: llama threadpool init, n_threads = 12\n0.26.596.374 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-4B-Thinking-GGUF/snapshots/caf45addb53a3704ba67e3af0cf6624e987aa54a/Qwen3-VL-4B-Thinking-UD-Q8_K_XL.gguf'\n0.26.596.379 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.26.596.379 E common_speculative_init_result: failed to create MTP context\n0.26.596.382 E srv    load_model: failed to create MTP context\n0.26.596.385 I srv    operator(): operator(): cleaning up before exit...\n0.26.597.001 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-4B-Thinking-GGUF_UD-Q8_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 9.42
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 27.95
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 27.95
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 27.939,
+      "profile_peak_gpu_delta_gib": 26.824
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-8B-Instruct-1M-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-8B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.059.454 I srv  llama_server: initializing ...\n0.00.059.466 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.059.578 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.061.478 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.535.979 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.536.008 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.604.662 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.26.220.030 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.26.235.353 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.26.235.359 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.26.246.726 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.26.246.731 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.26.246.735 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.26.246.739 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.26.246.741 I srv    operator(): operator(): cleaning up before exit...\n0.26.247.243 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.072.641 I srv  llama_server: initializing ...\n0.00.072.655 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.072.771 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.074.718 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.357.158 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.426.249 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.182.318 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.01.197.542 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.01.197.547 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.01.199.258 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.01.199.262 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.199.265 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.199.268 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.199.271 I srv    operator(): operator(): cleaning up before exit...\n0.01.199.704 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.060.040 I srv  llama_server: initializing ...\n0.00.060.053 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.161 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.000 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.452.765 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.452.798 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.520.942 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.278.447 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.01.278.452 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.01.278.880 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.01.278.884 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.278.887 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.278.890 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.278.891 I srv    operator(): operator(): cleaning up before exit...\n0.01.279.416 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.059.017 I srv  llama_server: initializing ...\n0.00.059.030 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.059.154 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.061.128 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.322.228 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.391.076 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.149.387 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.01.149.392 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.01.149.847 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.01.149.851 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.149.854 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.149.857 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.149.859 I srv    operator(): operator(): cleaning up before exit...\n0.01.150.373 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.059.188 I srv  llama_server: initializing ...\n0.00.059.200 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.059.312 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.061.204 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.00.443.380 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.512.378 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.427.727 I cmn          init: llama threadpool init, n_threads = 12\n0.01.546.681 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-1M-GGUF/snapshots/73a8491e1f927c888d898814c05ea73fa0af057a/Qwen3-VL-8B-Instruct-1M-UD-Q4_K_XL.gguf'\n0.01.546.686 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.01.546.686 E common_speculative_init_result: failed to create MTP context\n0.01.546.689 E srv    load_model: failed to create MTP context\n0.01.546.691 I srv    operator(): operator(): cleaning up before exit...\n0.01.547.352 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-8B-Instruct-1M-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 9.53
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.06
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.05
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 28.049,
+      "profile_peak_gpu_delta_gib": 26.934
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-8B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.062.249 I srv  llama_server: initializing ...\n0.00.062.264 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.392 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.285 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-GGUF/snapshots/b93a7ee713758252c555be4210c00540df954dc2/Qwen3-VL-8B-Instruct-UD-Q4_K_XL.gguf'\n0.00.663.884 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.732.265 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.25.288.065 I cmn          init: llama threadpool init, n_threads = 12\n0.25.379.987 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-GGUF/snapshots/b93a7ee713758252c555be4210c00540df954dc2/Qwen3-VL-8B-Instruct-UD-Q4_K_XL.gguf'\n0.25.379.992 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.25.379.993 E common_speculative_init_result: failed to create MTP context\n0.25.379.996 E srv    load_model: failed to create MTP context\n0.25.379.999 I srv    operator(): operator(): cleaning up before exit...\n0.25.380.546 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-8B-Instruct-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 9.54
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.07
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.07
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 28.061,
+      "profile_peak_gpu_delta_gib": 26.945
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-8B-Instruct",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.068.923 I srv  llama_server: initializing ...\n0.00.068.937 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.069.058 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.071.064 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-GGUF/snapshots/b93a7ee713758252c555be4210c00540df954dc2/Qwen3-VL-8B-Instruct-UD-Q8_K_XL.gguf'\n0.00.574.002 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.574.035 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.644.605 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.52.101.164 I cmn          init: llama threadpool init, n_threads = 12\n0.52.252.695 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-GGUF/snapshots/b93a7ee713758252c555be4210c00540df954dc2/Qwen3-VL-8B-Instruct-UD-Q8_K_XL.gguf'\n0.52.252.701 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.52.252.701 E common_speculative_init_result: failed to create MTP context\n0.52.252.705 E srv    load_model: failed to create MTP context\n0.52.252.708 I srv    operator(): operator(): cleaning up before exit...\n0.52.253.340 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": false,
+          "error": " 1991142]\n[New LWP 1991143]\n[New LWP 1991144]\n[New LWP 1991145]\n[New LWP 1991146]\n[New LWP 1991147]\n[New LWP 1991180]\n[New LWP 1991207]\n[New LWP 1991208]\n[New LWP 1991209]\n[New LWP 1991210]\n[New LWP 1991211]\n[New LWP 1991212]\n[New LWP 1991213]\n[New LWP 1991214]\n[New LWP 1991215]\n[New LWP 1991216]\n[New LWP 1991217]\n[Thread debugging using libthread_db enabled]\nUsing host libthread_db library \"/lib/x86_64-linux-gnu/libthread_db.so.1\".\n0x000073bd6b0ea3ef in __GI___wait4 (pid=1991250, stat_loc=0x0, options=0, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30\n30\t../sysdeps/unix/sysv/linux/wait4.c: No such file or directory.\n#0  0x000073bd6b0ea3ef in __GI___wait4 (pid=1991250, stat_loc=0x0, options=0, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30\n30\tin ../sysdeps/unix/sysv/linux/wait4.c\n#1  0x000073bd6c34cc7b in ?? () from /usr/local/lib/ollama/libggml-base.so.0\n#2  0x000073bd6c34cdce in ggml_abort () from /usr/local/lib/ollama/libggml-base.so.0\n#3  0x000073bd6c365b81 in ggml_backend_buffer_set_usage () from /usr/local/lib/ollama/libggml-base.so.0\n#4  0x000073bd6bd75c60 in clip_model_loader::load_tensors(clip_ctx&) () from /usr/local/lib/ollama/libmtmd.so.0\n#5  0x000073bd6bd5dc35 in clip_init(char const*, clip_context_params) () from /usr/local/lib/ollama/libmtmd.so.0\n#6  0x000073bd6bcbb6f1 in mtmd_context::mtmd_context(char const*, llama_model const*, mtmd_context_params const&, bool) () from /usr/local/lib/ollama/libmtmd.so.0\n#7  0x000073bd6bcb2a6d in mtmd_init_from_file () from /usr/local/lib/ollama/libmtmd.so.0\n#8  0x000073bd6c557231 in server_context_impl::load_model(common_params&) () from /usr/local/lib/ollama/libllama-server-impl.so\n#9  0x000073bd6c4b9f2f in llama_server(common_params&, int, char**, server_child&) () from /usr/local/lib/ollama/libllama-server-impl.so\n#10 0x000073bd6c4bb079 in llama_server(int, char**) () from /usr/local/lib/ollama/libllama-server-impl.so\n#11 0x000073bd6b029d90 in __libc_start_call_main (main=main@entry=0x401040, argc=argc@entry=27, argv=argv@entry=0x7ffd449f3b48) at ../sysdeps/nptl/libc_start_call_main.h:58\n58\t../sysdeps/nptl/libc_start_call_main.h: No such file or directory.\n#12 0x000073bd6b029e40 in __libc_start_main_impl (main=0x401040, argc=27, argv=0x7ffd449f3b48, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=0x7ffd449f3b38) at ../csu/libc-start.c:392\n392\t../csu/libc-start.c: No such file or directory.\n#13 0x000000000040107e in ?? ()\n[Inferior 1 (process 1991113) detached]\n"
+        },
+        {
+          "context": 131072,
+          "mtp": true,
+          "error": "0.00.062.273 I srv  llama_server: initializing ...\n0.00.062.285 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.399 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.300 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-GGUF/snapshots/b93a7ee713758252c555be4210c00540df954dc2/Qwen3-VL-8B-Instruct-UD-Q8_K_XL.gguf'\n0.00.460.292 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.528.807 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.02.059.301 I cmn          init: llama threadpool init, n_threads = 12\n0.02.169.061 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Instruct-GGUF/snapshots/b93a7ee713758252c555be4210c00540df954dc2/Qwen3-VL-8B-Instruct-UD-Q8_K_XL.gguf'\n0.02.169.066 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.02.169.066 E common_speculative_init_result: failed to create MTP context\n0.02.169.069 E srv    load_model: failed to create MTP context\n0.02.169.072 I srv    operator(): operator(): cleaning up before exit...\n0.02.169.637 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 131072,
+      "max_context": 131072,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-8B-Instruct-GGUF_UD-Q8_K_XL-131072-plain.log",
+      "context_profile": {
+        "estimated_max_context": 131072,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 13.31
+          },
+          {
+            "tier": "default",
+            "context_tokens": 131072,
+            "estimated_vram_gib": 22.27
+          },
+          {
+            "tier": "max",
+            "context_tokens": 131072,
+            "estimated_vram_gib": 22.27
+          }
+        ],
+        "verified_context_cap": 131072
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 131072,
+      "profile_peak_gpu_used_gib": 22.267,
+      "profile_peak_gpu_delta_gib": 21.151
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-8B-Thinking-1M-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-8B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 1048576,
+          "mtp": true,
+          "error": "0.00.063.022 I srv  llama_server: initializing ...\n0.00.063.036 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.063.169 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.065.159 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.548.965 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.548.991 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.618.631 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.26.273.071 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.26.289.261 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.26.289.266 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.26.300.867 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.26.300.872 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.26.300.875 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.26.300.879 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.26.300.881 I srv    operator(): operator(): cleaning up before exit...\n0.26.301.458 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 1048576,
+          "mtp": false,
+          "error": "0.00.060.053 I srv  llama_server: initializing ...\n0.00.060.067 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.196 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.233 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.341.208 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.415.839 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.148.790 W llama_context: n_ctx_seq (1048576) > n_ctx_train (1000000) -- possible training context overflow\n0.01.163.997 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 78336.00 MiB on device 0: cudaMalloc failed: out of memory\n0.01.164.002 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 82141249536\n0.01.165.821 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.01.165.826 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.165.829 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.165.833 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.165.835 I srv    operator(): operator(): cleaning up before exit...\n0.01.166.434 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": true,
+          "error": "0.00.061.138 I srv  llama_server: initializing ...\n0.00.061.152 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.286 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.241 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.460.076 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.460.104 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.531.266 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.257.840 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.01.257.844 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.01.258.281 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.01.258.285 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.258.288 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.258.291 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.258.293 I srv    operator(): operator(): cleaning up before exit...\n0.01.258.778 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 524288,
+          "mtp": false,
+          "error": "0.00.061.972 I srv  llama_server: initializing ...\n0.00.061.984 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.096 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.064.010 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.329.432 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.398.355 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.128.294 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 39168.00 MiB on device 0: cudaMalloc failed: out of memory\n0.01.128.298 E ggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 41070624768\n0.01.128.754 E llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache\n0.01.128.758 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.128.761 E cmn  common_init_: failed to create context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.128.765 E srv    load_model: failed to create_context with model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.128.766 I srv    operator(): operator(): cleaning up before exit...\n0.01.129.255 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.060.706 I srv  llama_server: initializing ...\n0.00.060.718 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.832 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.782 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.00.456.712 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.525.981 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.01.403.228 I cmn          init: llama threadpool init, n_threads = 12\n0.01.499.487 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-1M-GGUF/snapshots/8556bd8224de8feaf93d5dec51822fffcc8460be/Qwen3-VL-8B-Thinking-1M-UD-Q4_K_XL.gguf'\n0.01.499.493 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.01.499.493 E common_speculative_init_result: failed to create MTP context\n0.01.499.496 E srv    load_model: failed to create MTP context\n0.01.499.500 I srv    operator(): operator(): cleaning up before exit...\n0.01.500.393 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-8B-Thinking-1M-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 9.59
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.12
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.11
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 1048576,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 28.112,
+      "profile_peak_gpu_delta_gib": 26.997
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-8B-Thinking-GGUF:UD-Q4_K_XL",
+      "backend": "llama.cpp (UD-Q4_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-8B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.061.859 I srv  llama_server: initializing ...\n0.00.061.876 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.062.027 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.938 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-GGUF/snapshots/894774171339940a7a7f162a39d8143fb5154cdd/Qwen3-VL-8B-Thinking-UD-Q4_K_XL.gguf'\n0.00.619.342 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.691.509 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.24.664.671 I cmn          init: llama threadpool init, n_threads = 12\n0.24.753.298 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-GGUF/snapshots/894774171339940a7a7f162a39d8143fb5154cdd/Qwen3-VL-8B-Thinking-UD-Q4_K_XL.gguf'\n0.24.753.304 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.24.753.304 E common_speculative_init_result: failed to create MTP context\n0.24.753.307 E srv    load_model: failed to create MTP context\n0.24.753.309 I srv    operator(): operator(): cleaning up before exit...\n0.24.753.943 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 262144,
+      "max_context": 262144,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-8B-Thinking-GGUF_UD-Q4_K_XL-262144-plain.log",
+      "context_profile": {
+        "estimated_max_context": 262144,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 9.56
+          },
+          {
+            "tier": "default",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.08
+          },
+          {
+            "tier": "max",
+            "context_tokens": 262144,
+            "estimated_vram_gib": 28.08
+          }
+        ],
+        "verified_context_cap": 262144
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 262144,
+      "profile_peak_gpu_used_gib": 28.075,
+      "profile_peak_gpu_delta_gib": 26.96
+    },
+    {
+      "model_id": "unsloth/Qwen3-VL-8B-Thinking-GGUF:UD-Q8_K_XL",
+      "backend": "llama.cpp (UD-Q8_K_XL)",
+      "tasks": {},
+      "kv_cache": "q8_0 K and V",
+      "mtp_requested": "draft-mtp, up to 4 tokens for Qwen3-VL",
+      "comparison_reference": "Qwen/Qwen3-VL-8B-Thinking",
+      "gpu_baseline_gib": 1.115,
+      "context_cap_tokens": null,
+      "profile_context_only": true,
+      "startup_attempts": [
+        {
+          "context": 262144,
+          "mtp": true,
+          "error": "0.00.060.582 I srv  llama_server: initializing ...\n0.00.060.595 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.060.708 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.062.591 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-GGUF/snapshots/894774171339940a7a7f162a39d8143fb5154cdd/Qwen3-VL-8B-Thinking-UD-Q8_K_XL.gguf'\n0.00.554.020 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.554.048 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort\n0.00.624.600 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.52.069.156 I cmn          init: llama threadpool init, n_threads = 12\n0.52.213.943 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-GGUF/snapshots/894774171339940a7a7f162a39d8143fb5154cdd/Qwen3-VL-8B-Thinking-UD-Q8_K_XL.gguf'\n0.52.213.948 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.52.213.948 E common_speculative_init_result: failed to create MTP context\n0.52.213.951 E srv    load_model: failed to create MTP context\n0.52.213.955 I srv    operator(): operator(): cleaning up before exit...\n0.52.214.436 E srv  llama_server: exiting due to model loading error\n"
+        },
+        {
+          "context": 262144,
+          "mtp": false,
+          "error": " 1996977]\n[New LWP 1996978]\n[New LWP 1996979]\n[New LWP 1996980]\n[New LWP 1996981]\n[New LWP 1996982]\n[New LWP 1996983]\n[New LWP 1997045]\n[New LWP 1997046]\n[New LWP 1997047]\n[New LWP 1997048]\n[New LWP 1997049]\n[New LWP 1997050]\n[New LWP 1997051]\n[New LWP 1997052]\n[New LWP 1997053]\n[New LWP 1997054]\n[New LWP 1997055]\n[Thread debugging using libthread_db enabled]\nUsing host libthread_db library \"/lib/x86_64-linux-gnu/libthread_db.so.1\".\n0x000075879d6ea3ef in __GI___wait4 (pid=1997060, stat_loc=0x0, options=0, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30\n30\t../sysdeps/unix/sysv/linux/wait4.c: No such file or directory.\n#0  0x000075879d6ea3ef in __GI___wait4 (pid=1997060, stat_loc=0x0, options=0, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30\n30\tin ../sysdeps/unix/sysv/linux/wait4.c\n#1  0x000075879ed6cc7b in ?? () from /usr/local/lib/ollama/libggml-base.so.0\n#2  0x000075879ed6cdce in ggml_abort () from /usr/local/lib/ollama/libggml-base.so.0\n#3  0x000075879ed85b81 in ggml_backend_buffer_set_usage () from /usr/local/lib/ollama/libggml-base.so.0\n#4  0x000075879e375c60 in clip_model_loader::load_tensors(clip_ctx&) () from /usr/local/lib/ollama/libmtmd.so.0\n#5  0x000075879e35dc35 in clip_init(char const*, clip_context_params) () from /usr/local/lib/ollama/libmtmd.so.0\n#6  0x000075879e2bb6f1 in mtmd_context::mtmd_context(char const*, llama_model const*, mtmd_context_params const&, bool) () from /usr/local/lib/ollama/libmtmd.so.0\n#7  0x000075879e2b2a6d in mtmd_init_from_file () from /usr/local/lib/ollama/libmtmd.so.0\n#8  0x000075879eb57231 in server_context_impl::load_model(common_params&) () from /usr/local/lib/ollama/libllama-server-impl.so\n#9  0x000075879eab9f2f in llama_server(common_params&, int, char**, server_child&) () from /usr/local/lib/ollama/libllama-server-impl.so\n#10 0x000075879eabb079 in llama_server(int, char**) () from /usr/local/lib/ollama/libllama-server-impl.so\n#11 0x000075879d629d90 in __libc_start_call_main (main=main@entry=0x401040, argc=argc@entry=27, argv=argv@entry=0x7ffdb30d6e78) at ../sysdeps/nptl/libc_start_call_main.h:58\n58\t../sysdeps/nptl/libc_start_call_main.h: No such file or directory.\n#12 0x000075879d629e40 in __libc_start_main_impl (main=0x401040, argc=27, argv=0x7ffdb30d6e78, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=0x7ffdb30d6e68) at ../csu/libc-start.c:392\n392\t../csu/libc-start.c: No such file or directory.\n#13 0x000000000040107e in ?? ()\n[Inferior 1 (process 1996948) detached]\n"
+        },
+        {
+          "context": 131072,
+          "mtp": true,
+          "error": "0.00.061.473 I srv  llama_server: initializing ...\n0.00.061.484 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)\n0.00.061.596 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)\n0.00.063.421 I srv    load_model: loading model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-GGUF/snapshots/894774171339940a7a7f162a39d8143fb5154cdd/Qwen3-VL-8B-Thinking-UD-Q8_K_XL.gguf'\n0.00.459.131 W operator(): failed to measure the memory of the extra model, fitting without it: failed to create llama_context from model\n0.00.530.327 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden\n0.02.055.470 I cmn          init: llama threadpool init, n_threads = 12\n0.02.162.845 I common_speculative_init_result: creating MTP draft context against the target model '/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--Qwen3-VL-8B-Thinking-GGUF/snapshots/894774171339940a7a7f162a39d8143fb5154cdd/Qwen3-VL-8B-Thinking-UD-Q8_K_XL.gguf'\n0.02.162.850 W llama_init_from_model: context type MTP requested but model doesn't contain MTP layers\n0.02.162.850 E common_speculative_init_result: failed to create MTP context\n0.02.162.853 E srv    load_model: failed to create MTP context\n0.02.162.856 I srv    operator(): operator(): cleaning up before exit...\n0.02.163.487 E srv  llama_server: exiting due to model loading error\n"
+        }
+      ],
+      "mtp_supported": "no (GGUF has no MTP layers)",
+      "status": "context_profiled",
+      "configured_context": 131072,
+      "max_context": 131072,
+      "llama_server": "/usr/local/lib/ollama/llama-server",
+      "server_log": "/tmp/vlm-llama-server-unsloth_Qwen3-VL-8B-Thinking-GGUF_UD-Q8_K_XL-131072-plain.log",
+      "context_profile": {
+        "estimated_max_context": 131072,
+        "tiers": [
+          {
+            "tier": "min",
+            "context_tokens": 8192,
+            "estimated_vram_gib": 13.45
+          },
+          {
+            "tier": "default",
+            "context_tokens": 131072,
+            "estimated_vram_gib": 22.41
+          },
+          {
+            "tier": "max",
+            "context_tokens": 131072,
+            "estimated_vram_gib": 22.41
+          }
+        ],
+        "verified_context_cap": 131072
+      },
+      "checkpoint_context": 262144,
+      "warmup": "one real AI2D image request excluded from scoring and speed",
+      "profiled_context_tokens": 131072,
+      "profile_peak_gpu_used_gib": 22.407,
+      "profile_peak_gpu_delta_gib": 21.292
+    }
+  ]
+}
