@@ -1,6 +1,6 @@
 # General VLM benchmark report site design guideline
 
-Use this guideline after a benchmark group has completed its planned runs and written its results to `report.md`. The report site presents that report in a readable, navigable form; it does not replace the report. Keep each group's `index.html` and its local assets at the benchmark folder's root so the folder itself maps cleanly to a Pages URL. Link the source report from the page or its documentation.
+Use this guideline after a benchmark group has completed its planned runs and written its results to `report.md`. The report site presents that report in a readable, navigable form; it does not replace the report. A complete report page belongs at the benchmark folder's root. The repository root page links to each available report. Link the source report from the page or its documentation.
 
 The visual and information architecture draws on the completed [Qwen-VL report site](../qwenVL_Bench/index.html) and [LLaVA report site](../llava_Bench/index.html). Adapt labels and metrics to the group. Do not force specialized video or grounding results into an image-QA layout when that would obscure their task structure.
 
@@ -34,18 +34,27 @@ The visual and information architecture draws on the completed [Qwen-VL report s
 - Keep the site static and locally usable unless the group requires another delivery method. Do not start a server or publish the site as part of authoring unless requested.
 - Check generated links, table labels, responsive behavior, and consistency with `report.md` before delivery. Do not add fake data or mock measurements to fill empty sections.
 
-## Suggested shared page shell
+## Required folder and URL layout
 
 ```text
+index.html                         # Repository landing page with report links
 qwenVL_Bench/
-  index.html
-  app.js
-  styles.css
-  data.json
-  generate_data.py
-  assets/ (optional)
-
-The Pages artifact preserves the benchmark folder name as the URL path.
+  index.html                       # Complete Qwen-VL report, not a redirect
+  app.js                            # Optional, when the page needs JavaScript
+  styles.css                        # Optional, when the page needs a stylesheet
+  data.json                         # Optional, aggregate display data
+  generate_data.py                  # Optional, report-data builder
+  assets/                           # Optional, local images and icons
+cosmos_Bench/
+  index.html                       # Complete Cosmos report
+  ...
+<other-benchmark-folder>/
+  index.html                       # Complete report for that group
+  ...
 ```
+
+Keep each report's page, scripts, styles, data, and assets beside its benchmark folder's `index.html`. Do not add a `report-site/`, `dist/`, or redirect layer between the benchmark folder and its report page. Use relative asset links such as `app.js`, `styles.css`, `data.json`, and `assets/mark.svg`.
+
+The repository landing page should link to each completed report with directory links such as `href="qwenVL_Bench/"`. A Pages deployment must preserve these top-level benchmark folder names. With the project-site base URL `https://<owner>.github.io/<repository>/`, the browser resolves `/<benchmark-folder>/` to that folder's `index.html`.
 
 Skip a section when the benchmark has no defensible metric for it. Explain relevant benchmark-specific evidence instead of adding generic or speculative estimates.

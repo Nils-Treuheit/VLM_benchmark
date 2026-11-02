@@ -164,7 +164,7 @@ def main() -> None:
         if large_model:
             model["status"] = "complete" if model["vqa_panel_complete"] else "partial"
             if not model["vqa_panel_complete"]:
-                model["preliminary_status"] = "large-context run lacks a complete six-category panel; excluded from complete-score recommendations"
+                model["coverage_status"] = "large-context run lacks a complete six-category panel; excluded from complete-score recommendations"
         graph_model = graph_by_id.get(model["model_id"], {})
         graph_metrics = graph_model.get("tasks", {}).get("graph_grab_lite", {})
         graph_items = [item for item in graph_metrics.get("items", []) if "error" not in item]
@@ -327,8 +327,7 @@ def main() -> None:
 
     data = {
         "generated_at": datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"),
-        "preliminary": True,
-        "preliminary_note": "GRAB-Lite scoring is complete for the four-model graph panel. Some large-model rows still have incomplete task coverage; partial rows are marked and excluded from complete-score recommendations.",
+        "coverage_note": "GRAB-Lite covers the four models selected for that benchmark. Some large-model rows have incomplete VQA task coverage; partial rows are marked and excluded from complete-score recommendations.",
         "samples_per_task": result["samples_per_task"],
         "seed": result["seed"],
         "memory_cap_gib": result.get("memory_cap_gib"),

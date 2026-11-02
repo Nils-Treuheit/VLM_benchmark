@@ -7,7 +7,7 @@
   <meta name="description" content="Sortable Qwen vision-language model benchmark report.">
   <title>Qwen VLM Benchmark</title>
   <link rel="icon" type="image/png" href="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Qwen_logo.svg/250px-Qwen_logo.svg.png">
-  <link rel="stylesheet" href="styles.css?v=summary-pair-2">
+  <link rel="stylesheet" href="styles.css?v=shared-header-3">
 </head>
 <body>
   <header class="topbar">
@@ -23,7 +23,7 @@
       <div class="hero-meta"><span id="generated"></span><span id="model-total"></span><span>Serial, single-image requests · fixed samples across models</span></div>
     </section>
 
-    <aside id="preliminary-banner" class="preliminary-banner" hidden></aside>
+    <aside id="coverage-banner" class="coverage-banner" hidden></aside>
 
     <section class="stat-grid summary-pair" aria-label="Benchmark summary">
       <article class="stat-card summary-card variants-card"><span class="stat-label">Model variants</span><strong>Qwen2-VL · Qwen2.5-VL · Qwen3-VL</strong><span class="stat-foot"><b id="model-count">—</b> models tested</span></article>
@@ -51,7 +51,7 @@
     </section>
 
     <section class="section-block">
-      <div class="section-head"><div><p class="eyebrow">01 / BROADER VQA</p><h2>Question-type performance</h2><p class="section-copy">The complete panel macro average weighs truth, counting, visual description, OCR, affordance/function, and negation equally. Preliminary runs without all six categories show an available-category average and coverage; these are not directly comparable to the complete macro average.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">01 / BROADER VQA</p><h2>Question-type performance</h2><p class="section-copy">The complete panel macro average weighs truth, counting, visual description, OCR, affordance/function, and negation equally. Rows without all six categories show an available-category average and coverage; these are not directly comparable to the complete macro average.</p></div></div>
       <div id="vqa-panel-table"></div>
     </section>
 
@@ -86,6 +86,6 @@
 
     <footer><span>Qwen VLM benchmark · AI2D, VQA skill panel, and GRAB-Lite</span><span>Aggregate results only · no prompt-level outputs</span></footer>
   </main>
-  <script src="app.js?v=summary-pair-1" defer></script>
+  <script src="app.js?v=coverage-note-1" defer></script>
 </body>
 </html>

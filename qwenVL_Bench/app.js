@@ -335,7 +335,7 @@ const contextColumn = (key, label) => ({ key, label, numeric: true, best: 'max',
 const plainColumn = (key, label, className) => ({ key, label, sortValue: row => row[key], display: row => esc(row[key]), className: className ? () => className : null });
 
 async function init() {
-  const response = await fetch('data.json?v=summary-pair-1');
+  const response = await fetch('data.json?v=coverage-note-1');
   if (!response.ok) throw new Error(`Could not load benchmark data (${response.status})`);
   const data = await response.json();
   const models = data.models;
@@ -343,9 +343,9 @@ async function init() {
   const overallPick = (data.recommendations || []).find(item => item.title === 'Best overall quality');
   window.BENCHMARK_REFERENCE_MODEL_ID = overallPick?.model_id || null;
   document.getElementById('generated').textContent = `Updated ${data.generated_at}`;
-  if (data.preliminary) {
-    const banner = document.getElementById('preliminary-banner');
-    banner.textContent = `PRELIMINARY RESULTS · ${data.preliminary_note}`;
+  if (data.coverage_note) {
+    const banner = document.getElementById('coverage-banner');
+    banner.textContent = `COVERAGE NOTE · ${data.coverage_note}`;
     banner.hidden = false;
   }
   const modelCount = document.getElementById('model-count');
