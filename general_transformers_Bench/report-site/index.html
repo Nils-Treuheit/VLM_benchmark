@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101720">
+  <meta name="description" content="General Transformers vision-language benchmark results across eight shared image tasks.">
+  <link rel="icon" type="image/png" href="assets/vlm-family.png">
+  <title>General Transformers VLM Benchmark</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-mark"><img src="assets/vlm-family.png" alt="VLM benchmark family mark"></span><span>Model Bench</span></a>
+    <span class="topbar-note">VISION · QUALITY · INFERENCE</span>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow">GENERAL TRANSFORMERS · VISION-LANGUAGE MODELS</p>
+      <h1>Compare models<br><span>across shared visual tasks.</span></h1>
+      <p class="hero-copy">A local comparison of answer quality, generation speed, and memory on the shared VLM benchmark.</p>
+      <div class="hero-meta"><span id="generated">Loading report data…</span><span id="runtime-version"></span><span id="run-state"></span></div>
+    </section>
+
+    <div id="report-status" class="status-banner" role="status" hidden></div>
+
+    <section class="summary-grid" aria-label="Benchmark summary">
+      <article class="summary-card"><span class="stat-label">Model variants</span><strong id="variant-count">—</strong><span id="variant-names" class="stat-foot">—</span></article>
+      <article class="summary-card accent"><span class="stat-label">Shared task coverage</span><strong>8 tasks</strong><span class="stat-foot">AI2D, TextVQA, five VQA panel measures, and GRAB-Lite.</span></article>
+    </section>
+
+    <section class="section-block" aria-labelledby="selection-title">
+      <div class="section-head"><div><p class="eyebrow">SELECTION GUIDE</p><h2 id="selection-title">Complete-run results</h2><p class="section-copy">Only models with complete coverage appear in quality picks. The macro is an unweighted mean of all eight task scores.</p></div></div>
+      <div id="selection" class="selection-grid"></div>
+    </section>
+
+    <section class="panel methodology" aria-labelledby="method-title">
+      <div class="section-head"><div><p class="eyebrow">BENCHMARK METHOD</p><h2 id="method-title">Shared tasks and scoring</h2><p class="section-copy">Fixed prepared examples, question wording, and scorers are reused across models.</p></div></div>
+      <div class="method-grid">
+        <article class="method-card"><p class="eyebrow">AI2D · DIAGRAM REASONING</p><h3>Test split · 100 examples</h3><p>Four-choice diagram questions; the prompt requests one answer letter.</p><p><b>Score:</b> exact A/B/C/D accuracy.</p><a href="https://huggingface.co/datasets/lmms-lab/ai2d" target="_blank" rel="noreferrer">AI2D dataset card ↗</a></article>
+        <article class="method-card"><p class="eyebrow">TEXTVQA · IMAGE TEXT</p><h3>Validation · 100 examples</h3><p>Natural-image questions with human answer references.</p><p><b>Score:</b> normalized consensus against references.</p><a href="https://huggingface.co/datasets/facebook/textvqa" target="_blank" rel="noreferrer">TextVQA dataset card ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VQAv2 · TRUTH, COUNTING, DESCRIPTION</p><h3>Validation · 25 each</h3><p>Fixed samples cover yes/no judgments, number questions, and visual descriptions.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">Official VQAv2 data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">PERCEPTAX · AFFORDANCE</p><h3>Real test split · 25 examples</h3><p>Questions about affordance, object function, and repurposing.</p><p><b>Score:</b> normalized open-answer match.</p><a href="https://huggingface.co/datasets/RyanWW/PercepTaxBench" target="_blank" rel="noreferrer">PercepTax dataset ↗</a></article>
+        <article class="method-card"><p class="eyebrow">NEGVQA · NEGATION</p><h3>Development split · 25 examples</h3><p>Negated two-choice questions; the prompt requests A or B.</p><p><b>Score:</b> exact option accuracy.</p><a href="https://arxiv.org/abs/2505.22946" target="_blank" rel="noreferrer">NegVQA paper and dataset ↗</a></article>
+        <article class="method-card"><p class="eyebrow">GRAB-LITE · GRAPH ANALYSIS</p><h3>Full test split · 500 examples</h3><p>Balanced graph questions across properties, functions, series, transformations, and real figures.</p><p><b>Score:</b> normalized exact match, overall and by group.</p><a href="https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite" target="_blank" rel="noreferrer">GRAB-Lite dataset ↗</a></article>
+      </div>
+      <div class="method-footer">
+        <p><b>Sampling:</b> seed 3407. The same selected indices are reused for every model.</p>
+        <p><b>Inference:</b> cached checkpoints, offline execution, one still image per request, no batching, and greedy decoding.</p>
+        <p><b>Prompts:</b> the shared wording is unchanged. PaliGemma adds `answer en`; Florence's experimental `<VQA>` route is scored only if real-image preflights pass.</p>
+        <p><b>Measures:</b> generation time is after preprocessing. Peak VRAM is process-local and excludes unrelated device use.</p>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">01 / QUALITY</p><h2>Task scores and completion</h2><p class="section-copy">Failed, partial, and unsupported runs remain visible. Incomplete task scores are not ranked.</p></div></div>
+      <div id="quality-table"></div>
+      <div class="subsection-head"><p class="eyebrow">GRAB-LITE TASK GROUPS</p><h3>Graph-analysis score by group</h3></div>
+      <div id="graph-group-table"></div>
+    </section>
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">02 / RUNTIME</p><h2>Generation speed and memory</h2><p class="section-copy">Includes completion counts, latency, generated-token throughput, process-local peak allocation, and parse errors.</p></div></div>
+      <div id="runtime-table"></div>
+    </section>
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">03 / MODEL AND HARDWARE FIT</p><h2>Checkpoint and runtime details</h2><p class="section-copy">Configured model metadata is distinct from measured runtime memory.</p></div></div>
+      <div id="memory-table"></div>
+    </section>
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">04 / LIMITATIONS</p><h2>Run notes and provenance</h2><p class="section-copy">Compatibility failures, preflight outcomes, and measurement boundaries remain visible alongside the results.</p></div></div>
+      <div id="limitations" class="panel notes"></div>
+      <div class="source-links"><a href="../results/general_transformers/report.md">Full benchmark report</a><a href="../results/general_transformers/results.json">Aggregate result data</a></div>
+    </section>
+    <footer><span>General Transformers VLM benchmark · shared eight-task suite</span><span>Aggregate metrics only · no prompt-level outputs</span></footer>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

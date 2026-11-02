@@ -603,7 +603,7 @@ def run_llama(entry: dict[str, Any], count: int, seed: int, result: dict[str, An
 
 
 def run_transformers(entry: dict[str, Any], count: int, seed: int, result: dict[str, Any], result_path: Path,
-                     task_names: tuple[str, ...]):
+                     task_names: tuple[str, ...], max_new_tokens_override: int | None = None):
     import torch
     from transformers import AutoProcessor, LogitsProcessor, LogitsProcessorList
     from qwen_vl_utils import process_vision_info
@@ -626,7 +626,11 @@ def run_transformers(entry: dict[str, Any], count: int, seed: int, result: dict[
     # Transformers version predates AutoModelForMultimodalLM, so Qwen2 and 2.5
     # use their equivalent conditional-generation classes.
     lower_id = model_id.lower()
-    if lower_id.startswith("qwen/qwen2-vl-"):
+    template_options = {"enable_thinking": False} if "cosmos3-edge" in lower_id else {}
+    if "cosmos-reason1-7b" in lower_id:
+        # Cosmos Reason1 retains the Qwen2.5-VL architecture and accepts still images.
+        from transformers import Qwen2_5_VLForConditionalGeneration as ModelClass
+    elif lower_id.startswith("qwen/qwen2-vl-"):
         from transformers import Qwen2VLForConditionalGeneration as ModelClass
     elif lower_id.startswith("qwen/qwen2.5-vl-"):
         from transformers import Qwen2_5_VLForConditionalGeneration as ModelClass
@@ -660,7 +664,9 @@ def run_transformers(entry: dict[str, Any], count: int, seed: int, result: dict[
             {"type": "image", "image": warm_row["image"].convert("RGB")},
             {"type": "text", "text": warm_prompt},
         ]}]
-        warm_rendered = processor.apply_chat_template(warm_messages, tokenize=False, add_generation_prompt=True)
+        warm_rendered = processor.apply_chat_template(
+            warm_messages, tokenize=False, add_generation_prompt=True, **template_options
+        )
         warm_images, warm_videos = process_vision_info(warm_messages)
         warm_inputs = processor(text=[warm_rendered], images=warm_images, videos=warm_videos,
                                 padding=True, return_tensors="pt").to(model.device)
@@ -682,12 +688,16 @@ def run_transformers(entry: dict[str, Any], count: int, seed: int, result: dict[
                     {"type": "image", "image": row["image"].convert("RGB")},
                     {"type": "text", "text": prompt},
                 ]}]
-                rendered = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+                rendered = processor.apply_chat_template(
+                    messages, tokenize=False, add_generation_prompt=True, **template_options
+                )
                 images, videos = process_vision_info(messages)
                 inputs = processor(text=[rendered], images=images, videos=videos,
                                    padding=True, return_tensors="pt").to(model.device)
                 settings = sample_settings(model_id)
-                generation = {"max_new_tokens": 2048 if "thinking" in model_id.lower() else 256,
+                generation = {"max_new_tokens": max_new_tokens_override or (
+                                  2048 if "thinking" in model_id.lower() else 256
+                              ),
                               "cache_implementation": "quantized",
                               "cache_config": {"backend": "hqq", "nbits": 8, "residual_length": 128}}
                 if settings.get("use_checkpoint_defaults"):

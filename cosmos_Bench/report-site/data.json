@@ -1,0 +1,609 @@
+{
+  "generated_at": "2026-11-01T05:32:21+01:00",
+  "benchmark_generated_at": "2026-11-01 05:31:36 +0100",
+  "completion": {
+    "completed": 5,
+    "total": 5
+  },
+  "sample_plan": {
+    "ai2d": 100,
+    "textvqa": 100,
+    "vqa_panel": 25,
+    "graph_grab_lite": 500
+  },
+  "seed": 3407,
+  "memory_cap_gib": 30.0,
+  "execution_mode": "offline cached Transformers and managed vLLM CUDA 13, serial models and requests",
+  "runtime": {
+    "python": "3.13.13",
+    "torch": "2.11.0+cu130",
+    "transformers": "4.57.6",
+    "qwen_vl_utils": null,
+    "hqq": null,
+    "pillow": "13.0.0"
+  },
+  "tasks": [
+    {
+      "id": "ai2d",
+      "label": "AI2D test"
+    },
+    {
+      "id": "textvqa",
+      "label": "TextVQA validation"
+    },
+    {
+      "id": "vqa_truth",
+      "label": "VQA truth"
+    },
+    {
+      "id": "vqa_count",
+      "label": "VQA counting"
+    },
+    {
+      "id": "vqa_description",
+      "label": "VQA description"
+    },
+    {
+      "id": "vqa_affordance",
+      "label": "VQA affordance"
+    },
+    {
+      "id": "vqa_negation",
+      "label": "VQA negation"
+    },
+    {
+      "id": "graph_grab_lite",
+      "label": "GRAB-Lite graph analysis"
+    }
+  ],
+  "best_by_task": {
+    "ai2d": "nvidia/Cosmos3-Nano",
+    "textvqa": "nvidia/Cosmos3-Nano",
+    "vqa_truth": "nvidia/Cosmos-Reason2-8B",
+    "vqa_count": "nvidia/Cosmos-Reason1-7B",
+    "vqa_description": "nvidia/Cosmos3-Nano",
+    "vqa_affordance": "nvidia/Cosmos3-Edge",
+    "vqa_negation": "nvidia/Cosmos-Reason1-7B",
+    "graph_grab_lite": "nvidia/Cosmos-Reason2-8B"
+  },
+  "models": [
+    {
+      "model_id": "nvidia/Cosmos-Reason1-7B",
+      "status": "complete",
+      "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
+      "revision": "375e24000b24baed78f4618d3dd779e47cd96323",
+      "max_new_tokens": 4096,
+      "reasoning_mode": "checkpoint default; 4096-token cap follows the model card recommendation",
+      "overall_macro": 0.5955,
+      "panel_macro": 0.6453333333333333,
+      "graph_groups": {
+        "properties": 0.15,
+        "function": 0.1,
+        "series": 0.09,
+        "transform": 0.04,
+        "real": 0.13
+      },
+      "run_context_tokens": null,
+      "gpu_memory_utilization": null,
+      "checkpoint_context": 128000,
+      "cached_weight_gib": 15.445,
+      "model_load_peak_allocated_gib": 15.485,
+      "peak_gpu_used_gib": 22.888,
+      "peak_gpu_delta_gib": 21.888,
+      "benchmark_note": null,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.79,
+          "mean_wall_s": 0.173677,
+          "generated_tokens_per_s": 11.515524577066412,
+          "peak_gpu_used_gib": 18.447,
+          "peak_gpu_delta_gib": 17.447
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.768,
+          "mean_wall_s": 0.263697,
+          "generated_tokens_per_s": 18.885477205981644,
+          "peak_gpu_used_gib": 18.447,
+          "peak_gpu_delta_gib": 17.447
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.876,
+          "mean_wall_s": 0.148828,
+          "generated_tokens_per_s": 13.438307044378723,
+          "peak_gpu_used_gib": 17.461,
+          "peak_gpu_delta_gib": 16.461
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.828,
+          "mean_wall_s": 0.1485,
+          "generated_tokens_per_s": 14.006372376259458,
+          "peak_gpu_used_gib": 17.461,
+          "peak_gpu_delta_gib": 16.461
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.52,
+          "mean_wall_s": 0.158396,
+          "generated_tokens_per_s": 18.182805897247224,
+          "peak_gpu_used_gib": 17.461,
+          "peak_gpu_delta_gib": 16.461
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.12,
+          "mean_wall_s": 0.250012,
+          "generated_tokens_per_s": 15.999952926774236,
+          "peak_gpu_used_gib": 17.738,
+          "peak_gpu_delta_gib": 16.738
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.76,
+          "mean_wall_s": 0.220112,
+          "generated_tokens_per_s": 9.0859776858473,
+          "peak_gpu_used_gib": 18.424,
+          "peak_gpu_delta_gib": 17.424
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": null,
+          "score": 0.102,
+          "mean_wall_s": 1.6128908,
+          "generated_tokens_per_s": 2.528378840096433,
+          "peak_gpu_used_gib": 22.888,
+          "peak_gpu_delta_gib": 21.888
+        }
+      }
+    },
+    {
+      "model_id": "nvidia/Cosmos3-Nano",
+      "status": "complete",
+      "backend": "managed vLLM 0.21.0 (CUDA 13) + vllm-cosmos3",
+      "revision": "e59a53c25979a090fa8706c9acc0c254a6e89b92",
+      "max_new_tokens": 4096,
+      "reasoning_mode": "checkpoint default; 4096-token cap follows the model card recommendation",
+      "overall_macro": 0.569875,
+      "panel_macro": 0.6115,
+      "graph_groups": {
+        "properties": 0.13,
+        "function": 0.09,
+        "series": 0.06,
+        "transform": 0.04,
+        "real": 0.13
+      },
+      "run_context_tokens": 16384,
+      "gpu_memory_utilization": 0.88,
+      "checkpoint_context": 262144,
+      "cached_weight_gib": 32.498,
+      "model_load_peak_allocated_gib": null,
+      "peak_gpu_used_gib": 31.069,
+      "peak_gpu_delta_gib": null,
+      "benchmark_note": "The managed vLLM endpoint stopped responding during the initial GRAB-Lite pass. Failed fixed-seed graph requests were retried in short controller-managed CUDA 13 sessions. All 825 selected examples ultimately completed. The profile used 16,384-token context, one sequence, and 88% GPU memory utilization.",
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.8,
+          "mean_wall_s": 0.087036,
+          "generated_tokens_per_s": 22.979182339398697,
+          "peak_gpu_used_gib": 27.806,
+          "peak_gpu_delta_gib": 26.806
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.793,
+          "mean_wall_s": 0.172778,
+          "generated_tokens_per_s": 25.52474646248824,
+          "peak_gpu_used_gib": 27.819,
+          "peak_gpu_delta_gib": 26.819
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.904,
+          "mean_wall_s": 0.070156,
+          "generated_tokens_per_s": 28.506118556868334,
+          "peak_gpu_used_gib": 27.819,
+          "peak_gpu_delta_gib": 26.819
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.676,
+          "mean_wall_s": 0.069692,
+          "generated_tokens_per_s": 29.845512335715632,
+          "peak_gpu_used_gib": 27.819,
+          "peak_gpu_delta_gib": 26.819
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.616,
+          "mean_wall_s": 0.081276,
+          "generated_tokens_per_s": 38.391417150940875,
+          "peak_gpu_used_gib": 27.819,
+          "peak_gpu_delta_gib": 26.819
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.04,
+          "mean_wall_s": 0.15543200000000001,
+          "generated_tokens_per_s": 17.757414608199014,
+          "peak_gpu_used_gib": 27.819,
+          "peak_gpu_delta_gib": 26.819
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.64,
+          "mean_wall_s": 0.146596,
+          "generated_tokens_per_s": 13.643322203556394,
+          "peak_gpu_used_gib": 28.097,
+          "peak_gpu_delta_gib": 27.097
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": 0,
+          "score": 0.09,
+          "mean_wall_s": 2.1723288,
+          "generated_tokens_per_s": 1.673779770355206,
+          "peak_gpu_used_gib": 31.069,
+          "peak_gpu_delta_gib": 30.069
+        }
+      }
+    },
+    {
+      "model_id": "nvidia/Cosmos-Reason2-8B",
+      "status": "complete",
+      "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
+      "revision": "a9fae2cf89dc64db96b12860417f0eb403013bb9",
+      "max_new_tokens": null,
+      "reasoning_mode": null,
+      "overall_macro": 0.547,
+      "panel_macro": 0.5830000000000001,
+      "graph_groups": {
+        "properties": 0.21,
+        "function": 0.11,
+        "series": 0.08,
+        "transform": 0.05,
+        "real": 0.19
+      },
+      "run_context_tokens": null,
+      "gpu_memory_utilization": null,
+      "checkpoint_context": 262144,
+      "cached_weight_gib": 16.33,
+      "model_load_peak_allocated_gib": 16.368,
+      "peak_gpu_used_gib": 23.822,
+      "peak_gpu_delta_gib": 22.822,
+      "benchmark_note": null,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.75,
+          "mean_wall_s": 0.165358,
+          "generated_tokens_per_s": 12.094685654118674,
+          "peak_gpu_used_gib": 18.76,
+          "peak_gpu_delta_gib": 17.76
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.782,
+          "mean_wall_s": 0.238249,
+          "generated_tokens_per_s": 18.887667083806317,
+          "peak_gpu_used_gib": 18.76,
+          "peak_gpu_delta_gib": 17.76
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.944,
+          "mean_wall_s": 0.1483,
+          "generated_tokens_per_s": 13.48703894844687,
+          "peak_gpu_used_gib": 18.199,
+          "peak_gpu_delta_gib": 17.199
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.632,
+          "mean_wall_s": 0.14796800000000002,
+          "generated_tokens_per_s": 13.787191347886129,
+          "peak_gpu_used_gib": 18.199,
+          "peak_gpu_delta_gib": 17.199
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.46,
+          "mean_wall_s": 0.169352,
+          "generated_tokens_per_s": 19.840610152838664,
+          "peak_gpu_used_gib": 18.22,
+          "peak_gpu_delta_gib": 17.22
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.0,
+          "mean_wall_s": 0.20276,
+          "generated_tokens_per_s": 13.611654509958479,
+          "peak_gpu_used_gib": 18.545,
+          "peak_gpu_delta_gib": 17.545
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.68,
+          "mean_wall_s": 0.202216,
+          "generated_tokens_per_s": 9.89053735781165,
+          "peak_gpu_used_gib": 19.094,
+          "peak_gpu_delta_gib": 18.094
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": null,
+          "score": 0.128,
+          "mean_wall_s": 1.7053056,
+          "generated_tokens_per_s": 2.2482741800258217,
+          "peak_gpu_used_gib": 23.822,
+          "peak_gpu_delta_gib": 22.822
+        }
+      }
+    },
+    {
+      "model_id": "nvidia/Cosmos3-Edge",
+      "status": "complete",
+      "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
+      "revision": "344d602b128d1bbdacb43b08d0a3626f46343e29",
+      "max_new_tokens": 256,
+      "reasoning_mode": "disabled with the model's enable_thinking chat-template option to follow the shared answer-only contract",
+      "overall_macro": 0.525875,
+      "panel_macro": 0.5855,
+      "graph_groups": {
+        "properties": 0.08,
+        "function": 0.07,
+        "series": 0.06,
+        "transform": 0.03,
+        "real": 0.08
+      },
+      "run_context_tokens": null,
+      "gpu_memory_utilization": null,
+      "checkpoint_context": 131072,
+      "cached_weight_gib": 8.501,
+      "model_load_peak_allocated_gib": 4.571,
+      "peak_gpu_used_gib": 9.4,
+      "peak_gpu_delta_gib": 8.4,
+      "benchmark_note": null,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.63,
+          "mean_wall_s": 0.11018,
+          "generated_tokens_per_s": 18.24229022318899,
+          "peak_gpu_used_gib": 6.41,
+          "peak_gpu_delta_gib": 5.41
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.741,
+          "mean_wall_s": 0.145665,
+          "generated_tokens_per_s": 29.175735366495733,
+          "peak_gpu_used_gib": 6.41,
+          "peak_gpu_delta_gib": 5.41
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.904,
+          "mean_wall_s": 0.105768,
+          "generated_tokens_per_s": 18.910603687698757,
+          "peak_gpu_used_gib": 6.191,
+          "peak_gpu_delta_gib": 5.191
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.736,
+          "mean_wall_s": 0.10446,
+          "generated_tokens_per_s": 19.911668231463725,
+          "peak_gpu_used_gib": 6.193,
+          "peak_gpu_delta_gib": 5.193
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.532,
+          "mean_wall_s": 0.11738,
+          "generated_tokens_per_s": 26.581985436383476,
+          "peak_gpu_used_gib": 6.213,
+          "peak_gpu_delta_gib": 5.213
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.16,
+          "mean_wall_s": 0.126244,
+          "generated_tokens_per_s": 24.0809805316054,
+          "peak_gpu_used_gib": 6.324,
+          "peak_gpu_delta_gib": 5.324
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.44,
+          "mean_wall_s": 0.128168,
+          "generated_tokens_per_s": 15.604126952035541,
+          "peak_gpu_used_gib": 6.67,
+          "peak_gpu_delta_gib": 5.67
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": null,
+          "score": 0.064,
+          "mean_wall_s": 1.1099778,
+          "generated_tokens_per_s": 3.9874646393354434,
+          "peak_gpu_used_gib": 9.4,
+          "peak_gpu_delta_gib": 8.4
+        }
+      }
+    },
+    {
+      "model_id": "nvidia/Cosmos-Reason2-2B",
+      "status": "complete",
+      "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
+      "revision": "9ce19a195e423419c349abfc86fd07178b230561",
+      "max_new_tokens": null,
+      "reasoning_mode": null,
+      "overall_macro": 0.50025,
+      "panel_macro": 0.545,
+      "graph_groups": {
+        "properties": 0.08,
+        "function": 0.05,
+        "series": 0.05,
+        "transform": 0.05,
+        "real": 0.13
+      },
+      "run_context_tokens": null,
+      "gpu_memory_utilization": null,
+      "checkpoint_context": 262144,
+      "cached_weight_gib": 4.542,
+      "model_load_peak_allocated_gib": 4.865,
+      "peak_gpu_used_gib": 10.691,
+      "peak_gpu_delta_gib": 9.691,
+      "benchmark_note": null,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.66,
+          "mean_wall_s": 0.113295,
+          "generated_tokens_per_s": 17.653829579205386,
+          "peak_gpu_used_gib": 7.347,
+          "peak_gpu_delta_gib": 6.347
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": null,
+          "score": 0.706,
+          "mean_wall_s": 0.145141,
+          "generated_tokens_per_s": 32.106187388933165,
+          "peak_gpu_used_gib": 7.347,
+          "peak_gpu_delta_gib": 6.347
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.928,
+          "mean_wall_s": 0.109464,
+          "generated_tokens_per_s": 18.635352032490275,
+          "peak_gpu_used_gib": 7.187,
+          "peak_gpu_delta_gib": 6.187
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.556,
+          "mean_wall_s": 0.108876,
+          "generated_tokens_per_s": 19.104330986763014,
+          "peak_gpu_used_gib": 7.187,
+          "peak_gpu_delta_gib": 6.187
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.52,
+          "mean_wall_s": 0.125764,
+          "generated_tokens_per_s": 26.077996793587584,
+          "peak_gpu_used_gib": 7.187,
+          "peak_gpu_delta_gib": 6.187
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.12,
+          "mean_wall_s": 0.132912,
+          "generated_tokens_per_s": 20.465789500042902,
+          "peak_gpu_used_gib": 7.187,
+          "peak_gpu_delta_gib": 6.187
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": null,
+          "score": 0.44,
+          "mean_wall_s": 0.130308,
+          "generated_tokens_per_s": 15.348652280822565,
+          "peak_gpu_used_gib": 7.637,
+          "peak_gpu_delta_gib": 6.637
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": null,
+          "score": 0.072,
+          "mean_wall_s": 0.8487822,
+          "generated_tokens_per_s": 4.135341411734105,
+          "peak_gpu_used_gib": 10.691,
+          "peak_gpu_delta_gib": 9.691
+        }
+      }
+    }
+  ],
+  "incomplete": [],
+  "pending": [],
+  "unsupported": []
+}
