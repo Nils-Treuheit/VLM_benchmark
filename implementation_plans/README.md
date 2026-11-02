@@ -36,4 +36,4 @@ The benchmark implementation should discover only locally complete checkpoints, 
 
 ## Report site delivery
 
-After each benchmark group completes its planned runs and writes `report.md`, create a static report site in that group's `report-site/` directory. Follow the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep site data and recommendations traceable to the report and recorded results; preserve group-specific metrics and report incomplete or unsupported coverage clearly.
+After each benchmark group completes its planned runs and writes `report.md`, place a static `index.html` report page and its assets at the benchmark folder's root. Follow the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep site data and recommendations traceable to the report and recorded results; preserve group-specific metrics and report incomplete or unsupported coverage clearly. The Pages artifact should preserve folder paths, making `/qwenVL_Bench/` resolve to `qwenVL_Bench/index.html`.

@@ -1,8 +1,8 @@
 # General VLM benchmark report site design guideline
 
-Use this guideline after a benchmark group has completed its planned runs and written its results to `report.md`. The report site presents that report in a readable, navigable form; it does not replace the report. Keep the site in that benchmark group's `report-site/` directory and link the source report from the page or its documentation.
+Use this guideline after a benchmark group has completed its planned runs and written its results to `report.md`. The report site presents that report in a readable, navigable form; it does not replace the report. Keep each group's `index.html` and its local assets at the benchmark folder's root so the folder itself maps cleanly to a Pages URL. Link the source report from the page or its documentation.
 
-The visual and information architecture draws on the completed [Qwen-VL report site](../qwenVL_Bench/report-site/dist/index.html) and [LLaVA report site](../llava_Bench/report-site/dist/index.html). Adapt labels and metrics to the group. Do not force specialized video or grounding results into an image-QA layout when that would obscure their task structure.
+The visual and information architecture draws on the completed [Qwen-VL report site](../qwenVL_Bench/index.html) and [LLaVA report site](../llava_Bench/index.html). Adapt labels and metrics to the group. Do not force specialized video or grounding results into an image-QA layout when that would obscure their task structure.
 
 ## Information order
 
@@ -27,7 +27,7 @@ The visual and information architecture draws on the completed [Qwen-VL report s
 
 ## Data and implementation rules
 
-- Build the page from the completed `report.md` and the benchmark's authoritative result artifacts. Generate a compact site data file from those sources instead of copying measurements into display code by hand.
+- Build the page from the completed `report.md` and the benchmark's authoritative result artifacts. Generate a compact site data file from those sources instead of copying measurements into display code by hand. Keep the generated page, script, styles, and data file at the benchmark folder root.
 - Treat recorded results as the source of truth. Do not invent recommendations, fill missing values, relabel estimates as measurements, or silently drop failed models. Recompute aggregates only when the rule is explicit and matches the report.
 - Keep item-level prompts, images, and predictions out of the public site unless the benchmark report explicitly calls for them and data-use terms permit publication. Prefer aggregate-only data bundles.
 - Include a visible timestamp and enough runtime/model metadata to identify what was run. Preserve checkpoint names, quantization, backend, context, precision, and relevant package versions where applicable.
@@ -37,16 +37,15 @@ The visual and information architecture draws on the completed [Qwen-VL report s
 ## Suggested shared page shell
 
 ```text
-Header / family identity
-Hero / summary metadata
-Paired cards / model variants + task coverage
-Selection guide (when supported by completed results)
-Benchmark methodology
-Quality results
-Runtime and resource results
-Memory or domain-specific analysis
-Limitations and provenance
-Footer / benchmark identity + source report + data disclosure
+qwenVL_Bench/
+  index.html
+  app.js
+  styles.css
+  data.json
+  generate_data.py
+  assets/ (optional)
+
+The Pages artifact preserves the benchmark folder name as the URL path.
 ```
 
 Skip a section when the benchmark has no defensible metric for it. Explain relevant benchmark-specific evidence instead of adding generic or speculative estimates.

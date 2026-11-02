@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101720">
+  <meta name="description" content="Sortable Qwen vision-language model benchmark report.">
+  <title>Qwen VLM Benchmark</title>
+  <link rel="icon" type="image/png" href="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Qwen_logo.svg/250px-Qwen_logo.svg.png">
+  <link rel="stylesheet" href="styles.css?v=summary-pair-2">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><img class="brand-logo" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Qwen_logo.svg/250px-Qwen_logo.svg.png" alt="Qwen logo"><span>Model Bench</span></a>
+    <span class="topbar-note">VISION · EDGE · INFERENCE</span>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow">QWEN VISION-LANGUAGE MODELS</p>
+      <h1>Choose the right model<br><span>for the task and hardware.</span></h1>
+      <p class="hero-copy">A side-by-side view of answer quality, inference speed, VRAM use, and estimated edge context fit.</p>
+      <div class="hero-meta"><span id="generated"></span><span id="model-total"></span><span>Serial, single-image requests · fixed samples across models</span></div>
+    </section>
+
+    <aside id="preliminary-banner" class="preliminary-banner" hidden></aside>
+
+    <section class="stat-grid summary-pair" aria-label="Benchmark summary">
+      <article class="stat-card summary-card variants-card"><span class="stat-label">Model variants</span><strong>Qwen2-VL · Qwen2.5-VL · Qwen3-VL</strong><span class="stat-foot"><b id="model-count">—</b> models tested</span></article>
+      <article class="stat-card summary-card accent-card coverage-card"><span class="stat-label">Task coverage</span><strong>AI2D · VQAv2 · TextVQA · PercepTaxBench · NegVQA</strong><span class="stat-foot">AI2D: 100; TextVQA/OCR: 100; VQAv2 truth, counting, description: 25 each; PercepTax affordance: 25; NegVQA negation: 25.</span></article>
+    </section>
+
+    <section class="section-block recommendations" aria-labelledby="recommendations-title">
+      <div class="section-head"><div><p class="eyebrow">SELECTION GUIDE</p><h2 id="recommendations-title">Models worth keeping</h2><p class="section-copy">Recommendations follow the measured task scores, speed, VRAM, and context estimates below. Edge context and VRAM are estimates, not constrained-device reruns.</p></div></div>
+      <div id="recommendation-grid" class="recommendation-grid"></div>
+    </section>
+
+    <section class="panel methodology">
+      <div class="panel-heading"><div><p class="eyebrow">BENCHMARK METHOD</p><h2>What each task measures</h2></div></div>
+      <div class="method-grid">
+        <article class="method-card"><p class="eyebrow">AI2D · DIAGRAM REASONING</p><h3>Test set, 100 of 3,088</h3><p>Each sampled item contains one diagram image, a four-choice question, and four answer options. Models are asked to return only the option letter.</p><p><b>Score:</b> exact letter accuracy. Missing or unparsable letters count as incorrect.</p><a href="https://huggingface.co/datasets/lmms-lab/ai2d" target="_blank" rel="noreferrer">AI2D dataset card ↗</a></article>
+        <article class="method-card"><p class="eyebrow">TEXTVQA · TEXT IN IMAGES</p><h3>Validation, 100 of 5,000</h3><p>Each sampled item contains one natural image, an open question, and human answer references. Models are asked for the shortest exact text visible in the image.</p><p><b>Score:</b> answers are normalized, then each human reference is held out in turn. The prediction earns one third per matching remaining reference, capped at one; the final score averages those trials.</p><a href="https://huggingface.co/datasets/facebook/textvqa" target="_blank" rel="noreferrer">TextVQA dataset card ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VQAv2 · YES / NO</p><h3>Validation, 25 questions</h3><p>Questions are drawn from the yes/no answer type to test truth judgments about visible content.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">VQAv2 official data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VQAv2 · COUNTING</p><h3>Validation, 25 questions</h3><p>Questions have the number answer type and begin with “How many”.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">VQAv2 official data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VQAv2 · VISUAL DESCRIPTION</p><h3>Validation, 25 questions</h3><p>Open “other” questions are filtered to direct questions about visible objects, attributes, and scenes.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">VQAv2 official data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">PERCEPTAX · AFFORDANCE</p><h3>Real test split, 25 questions</h3><p>Questions cover object affordance, intended function, and repurposing in real images.</p><p><b>Score:</b> normalized answer match. Question-type scores remain available in the source dataset.</p><a href="https://huggingface.co/datasets/RyanWW/PercepTaxBench" target="_blank" rel="noreferrer">PercepTax dataset ↗</a></article>
+        <article class="method-card"><p class="eyebrow">NEGVQA · NEGATION</p><h3>Dev split, 25 questions</h3><p>Each item asks a negated two-choice question. Models return A or B.</p><p><b>Score:</b> exact option accuracy; an unparsable answer is incorrect.</p><a href="https://arxiv.org/abs/2505.22946" target="_blank" rel="noreferrer">NegVQA paper ↗</a> · <a href="https://huggingface.co/datasets/yuhuizhang/NegVQA" target="_blank" rel="noreferrer">Dataset ↗</a></article>
+        <article class="method-card"><p class="eyebrow">GRAB-LITE · GRAPH ANALYSIS</p><h3>Full test split, 500 questions</h3><p>One graph image per question, balanced across properties, functions, series, transformations, and real figures.</p><p><b>Score:</b> normalized exact-match accuracy, overall and by task.</p><a href="https://grab-benchmark.github.io/" target="_blank" rel="noreferrer">GRAB benchmark ↗</a> · <a href="https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite" target="_blank" rel="noreferrer">GRAB-Lite data ↗</a></article>
+      </div>
+      <div class="method-footer"><p><b>Sampling:</b> 100 examples for AI2D and TextVQA. Each new VQA category uses 25 fixed examples, sampled with seed 3407 and reused across models.</p><p><b>Panel total:</b> the six VQA category scores are averaged equally. This macro average is a local comparison measure; it is not an official score from any one source dataset.</p><p><b>Runtime:</b> requests run serially, one image and one request at a time. The generation limit is 256 tokens, or 2,048 for Thinking models. Observed whole-GPU peak includes desktop baseline. Mean seconds is per generation call; output tokens/second divides generated tokens by that call time.</p><p><b>Context:</b> model runs use their listed configured context. Q8 KV-cache memory profiles estimate 8K/default/maximum fit under a 30 GiB budget; edge tables add a 1 GiB desktop reserve. They are not additional edge-device accuracy runs.</p><p><b>Answer handling:</b> Thinking text is removed before scoring. AI2D and NegVQA use the final answer letter; open answers are normalized before consensus scoring.</p></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">01 / BROADER VQA</p><h2>Question-type performance</h2><p class="section-copy">The complete panel macro average weighs truth, counting, visual description, OCR, affordance/function, and negation equally. Preliminary runs without all six categories show an available-category average and coverage; these are not directly comparable to the complete macro average.</p></div></div>
+      <div id="vqa-panel-table"></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">02 / GRAPH REASONING</p><h2>GRAB-Lite graph benchmark</h2><p class="section-copy">All four models completed the 500-example comparison. Results show exact-match accuracy overall and across five balanced task types; deltas use Qwen3-VL-2B-Instruct as the baseline.</p></div></div>
+      <div id="graph-table"></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">03 / QUALITY</p><h2>Task scores and deltas</h2><p class="section-copy">Deltas compare a quantized or fine-tuned version with its listed reference when that reference has a completed result.</p></div></div>
+      <div id="scores-table"></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">04 / RUNTIME</p><h2>Per-task VRAM and speed</h2><p class="section-copy">Peak GPU use is the maximum sampled during that task. Context is the runner configuration used for the benchmark.</p></div></div>
+      <div id="runtime-table"></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">05 / MEMORY</p><h2>VRAM and context profiles</h2><p class="section-copy">Estimated residency at 8K, default context, and largest estimated context under the 30 GiB model budget.</p></div></div>
+      <div id="context-table"></div>
+    </section>
+
+    <section class="section-block edge-section">
+      <div class="section-head"><div><p class="eyebrow">06 / EDGE FIT</p><h2>Reduced-VRAM candidates</h2><p class="section-copy">Select models whose estimated 8K residency plus desktop reserve fits each limit. Context is interpolated from the Q8 KV profile.</p></div></div>
+      <div class="edge-grid">
+        <article class="edge-card"><div class="edge-title"><div><span class="limit-tag">12 GiB LIMIT</span><h3>Compact edge tier</h3></div><span id="edge12-count" class="edge-count"></span></div><div id="edge12-table"></div></article>
+        <article class="edge-card"><div class="edge-title"><div><span class="limit-tag">16 GiB LIMIT</span><h3>Balanced edge tier</h3></div><span id="edge16-count" class="edge-count"></span></div><div id="edge16-table"></div></article>
+      </div>
+      <p class="edge-caveat">Scores and speed use the benchmark context listed in each row. Some GGUF runs used 128K or 256K and therefore peaked well above the edge limit; the smaller-context profile is an estimate, not a fresh constrained-memory run.</p>
+    </section>
+
+    <footer><span>Qwen VLM benchmark · AI2D, VQA skill panel, and GRAB-Lite</span><span>Aggregate results only · no prompt-level outputs</span></footer>
+  </main>
+  <script src="app.js?v=summary-pair-1" defer></script>
+</body>
+</html>

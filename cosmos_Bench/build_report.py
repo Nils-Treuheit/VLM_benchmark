@@ -11,7 +11,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DATA_PATH = HERE / "results" / "results.json"
 REPORT_PATH = HERE / "report.md"
-SITE_DATA_PATH = HERE / "report-site" / "data.json"
+SITE_DATA_PATH = HERE / "data.json"
 TASKS = [
     ("ai2d", "AI2D test"),
     ("textvqa", "TextVQA validation"),
@@ -147,7 +147,7 @@ def main():
         "unsupported": unsupported,
     }
     SITE_DATA_PATH.write_text(json.dumps(site_data, indent=2), encoding="utf-8")
-    page_path = HERE / "report-site" / "index.html"
+    page_path = HERE / "index.html"
     page = page_path.read_text(encoding="utf-8")
     marker = '<script id="report-data" type="application/json">'
     begin = page.index(marker) + len(marker)
@@ -287,9 +287,9 @@ def main():
         "",
         "## Artifacts",
         "",
-        "- [Aggregate-only report page](report-site/index.html)",
+        "- [Aggregate-only report page](index.html)",
         "- Authoritative per-item results, errors, latencies, token counts, and memory observations: [`results/results.json`](results/results.json).",
-        "- Aggregate site payload: [`report-site/data.json`](report-site/data.json).",
+        "- Aggregate site payload: [`data.json`](data.json).",
         "- Benchmark runner: [`run_benchmark.py`](run_benchmark.py).",
         "",
     ]

@@ -36,4 +36,4 @@ Start with Molmo2, PaliGemma 2, and Llama Vision. Add InternVL3.5 with a documen
 
 ## Report site delivery
 
-After completing this group and writing `report.md`, create its `report-site/` using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Show Florence-2 as conditional or unsupported unless its loading route is resolved and measured.
+After completing this group and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Show Florence-2 as conditional or unsupported unless its loading route is resolved and measured.

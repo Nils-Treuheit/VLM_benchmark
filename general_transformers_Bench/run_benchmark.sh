@@ -52,7 +52,7 @@ if [[ "$paligemma_status" -eq 0 && "$florence_status" -eq 0 \
     "$PROJECT_DIR/../.venv/bin/python" "$PROJECT_DIR/aggregate_results.py" --run-dir "$RUN_DIR"
     aggregate_status=$?
     if [[ "$aggregate_status" -eq 0 ]]; then
-    "$PROJECT_DIR/../.venv/bin/python" "$PROJECT_DIR/report-site/generate_data.py"
+    "$PROJECT_DIR/../.venv/bin/python" "$PROJECT_DIR/generate_data.py"
     site_status=$?
     else
         site_status=$aggregate_status

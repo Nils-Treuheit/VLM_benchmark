@@ -68,4 +68,4 @@ The inspected local HF dataset cache did not contain the proposed benchmark data
 
 ## Report site delivery
 
-After completing the grounding benchmark and writing `report.md`, create its `report-site/` using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep localization task metrics in their own scorecard and separate from generic image-QA rankings.
+After completing the grounding benchmark and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep localization task metrics in their own scorecard and separate from generic image-QA rankings.

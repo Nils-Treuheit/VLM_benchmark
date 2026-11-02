@@ -26,4 +26,4 @@ Start with Reason2-2B and Reason1-7B. Add Reason2-8B, then Cosmos3 Edge and Nano
 
 ## Report site delivery
 
-After completing the Cosmos benchmark and writing `report.md`, create its `report-site/` using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep per-checkpoint compatibility and task coverage visible.
+After completing the Cosmos benchmark and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep per-checkpoint compatibility and task coverage visible.

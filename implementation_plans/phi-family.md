@@ -28,4 +28,4 @@ Implement Phi-3.5 first using the existing local example, then Phi-3 Vision, the
 
 ## Report site delivery
 
-After completing the Phi benchmark and writing `report.md`, create its `report-site/` using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Preserve checkpoint identity and compatibility status in comparisons.
+After completing the Phi benchmark and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Preserve checkpoint identity and compatibility status in comparisons.

@@ -31,4 +31,4 @@ Start with MiMo-VL and LFM2.5-VL once their GGUF and projector pair is resolved.
 
 ## Report site delivery
 
-After completing this group and writing `report.md`, create its `report-site/` using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Identify each backend and quantization, and distinguish measured results from estimates.
+After completing this group and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Identify each backend and quantization, and distinguish measured results from estimates.

@@ -29,4 +29,4 @@ Begin with LLaVA-NeXT-Video 7B and OneVision 7B, then LLaVA 1.6 and LLaVA-Phi-3.
 
 ## Report site delivery
 
-After completing the LLaVA benchmark and writing `report.md`, create its `report-site/` using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep incomplete models visible and base memory-tier recommendations on measured full-benchmark peaks unless the report clearly documents a separate estimate.
+After completing the LLaVA benchmark and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Keep incomplete models visible and base memory-tier recommendations on measured full-benchmark peaks unless the report clearly documents a separate estimate.

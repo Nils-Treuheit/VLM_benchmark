@@ -39,4 +39,4 @@ Implement MVBench first with VideoChat3 and LLaVA-NeXT-Video 7B. Add Video-MME, 
 
 ## Report site delivery
 
-After completing the video benchmark and writing `report.md`, create its `report-site/` using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Give video QA and temporal grounding distinct scorecards, and report native-video settings and temporal metrics explicitly.
+After completing the video benchmark and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Give video QA and temporal grounding distinct scorecards, and report native-video settings and temporal metrics explicitly.

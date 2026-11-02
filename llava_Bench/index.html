@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101720">
+  <meta name="description" content="LLaVA family benchmark results across eight visual tasks, with quality and runtime comparisons.">
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/llava-color.png">
+  <title>LLaVA Family Benchmark</title>
+  <link rel="stylesheet" href="styles.css?v=summary-pair-2">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-mark"><img src="https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/llava-color.png" alt="LLaVA"></span><span>Model Bench</span></a>
+    <span class="topbar-note">VISION · QUALITY · INFERENCE</span>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow">LLAVA FAMILY · LOCAL TRANSFORMERS BENCHMARK</p>
+      <h1>Choose the right model<br><span>for the task and hardware.</span></h1>
+      <p class="hero-copy">A matched comparison of answer quality, inference speed, and VRAM across eight visual tasks.</p>
+      <div class="hero-meta"><span id="generated">Loading results…</span><span id="runtime-version"></span><span id="model-total"></span></div>
+    </section>
+
+    <section class="stat-grid llava-summary summary-pair" aria-label="Benchmark summary">
+      <article class="stat-card summary-card variants-card">
+        <span class="stat-label">LLaVA model variants</span>
+        <strong>NeXT Video · OneVision · Mistral · Phi-3</strong>
+        <span class="stat-foot"><b id="model-count">—</b> models tested · 34B DPO skipped at the 30 GiB model ceiling.</span>
+      </article>
+      <article class="stat-card summary-card accent-card coverage-card">
+        <span class="stat-label">Task coverage</span>
+        <strong>AI2D · VQAv2 · TextVQA · PercepTaxBench · NegVQA</strong>
+        <span class="stat-foot">AI2D: 100; TextVQA/OCR: 100; VQAv2 truth, counting, description: 25 each; PercepTax affordance: 25; NegVQA negation: 25.</span>
+      </article>
+    </section>
+
+    <section class="section-block recommendations" aria-labelledby="selection-title">
+      <div class="section-head"><div><p class="eyebrow">SELECTION GUIDE</p><h2 id="selection-title">Best models by task and memory budget</h2><p class="section-copy">Picks use the completed benchmark scores. Memory-tier recommendations use each model’s highest measured task peak; they are not constrained-memory reruns.</p></div></div>
+      <div id="overall-pick" class="recommendation-grid overall-pick-grid"></div>
+      <div class="selection-subhead"><p class="eyebrow">BEST PER TASK</p><p class="section-copy">The task leader is the highest-scoring complete model. Tied leaders are shown together.</p></div>
+      <div id="task-picks" class="recommendation-grid task-pick-grid"></div>
+      <div class="selection-subhead"><p class="eyebrow">BEST PER MEASURED MEMORY BUDGET</p><p class="section-copy">Measured peak VRAM is the maximum across all eight task runs.</p></div>
+      <div id="budget-picks" class="recommendation-grid budget-pick-grid"></div>
+    </section>
+
+    <section class="panel methodology" aria-labelledby="method-title">
+      <div class="panel-heading"><div><p class="eyebrow">BENCHMARK METHOD</p><h2 id="method-title">What each task measures</h2><p class="section-copy">Fixed samples, prompts, and scoring procedures are shared with the Qwen VLM benchmark.</p></div></div>
+      <div class="method-grid">
+        <article class="method-card"><p class="eyebrow">AI2D · DIAGRAM REASONING</p><h3>Test split · 100 of 3,088</h3><p>Each sample contains one diagram, a four-choice question, and four answer options. The prompt requests A, B, C, or D.</p><p><b>Score:</b> exact letter accuracy. Missing or unparsable letters count as incorrect.</p><a href="https://huggingface.co/datasets/lmms-lab/ai2d" target="_blank" rel="noreferrer">AI2D dataset card ↗</a></article>
+        <article class="method-card"><p class="eyebrow">TEXTVQA · TEXT IN IMAGES</p><h3>Validation · 100 of 5,000</h3><p>Each sample contains one natural image, an open question, and human answer references. The prompt requests the shortest exact text visible in the image.</p><p><b>Score:</b> normalized human-answer consensus, averaged leave-one-reference-out and capped at one.</p><a href="https://huggingface.co/datasets/facebook/textvqa" target="_blank" rel="noreferrer">TextVQA dataset card ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VQAv2 · TRUTH</p><h3>Validation · 25 questions</h3><p>Yes/no questions sampled from the validation annotations to measure judgments about visible content.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">Official VQAv2 data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VQAv2 · COUNTING</p><h3>Validation · 25 questions</h3><p>Number questions whose wording begins with “How many”.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">Official VQAv2 data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VQAv2 · VISUAL DESCRIPTION</p><h3>Validation · 25 questions</h3><p>Open questions filtered to direct descriptions of visible content.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">Official VQAv2 data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">PERCEPTAX · AFFORDANCE</p><h3>Real test split · 25 questions</h3><p>Real-image questions about affordance, object function, and repurposing.</p><p><b>Score:</b> normalized open-answer match against the dataset answer.</p><a href="https://huggingface.co/datasets/RyanWW/PercepTaxBench" target="_blank" rel="noreferrer">PercepTax dataset ↗</a></article>
+        <article class="method-card"><p class="eyebrow">NEGVQA · NEGATION</p><h3>Dev split · 25 questions</h3><p>Negated two-choice questions with one image per request. The prompt requests A or B.</p><p><b>Score:</b> exact option accuracy; an unparsable answer is incorrect.</p><a href="https://huggingface.co/datasets/yuhuizhang/NegVQA" target="_blank" rel="noreferrer">NegVQA dataset ↗</a></article>
+        <article class="method-card"><p class="eyebrow">GRAB-LITE · GRAPH ANALYSIS</p><h3>Full test split · 500 questions</h3><p>One graph image per question, balanced across properties, functions, series, transformations, and real figures.</p><p><b>Score:</b> normalized exact-match accuracy, overall and by task group.</p><a href="https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite" target="_blank" rel="noreferrer">GRAB-Lite dataset ↗</a></article>
+      </div>
+      <div class="method-footer">
+        <p><b>Sampling:</b> seed 3407. AI2D and TextVQA use 100 examples each, VQA skill categories use 25 each, and GRAB-Lite uses all 500 examples. The same indices are reused for every model.</p>
+        <p><b>Full-suite macro:</b> the unweighted mean of eight task scores. It is a local comparison measure, not an official score from one dataset.</p>
+        <p><b>Inference:</b> cached checkpoints run offline, serially, with greedy decoding and one still image per request. Each model uses its processor and chat template; batching is disabled.</p>
+        <p><b>Runtime:</b> mean seconds covers generation after preprocessing. Output tokens/second divides generated tokens by that call time. Peak VRAM is process-local.</p>
+        <p><b>Answer handling:</b> open answers are normalized by the shared scorers. Parse failures count as incorrect. The OneVision-2 checkpoint uses Transformers 5.22.1.</p>
+        <p><b>Memory tiers:</b> 12 and 16 GiB candidates use the maximum process-local peak across all eight tasks at the listed test context. These are not constrained-memory reruns or estimates for shorter contexts.</p>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">01 / QUALITY</p><h2>Full-suite scores and coverage</h2><p class="section-copy">The macro requires complete scores on all eight tasks. The skipped 34B model remains visible for transparency.</p></div></div>
+      <div id="scores-table"></div>
+    </section>
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">02 / TASK SCORES</p><h2>Performance across visual skills</h2><p class="section-copy">Sort by any combination of columns. Gold marks the top result per metric; cyan marks ranks two through five.</p></div></div>
+      <div id="task-table"></div>
+    </section>
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">03 / RUNTIME</p><h2>Per-task VRAM and speed</h2><p class="section-copy">Sort by model, task, generation time, output speed, memory, or parse errors.</p></div></div>
+      <div id="runtime-table"></div>
+    </section>
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">04 / CONTEXT AND MEMORY</p><h2>Checkpoint context and measured VRAM</h2><p class="section-copy">Context is the checkpoint’s advertised limit. VRAM is the highest observed task peak; the table does not estimate residency at each context length.</p></div></div>
+      <div id="context-correlation" class="correlation-note"></div>
+      <div id="context-vram-table"></div>
+    </section>
+    <section class="section-block edge-section">
+      <div class="section-head"><div><p class="eyebrow">05 / EDGE FIT</p><h2>Measured fit under 12 and 16 GiB caps</h2><p class="section-copy">Candidates must stay within the cap at their highest measured task peak across the full benchmark. These are measurements at the listed test context, not constrained-memory reruns or estimates for a shorter context.</p></div></div>
+      <div class="edge-grid">
+        <article class="panel edge-card"><div class="edge-title"><div><span class="limit-tag">12 GiB CAP</span><h3>Compact edge tier</h3></div><span id="edge12-count" class="edge-count"></span></div><div id="edge12-table"></div></article>
+        <article class="panel edge-card"><div class="edge-title"><div><span class="limit-tag">16 GiB CAP</span><h3>Balanced edge tier</h3></div><span id="edge16-count" class="edge-count"></span></div><div id="edge16-table"></div></article>
+      </div>
+    </section>
+    <footer><span>LLaVA family benchmark · AI2D, VQA skill panel, and GRAB-Lite</span><span>Aggregate metrics only · no prompt-level outputs</span></footer>
+  </main>
+  <script src="app.js?v=6" defer></script>
+</body>
+</html>

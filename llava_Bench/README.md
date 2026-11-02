@@ -42,8 +42,8 @@ Results describe a fixed local sample, not leaderboard scores. Per-item predicti
 Generate the static report data and serve the site locally:
 
 ```bash
-python report-site/generate_data.py
-cd report-site/dist && python3 -m http.server 8174 --bind 127.0.0.1
+python generate_data.py
+python3 -m http.server 8174 --bind 127.0.0.1
 ```
 
-Open <http://127.0.0.1:8174/>. The report shows the eight-task macro score, per-task accuracy, runtime metrics, and skipped-model status. It includes aggregate results only.
+Open <http://127.0.0.1:8174/>. The report shows the eight-task macro score, per-task accuracy, runtime metrics, and skipped-model status. It includes aggregate results only. The page and its assets live in this benchmark folder for direct GitHub Pages publishing at `/llava_Bench/`.

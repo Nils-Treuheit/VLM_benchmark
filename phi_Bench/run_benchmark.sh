@@ -24,4 +24,4 @@ fi
 python3 "$PIPELINE_DIR/src/executor.py" release-local
 uv pip install --python "$PYTHON" -r "$PROJECT_DIR/requirements-phi.txt"
 "$PYTHON" benchmark.py "$@"
-"$PYTHON" "$PROJECT_DIR/report-site/generate_data.py"
+"$PYTHON" "$PROJECT_DIR/generate_data.py"

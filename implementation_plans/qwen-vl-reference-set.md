@@ -28,4 +28,4 @@ Reuse the completed Qwen-VL benchmark runners and configuration exactly. Preserv
 
 ## Report site delivery
 
-After completing the reference-set run and writing its `report.md`, create a `report-site/` for that result using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Link the completed Qwen-VL benchmark for baseline context and avoid implying the small reference set replaces its full report.
+After completing the reference-set run and writing its `report.md`, keep its static report page and assets at the benchmark folder root, using the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Link the completed Qwen-VL benchmark for baseline context and avoid implying the small reference set replaces its full report.

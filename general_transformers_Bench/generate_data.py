@@ -6,8 +6,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-SITE = Path(__file__).resolve().parent
-ROOT = SITE.parent
+ROOT = Path(__file__).resolve().parent
+SITE = ROOT
 RESULTS = ROOT / "results" / "general_transformers" / "results.json"
 REPORT = ROOT / "results" / "general_transformers" / "report.md"
 

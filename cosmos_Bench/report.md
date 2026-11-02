@@ -143,7 +143,7 @@ The overall score is exact-match accuracy across all 500 questions. Group scores
 
 ## Artifacts
 
-- [Aggregate-only report page](report-site/index.html)
+- [Aggregate-only report page](index.html)
 - Authoritative per-item results, errors, latencies, token counts, and memory observations: [`results/results.json`](results/results.json).
-- Aggregate site payload: [`report-site/data.json`](report-site/data.json).
+- Aggregate site payload: [`data.json`](data.json).
 - Benchmark runner: [`run_benchmark.py`](run_benchmark.py).

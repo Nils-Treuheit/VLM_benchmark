@@ -75,7 +75,7 @@ Run the graph specialist, Qwen3-VL-2B baseline, and the final best-overall and l
 - Peak VRAM is sampled across the whole GPU during the task, including desktop baseline use.
 - The configured context is recorded per model. Context-tier VRAM estimates use the model's KV dimensions and an 8-bit cache. Edge tables estimate 8K residency plus a 1 GiB desktop reserve and interpolate the maximum context that fits under 12 or 16 GiB. Those are estimates, not new accuracy runs at edge limits.
 - Parse failures score as incorrect. Thinking text before the final response is removed before scoring.
-- Results are small-sample selection evidence, not leaderboard scores. Dataset tasks, sample counts, scoring details, recommendations, and sortable results are shown in the [local report site](http://127.0.0.1:8173/).
+- Results are small-sample selection evidence, not leaderboard scores. Dataset tasks, sample counts, scoring details, recommendations, and sortable results are shown in the [benchmark report page](index.html). The page and its adjacent `app.js`, `styles.css`, and `data.json` files are kept in this benchmark folder so a Pages workflow can publish this folder at `/qwenVL_Bench/`.
 
 ## Run guidance
 
