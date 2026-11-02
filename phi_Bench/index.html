@@ -7,7 +7,7 @@
   <meta name="description" content="Phi vision family benchmark results across eight visual tasks, with quality and runtime comparisons.">
   <link rel="icon" type="image/svg+xml" href="assets/phi-mark.svg">
   <title>Phi Family Benchmark</title>
-  <link rel="stylesheet" href="styles.css?v=shared-header-1">
+  <link rel="stylesheet" href="styles.css?v=shared-header-2">
 </head>
 <body>
   <header class="topbar">
@@ -67,7 +67,7 @@
     </section>
 
     <section class="section-block">
-      <div class="section-head"><div><p class="eyebrow">01 / QUALITY</p><h2>Full-suite scores and coverage</h2><p class="section-copy">The macro requires complete scores on all eight tasks. Cached checkpoints without complete weights remain visible with their missing-weight status.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">01 / QUALITY</p><h2>Full-suite scores and coverage</h2><p class="section-copy">The macro requires complete scores on all eight tasks. Incomplete checkpoints and byte-identical conversions remain visible with their status.</p></div></div>
       <div id="scores-table"></div>
     </section>
     <section class="section-block">
@@ -88,7 +88,7 @@
       <div id="context-vram-table"></div>
     </section>
     <section class="section-block">
-      <div class="section-head"><div><p class="eyebrow">06 / CHECKPOINT IDENTITY</p><h2>Cache state and compatibility</h2><p class="section-copy">Exact checkpoint snapshots, architecture metadata, and cache entries that could not be benchmarked because required weights were missing.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">06 / CHECKPOINT IDENTITY</p><h2>Cache state and compatibility</h2><p class="section-copy">Checkpoint snapshots, architecture metadata, missing weights, and byte-identical copies.</p></div></div>
       <div id="checkpoint-table"></div>
     </section>
     <section class="section-block edge-section">
