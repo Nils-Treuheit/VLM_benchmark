@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c1218">
+  <meta name="description" content="Local grounding specialist benchmark results for referring expressions, object detection, GUI grounding, and text detection.">
+  <title>Grounding Specialists · VLM Benchmark</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../" aria-label="VLM benchmark reports home"><img src="assets/mark.svg" alt=""><span>Local model evaluation</span></a>
+    <nav aria-label="Report navigation"><a href="#results">Results</a><a href="#method">Method</a><a href="report.md">Full report</a></nav>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">Grounding specialists · Localization benchmark</p>
+      <h1 id="title">Measure where<br><span>models look.</span></h1>
+      <p class="intro">A separate comparison of two specialist checkpoints across referring expressions, open vocabulary detection, GUI grounding, and text regions.</p>
+      <div class="hero-meta" id="hero-meta" aria-live="polite"></div>
+    </section>
+
+    <section class="summary-grid" id="summary" aria-label="Benchmark summary"></section>
+
+    <section class="panel selection" id="selection">
+      <div><p class="eyebrow">Selection guide</p><h2>Evidence before picks</h2></div>
+      <div id="selection-content"></div>
+    </section>
+
+    <section id="method" class="section">
+      <div class="section-head"><div><p class="eyebrow">Protocol</p><h2>Four localization tasks</h2></div><a href="report.md">Read the full report ↗</a></div>
+      <div class="method-grid" id="method-grid"></div>
+    </section>
+
+    <section id="results" class="section">
+      <div class="section-head"><div><p class="eyebrow">Results</p><h2>Task scorecard</h2></div><p class="section-note">Scores stay separate by task. Incomplete models remain visible.</p></div>
+      <div id="task-results"></div>
+    </section>
+
+    <section class="section" id="runtime">
+      <div class="section-head"><div><p class="eyebrow">Execution</p><h2>Runtime and output quality</h2></div></div>
+      <div id="runtime-results"></div>
+      <p class="note">Latency is per generation call. Whole-device VRAM includes desktop baseline use. Token throughput is shown only when the server reported output token counts.</p>
+    </section>
+
+    <section class="section limitations" id="limits">
+      <p class="eyebrow">Provenance and limits</p><h2>Keep the evidence in view</h2>
+      <div id="limitations-content"></div>
+      <ul id="source-links"></ul>
+    </section>
+    <footer><span>Grounding Specialists</span><a href="report.md">Source report</a><a href="../">All benchmark reports</a></footer>
+  </main>
+</body>
+</html>

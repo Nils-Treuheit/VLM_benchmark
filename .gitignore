@@ -224,3 +224,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Grounding benchmark inputs and per-item outputs stay local.
+grounding_Bench/data/source/
+grounding_Bench/data/manifests/
+grounding_Bench/results/

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Grounding benchmark mark">
+  <rect width="64" height="64" rx="16" fill="#111a22"/>
+  <path d="M13 13h16v5H18v11h11v5H13zM35 13h16v5H40v11h11v5H35zM13 35h5v11h11v5H13zM46 35h5v16H35v-5h11z" fill="#c7fa7a"/>
+  <circle cx="32" cy="32" r="4" fill="#82dce0"/>
+</svg>

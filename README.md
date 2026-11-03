@@ -12,6 +12,7 @@ This repository compares vision-language models already available on the local s
 | General Transformers | Partial; more candidates remain | [Open report](general_transformers_Bench/) |
 | Phi vision | Complete | [Open report](phi_Bench/) |
 | Video VLMs | Complete | [Open report](video_Bench/) |
+| Grounding specialists | In progress; local data preparation remains | [Open report](grounding_Bench/) |
 
 The report pages use fixed local samples and support model selection on this system. They are not leaderboard results. Each report describes its tasks, sample sizes, scoring rules, model coverage, and runtime limits.
 
