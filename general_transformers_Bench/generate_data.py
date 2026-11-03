@@ -27,6 +27,9 @@ def main() -> int:
     ]
     if missing_models:
         raise SystemExit("The aggregate report omits model(s): " + ", ".join(missing_models))
+    complete_count = sum(bool(model.get("full_benchmark_complete")) for model in source.get("models", []))
+    unrun_count = len(source.get("planned_candidates_not_run", []))
+    unrun_noun = "candidate" if unrun_count == 1 else "candidates"
     models = []
     for model in source.get("models", []):
         preflight = model.get("preflight", {})
@@ -35,6 +38,8 @@ def main() -> int:
                 "passed": item.get("passed"),
                 "answer_format_ok": item.get("answer_format_ok"),
                 "nonempty_answer": item.get("nonempty_answer"),
+                "parse_error": item.get("parse_error"),
+                "output_tokens": item.get("output_tokens"),
             }
             for task, item in preflight.get("checks", {}).items()
         }
@@ -52,19 +57,34 @@ def main() -> int:
             "model_id": model.get("model_id"),
             "status": model.get("status"),
             "backend": model.get("backend"),
-            "checkpoint_revision": Path(model["snapshot"]).name if model.get("snapshot") else None,
+            "checkpoint_revision": model.get("revision") or (
+                Path(model["snapshot"]).name if model.get("snapshot") else None
+            ),
             "cache_status": model.get("cache_status"),
             "weight_gib": model.get("weight_gib"),
+            "model_weight_bytes": model.get("model_weight_bytes"),
+            "auxiliary_weight_bytes": model.get("auxiliary_weight_bytes"),
+            "estimated_loaded_weight_gib": model.get("estimated_loaded_weight_gib"),
             "checkpoint_context": model.get("checkpoint_context"),
             "image_resolution_px": model.get("image_resolution_px"),
             "runtime_versions": model.get("runtime_versions"),
+            "precision": model.get("precision"),
+            "attention_backend": model.get("attention_backend"),
             "preflight": {"passed": preflight.get("passed"), "checks": checks},
             "scoring_route": model.get("scoring_route"),
             "error": model.get("error"),
+            "failure_diagnosis": model.get("failure_diagnosis"),
             "complete_tasks": model.get("complete_tasks", 0),
             "full_benchmark_complete": model.get("full_benchmark_complete", False),
             "full_benchmark_macro": model.get("full_benchmark_macro"),
             "peak_allocated_gib": model.get("peak_allocated_gib"),
+            "peak_memory_task": model.get("peak_memory_task"),
+            "load_peak_allocated_gib": model.get("load_peak_allocated_gib"),
+            "load_peak_reserved_gib": model.get("load_peak_reserved_gib"),
+            "sampled_process_peak_gib": model.get("sampled_process_peak_gib"),
+            "memory_metric": model.get("memory_metric"),
+            "sampled_process_sample_count": model.get("sampled_process_sample_count"),
+            "sampled_process_peak_method": model.get("sampled_process_peak_method"),
             "tasks": task_summary,
         })
     data = {
@@ -74,8 +94,17 @@ def main() -> int:
         "status_message": (
             "Complete full-suite runs are ready for comparison."
             if source.get("status") == "complete"
-            else "At least one model run is incomplete. Use the visible status and coverage before comparing scores."
+            else (
+                f"{complete_count} model variants have complete full-suite runs; "
+                f"{unrun_count} planned {unrun_noun} {'remains' if unrun_count == 1 else 'remain'} unrun. "
+                "See their cache and device-placement notes below."
+                if source.get("status") == "partial"
+                else "No model completed the shared benchmark. Read the full report for blockers."
+            )
         ),
+        "planned_candidates_not_run": source.get("planned_candidates_not_run", []),
+        "planned_candidate_count": source.get("planned_candidate_count", len(models)),
+        "execution": source.get("execution"),
         "memory_cap_gib": source.get("memory_cap_gib"),
         "seed": source.get("seed"),
         "task_order": source.get("task_order", []),

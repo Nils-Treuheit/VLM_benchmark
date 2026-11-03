@@ -26,7 +26,6 @@ The same fixed examples, image resize policy, one-image prompt wording, and outp
 | microsoft/Phi-3.5-vision-instruct | complete | 74.0% | 19.8% | 24.0% | 4.8% | 9.2% | 4.0% | 44.0% | 6.2% | 8/8 | 23.2% |
 | microsoft/Phi-4-multimodal-instruct | complete | 81.0% | 77.0% | 88.8% | 68.4% | 70.4% | 8.0% | 60.0% | 11.6% | 8/8 | 58.1% |
 | microsoft/Phi-3-vision-128k-instruct | complete | 28.0% | 3.0% | 0.0% | 0.0% | 0.0% | 0.0% | 8.0% | 7.4% | 8/8 | 5.8% |
-| sovitrath/Phi-3.5-vision-instruct | skipped | — | — | — | — | — | — | — | — | 0/8 | — |
 
 ## Runtime details
 
@@ -59,14 +58,6 @@ Failed requests and parse failures remain in the per-item JSON and score as inco
 | microsoft/Phi-3-vision-128k-instruct | vqa_affordance | 25/25 | 5.36 | 47.76 | 10.79 |
 | microsoft/Phi-3-vision-128k-instruct | vqa_negation | 25/25 | 5.38 | 47.62 | 10.87 |
 | microsoft/Phi-3-vision-128k-instruct | graph_grab_lite | 500/500 | 5.59 | 45.79 | 11.04 |
-| sovitrath/Phi-3.5-vision-instruct | ai2d | 0/0 | — | — | — |
-| sovitrath/Phi-3.5-vision-instruct | textvqa | 0/0 | — | — | — |
-| sovitrath/Phi-3.5-vision-instruct | vqa_truth | 0/0 | — | — | — |
-| sovitrath/Phi-3.5-vision-instruct | vqa_count | 0/0 | — | — | — |
-| sovitrath/Phi-3.5-vision-instruct | vqa_description | 0/0 | — | — | — |
-| sovitrath/Phi-3.5-vision-instruct | vqa_affordance | 0/0 | — | — | — |
-| sovitrath/Phi-3.5-vision-instruct | vqa_negation | 0/0 | — | — | — |
-| sovitrath/Phi-3.5-vision-instruct | graph_grab_lite | 0/0 | — | — | — |
 
 ## GRAB-Lite group scores
 
@@ -75,7 +66,6 @@ Failed requests and parse failures remain in the per-item JSON and score as inco
 | microsoft/Phi-3.5-vision-instruct | 2.0% | 9.0% | 9.0% | 7.0% | 4.0% |
 | microsoft/Phi-4-multimodal-instruct | 7.0% | 9.0% | 17.0% | 19.0% | 6.0% |
 | microsoft/Phi-3-vision-128k-instruct | 3.0% | 11.0% | 10.0% | 11.0% | 2.0% |
-| sovitrath/Phi-3.5-vision-instruct | — | — | — | — | — |
 
 ## Method
 
@@ -83,7 +73,7 @@ Checkpoints are resolved from the local Hugging Face cache. Inference runs offli
 Each request contains one still image and one shared task prompt. Model-specific local processors apply Phi image preprocessing and the documented Phi image-token format.
 Requests run serially with greedy decoding and at most one model loaded at a time.
 Incomplete checkpoints are retained with their cache errors; over-budget checkpoints are skipped before loading.
-Both runnable models used Transformers 4.57.1. Resume requires the same Transformers version for comparable outputs.
+All runnable models used Transformers 4.57.1. Resume requires the same Transformers version for comparable outputs.
 Missing prepared task data is recorded per task, allowing available tasks to run and preserving partial results.
 
 Raw per-item outputs, errors, cache paths, and run settings are in `results.json`.
@@ -96,6 +86,3 @@ Raw per-item outputs, errors, cache paths, and run settings are in `results.json
 | microsoft/Phi-3.5-vision-instruct | `/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--microsoft--Phi-3.5-vision-instruct/snapshots/12b77fb40b63a2c73c68243d3f767aab688a1b2a` | 7.72 | `phi3_v`; context `131072` | Transformers (cached checkpoint) | True | eager | DynamicCache legacy aliases required by cached Phi-3 remote code, eager attention required by the cached Phi-3.5 model | complete |
 | microsoft/Phi-4-multimodal-instruct | `/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--microsoft--Phi-4-multimodal-instruct/snapshots/93f923e1a7727d1c4f446756212d9d3e8fcc5d81` | 10.38 | `phi4mm`; context `131072` | Transformers (cached checkpoint) | True | sdpa | Phi4MMModel generation helper bridge required by the cached PEFT wrapper, DynamicCache legacy aliases required by cached Phi-4 attention code, num_logits_to_keep=0 required by cached Phi-4 forward code | complete |
 | microsoft/Phi-3-vision-128k-instruct | `/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--microsoft--Phi-3-vision-128k-instruct/snapshots/ed2772fabe9dc9acd0caad54b62761d92520cc44` | 7.72 | `phi3_v`; context `131072` | Transformers (cached checkpoint) | True | eager | none | complete |
-| sovitrath/Phi-3.5-vision-instruct | `/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--sovitrath--Phi-3.5-vision-instruct/snapshots/c9d9284022ce4c7a00ace7fc7e9ea64445720d5d` | 7.72 | `phi3_v`; context `131072` | Transformers (cached checkpoint) | True | eager | none | weights are byte-identical to the Microsoft Phi-3.5 checkpoint; not an independent model |
-
-The sovitrath Phi-3.5 checkpoint matches the Microsoft configuration and has identical SHA-256 digests for both weight shards. It was not counted as an independent model.

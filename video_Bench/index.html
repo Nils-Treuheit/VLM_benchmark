@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="A reproducible comparison of four video vision-language models on video QA and temporal retrieval.">
+  <title>Video VLM Benchmark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-mark">V</span><span>VIDEO<span class="brand-light">VLM</span></span></a>
+    <nav aria-label="Main navigation"><a href="#results">Results</a><a href="#protocol">Protocol</a><a href="#sources">Sources</a></nav>
+    <span class="badge" id="run-status"><i></i> Loading results</span>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">VIDEO MODEL EVALUATION <span id="run-date"></span></p>
+        <h1>Seeing video.<br><em>Understanding time.</em></h1>
+        <p class="lede">Four video language models, evaluated on separate tracks for answer-choice reasoning and temporal grounding.</p>
+        <a class="jump" href="#results">Explore the results <span>↘</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
+        <div class="play"><span></span></div>
+        <div class="art-label label-top">16 FRAMES / CLIP</div><div class="art-label label-bottom">TIME IS THE SIGNAL</div>
+      </div>
+      <div class="hero-meta"><span>01 / BENCHMARK SUITE</span><span>VIDEO · QA · RETRIEVAL</span></div>
+    </section>
+
+    <section class="section results" id="results">
+      <div class="section-heading"><div><p class="eyebrow">01 — SCORECARDS</p><h2>Two tasks.<br><em>Four perspectives.</em></h2></div><p class="section-note">Scores stay within their task. No cross-track composite is reported.</p></div>
+      <div id="model-strip" class="model-strip" aria-label="Included models"></div>
+      <article class="track-card" id="mvbench-card">
+        <div class="track-head"><div><p class="eyebrow">TRACK A · MULTIPLE-CHOICE VIDEO QA</p><h3>MVBench</h3></div><a class="source-link" data-source="mvbench" target="_blank" rel="noreferrer">Dataset details ↗</a></div>
+        <p class="track-description">A seeded 95-question sample across 19 task types. Five NTU RGB+D pose examples were excluded under the dataset access constraints.</p>
+        <div class="table-wrap"><table><thead><tr><th>Model</th><th>Accuracy</th><th>Task macro</th><th>Coverage</th><th>Parse issues</th><th>Status</th></tr></thead><tbody id="mvbench-rows"></tbody></table></div>
+        <details class="details"><summary>Task-level accuracy</summary><div id="task-breakdown" class="task-grid"></div></details>
+      </article>
+      <article class="track-card" id="vue-card">
+        <div class="track-head"><div><p class="eyebrow">TRACK B · TEMPORAL GROUNDING</p><h3>VUE-TR</h3></div><a class="source-link" data-source="vue_tr" target="_blank" rel="noreferrer">Dataset & scorer ↗</a></div>
+        <p class="track-description">A common 100-query vision-only sample, one query per unique video, stratified by duration and query format. The official VUE-TR scorer is used.</p>
+        <div class="table-wrap"><table><thead><tr><th>Model</th><th>Success AUC</th><th>Precision AUC</th><th>Recall AUC</th><th>Coverage</th><th>Parse issues</th><th>Status</th></tr></thead><tbody id="vue-rows"></tbody></table></div>
+        <details class="details"><summary>Sample strata</summary><div id="strata-breakdown" class="strata-grid"></div></details>
+      </article>
+      <div class="legend-note"><span class="legend-dot"></span> Scores use only completed items; parse failures count as empty predictions in temporal scoring.</div>
+    </section>
+
+    <section class="section protocol" id="protocol">
+      <div class="section-heading"><div><p class="eyebrow">02 — EVALUATION PROTOCOL</p><h2>Same video.<br><em>Same frame budget.</em></h2></div><p class="section-note">Native video processors receive the same 16 source frames for each clip. Audio is disabled.</p></div>
+      <div class="protocol-grid">
+        <div class="protocol-item"><span class="step">01</span><h4>Sample</h4><p>Sixteen targets span the source timeline. The closest strictly increasing frames are selected by source presentation timestamps.</p></div>
+        <div class="protocol-item"><span class="step">02</span><h4>Compare</h4><p>Models run one at a time from pinned local checkpoints. Generation uses temperature zero.</p></div>
+        <div class="protocol-item"><span class="step">03</span><h4>Score</h4><p>MVBench reports exact-choice accuracy. VUE-TR reports temporal success, precision, and recall AUC.</p></div>
+      </div>
+      <div class="method-bar"><span>MVBench · 95 questions / 19 tasks</span><span>VUE-TR · 100 queries / 100 videos</span><span>16 shared frames / clip</span><span id="updated-at">Results data unavailable</span></div>
+    </section>
+
+    <section class="section sources" id="sources">
+      <div class="section-heading"><div><p class="eyebrow">03 — REPRODUCIBILITY</p><h2>Sources &amp;<br><em>scope notes.</em></h2></div></div>
+      <div class="source-grid">
+        <a class="source-card" data-source="mvbench" target="_blank" rel="noreferrer"><span>DATASET · QA</span><strong>MVBench</strong><small>Original video understanding benchmark ↗</small></a>
+        <a class="source-card" data-source="vue_tr" target="_blank" rel="noreferrer"><span>DATASET · TEMPORAL</span><strong>VUE-TR</strong><small>Official data, task definition and scorer ↗</small></a>
+        <div class="source-card note-card"><span>DATA HANDLING</span><strong>Local assets only</strong><small>Videos, query text, annotations, and item outputs are excluded from this report site.</small></div>
+      </div>
+      <p class="fine-print" id="scope-notes">Benchmark preparation is in progress. The report will distinguish completed, incomplete, and not-run model tracks.</p>
+    </section>
+  </main>
+  <footer><span>VIDEO VLM BENCHMARK</span><span>Reproducible evaluation · Aggregate results only</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>

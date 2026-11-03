@@ -3,13 +3,16 @@
   "python": "3.13.13",
   "packages": {
     "transformers": "5.22.1",
-    "torch": "2.14.1",
+    "torch": "2.14.1+cu130",
     "torchvision": "0.29.1",
     "accelerate": "1.15.0",
-    "Pillow": "13.0.0"
+    "Pillow": "13.0.0",
+    "flash-attn": "2.8.4"
   },
+  "torch_cuda_runtime": "13.0",
   "checkpoint": "google/paligemma2-3b-mix-224",
   "processor": "PaliGemmaProcessor",
   "input_resolution_px": 224,
-  "prompt_prefix": "answer en"
+  "prompt_prefix": "answer en",
+  "benchmark_status": "complete: all eight shared tasks, 825/825 examples; real-image preflight passed"
 }

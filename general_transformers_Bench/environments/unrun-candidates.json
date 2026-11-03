@@ -1,0 +1,13 @@
+{
+  "observed_at": "2026-11-03 09:05:36 UTC",
+  "source_plan": "implementation_plans/general-transformers-vlms.md",
+  "candidates": [
+    {
+      "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
+      "status": "not_run",
+      "cache_status": "incomplete",
+      "cached_weight_gib": null,
+      "reason": "Both indexed safetensors shards are missing from the local cache; only the configuration and an incomplete weight blob are present. Offline loading is not possible. Benchmark use also remains gated on confirming applicability of Meta\u2019s Llama 3.2 Vision terms."
+    }
+  ]
+}

@@ -28,6 +28,13 @@ run_model() {
 mkdir -p "$RUN_DIR"
 
 set +e
+run_model "allenai/Molmo2-8B" \
+    "$RUN_DIR/molmo2_8b" \
+    "$PROJECT_DIR/../.venv/bin/python"
+molmo_status=$?
+set -e
+
+set +e
 run_model "google/paligemma2-3b-mix-224" \
     "$RUN_DIR/paligemma2_mix_224" \
     "$PROJECT_DIR/../.venv/bin/python"
@@ -45,7 +52,8 @@ set -e
 
 aggregate_status=0
 site_status=0
-if [[ "$paligemma_status" -eq 0 && "$florence_status" -eq 0 \
+if [[ "$molmo_status" -eq 0 && "$paligemma_status" -eq 0 && "$florence_status" -eq 0 \
+      && -f "$RUN_DIR/molmo2_8b/results.json" \
       && -f "$RUN_DIR/paligemma2_mix_224/results.json" \
       && -f "$RUN_DIR/florence2_large_ft/results.json" ]]; then
     set +e
@@ -60,11 +68,11 @@ if [[ "$paligemma_status" -eq 0 && "$florence_status" -eq 0 \
     set -e
 else
     aggregate_status=1
-    echo "Current model gates did not both pass. Existing aggregate report and site were left untouched." >&2
+    echo "One or more model gates did not pass. Existing aggregate report and site were left untouched." >&2
 fi
 
-if [[ "$paligemma_status" -ne 0 || "$florence_status" -ne 0 \
+if [[ "$molmo_status" -ne 0 || "$paligemma_status" -ne 0 || "$florence_status" -ne 0 \
       || "$aggregate_status" -ne 0 || "$site_status" -ne 0 ]]; then
-    echo "One or both model runs failed; inspect each model's report.md and results.json." >&2
+    echo "One or more model runs failed; inspect each model's report.md and results.json." >&2
     exit 1
 fi

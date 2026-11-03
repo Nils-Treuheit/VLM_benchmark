@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-11-03 13:43:03 +0100",
+  "seed": 3407,
+  "memory_cap_gib": 30.0,
+  "task_sizes": {
+    "ai2d": 100,
+    "textvqa": 100,
+    "vqa_truth": 25,
+    "vqa_count": 25,
+    "vqa_description": 25,
+    "vqa_affordance": 25,
+    "vqa_negation": 25,
+    "graph_grab_lite": 500
+  },
+  "task_names": [
+    "ai2d",
+    "textvqa",
+    "vqa_truth",
+    "vqa_count",
+    "vqa_description",
+    "vqa_affordance",
+    "vqa_negation",
+    "graph_grab_lite"
+  ],
+  "model": {
+    "model_id": "OpenGVLab/InternVL3_5-8B-MPO",
+    "backend": "Transformers (official InternVL3.5 HF-format checkpoint)",
+    "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/internvl3_5_candidates/InternVL3_5-8B-MPO",
+    "revision": "bb33f08275aa566f3442c1f5002512ffb66d7952",
+    "cache_status": "ready",
+    "cache_error": null,
+    "weight_bytes": 17056729480,
+    "model_weight_bytes": 17056729480,
+    "auxiliary_weight_bytes": 0,
+    "weight_gib": 15.885317213833332,
+    "estimated_loaded_weight_gib": 15.885317213833332,
+    "loaded_weight_estimate_method": "cached checkpoint file size",
+    "runtime_versions": {
+      "python": "3.13.13",
+      "transformers": "4.57.1",
+      "torch": "2.14.1+cu130",
+      "torch_cuda": "13.0"
+    },
+    "runtime_packages": {
+      "transformers": "4.57.1",
+      "bitsandbytes": "0.50.2",
+      "flash-attn": "2.8.4",
+      "torchvision": "0.29.1",
+      "timm": null
+    },
+    "prompt_route": "InternVL3.5 official custom chat API",
+    "precision": "bfloat16 full checkpoint weights; no quantization",
+    "attention_backend": "official custom model with FlashAttention enabled",
+    "tasks": {},
+    "status": "failed",
+    "error": "ModuleNotFoundError: No module named 'timm'",
+    "sampled_process_peak_gib": 0.486,
+    "sampled_process_sample_count": 5,
+    "sampled_process_monitor_error": null
+  },
+  "preflight": {
+    "passed": false,
+    "required": [
+      "ai2d",
+      "textvqa"
+    ],
+    "checks": {}
+  }
+}

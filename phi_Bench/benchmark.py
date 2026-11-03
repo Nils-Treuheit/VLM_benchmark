@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import statistics
@@ -41,7 +40,6 @@ MODEL_IDS = (
     "microsoft/Phi-3.5-vision-instruct",
     "microsoft/Phi-3-vision-128k-instruct",
     "microsoft/Phi-4-multimodal-instruct",
-    "sovitrath/Phi-3.5-vision-instruct",
 )
 
 
@@ -98,48 +96,7 @@ def cache_entry(model_id: str) -> dict[str, Any]:
 
 
 def list_models() -> list[dict[str, Any]]:
-    entries = [cache_entry(model_id) for model_id in MODEL_IDS]
-    official = next(entry for entry in entries if entry["id"] == "microsoft/Phi-3.5-vision-instruct")
-    converted = next(entry for entry in entries if entry["id"] == "sovitrath/Phi-3.5-vision-instruct")
-    identical_weight_hashes: dict[str, str] = {}
-    same_weight_blobs = False
-    if official["cache_status"] == "ready" and converted["cache_status"] == "ready":
-        official_index = json.loads((Path(official["snapshot"]) / "model.safetensors.index.json").read_text())
-        converted_index = json.loads((Path(converted["snapshot"]) / "model.safetensors.index.json").read_text())
-        official_shards = sorted(set(official_index.get("weight_map", {}).values()))
-        converted_shards = sorted(set(converted_index.get("weight_map", {}).values()))
-        if official_shards and official_shards == converted_shards:
-            for name in official_shards:
-                digests = []
-                for snapshot in (official["snapshot"], converted["snapshot"]):
-                    digest = hashlib.sha256()
-                    with (Path(snapshot) / name).open("rb") as shard:
-                        for chunk in iter(lambda: shard.read(8 * 1024 * 1024), b""):
-                            digest.update(chunk)
-                    digests.append(digest.hexdigest())
-                if digests[0] == digests[1]:
-                    identical_weight_hashes[name] = digests[0]
-                else:
-                    break
-            same_weight_blobs = len(identical_weight_hashes) == len(official_shards)
-    converted["comparison"] = {
-        "reference": official["id"],
-        "configuration_matches": converted.get("config_identity") == official.get("config_identity"),
-        "weights_comparable": bool(converted["weight_bytes"] and official["weight_bytes"]),
-        "weight_blobs_identical": same_weight_blobs,
-        "matching_weight_sha256": identical_weight_hashes if same_weight_blobs else {},
-        "status": (
-            "weights are byte-identical to the Microsoft Phi-3.5 checkpoint; not an independent model"
-            if same_weight_blobs
-            else "cached weights are complete and differ from the Microsoft Phi-3.5 blobs"
-            if converted["cache_status"] == "ready"
-            else f"incomplete checkpoint; {converted['cache_error']}"
-        ),
-    }
-    if same_weight_blobs:
-        converted["cache_status"] = "duplicate"
-        converted["cache_error"] = converted["comparison"]["status"]
-    return entries
+    return [cache_entry(model_id) for model_id in MODEL_IDS]
 
 
 def model_size_gib(entry: dict[str, Any]) -> float:
@@ -448,14 +405,6 @@ def write_report(path: Path, result: dict[str, Any]) -> None:
             f"{model.get('backend') or '—'} | {model.get('trust_remote_code', '—')} | "
             f"{model.get('attention_implementation') or '—'} | {patches} | {detail} |"
         )
-    converted = next((model for model in models if model["model_id"] == "sovitrath/Phi-3.5-vision-instruct"), None)
-    comparison = converted.get("comparison") or {} if converted else {}
-    if comparison.get("weight_blobs_identical"):
-        lines += ["", "The sovitrath Phi-3.5 checkpoint matches the Microsoft configuration and has identical SHA-256 digests for both weight shards. It was not counted as an independent model.", ""]
-    elif converted and converted.get("status") == "skipped":
-        lines += ["", f"The sovitrath Phi-3.5 checkpoint was not counted independently: {converted.get('error') or comparison.get('status') or 'its weights are incomplete'}.", ""]
-    elif comparison.get("weights_comparable"):
-        lines += ["", "The sovitrath Phi-3.5 cache has complete weight blobs distinct from the Microsoft checkpoint and is reported as a separate model.", ""]
     path.write_text("\n".join(lines), encoding="utf-8")
 
 

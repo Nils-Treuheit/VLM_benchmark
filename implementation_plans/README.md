@@ -1,6 +1,6 @@
 # Main VLM benchmark implementation plans
 
-These plans organize the locally cached VLMs into implementation groups. They reuse the completed Qwen-VL benchmark's task set, sampling rules, prompts, scorers, serial execution, and reporting fields.
+These plans describe benchmark groups that are still planned or in progress. Completed suites and their results are linked from the repository [README](../README.md). The groups reuse the Qwen-VL task set, sampling rules, prompts, scorers, serial execution, and reporting fields where appropriate.
 
 ## Shared benchmark contract
 
@@ -19,9 +19,6 @@ The shared task prompts and score definitions are in [qwenVL_Bench/README.md](..
 
 | Group | Plan |
 |---|---|
-| LLaVA | [llava-family.md](llava-family.md) |
-| Cosmos | [cosmos-family.md](cosmos-family.md) |
-| Phi vision | [phi-family.md](phi-family.md) |
 | Video-oriented VLMs | [video-vlms.md](video-vlms.md) |
 | Grounding specialists | [grounding-specialists.md](grounding-specialists.md) |
 | InternVL, Molmo, Llama Vision | [general-transformers-vlms.md](general-transformers-vlms.md) |

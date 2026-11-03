@@ -25,8 +25,9 @@
     <div id="report-status" class="status-banner" role="status" hidden></div>
 
     <section class="summary-grid" aria-label="Benchmark summary">
-      <article class="summary-card"><span class="stat-label">Model variants</span><strong id="variant-count">—</strong><span id="variant-names" class="stat-foot">—</span></article>
-      <article class="summary-card accent"><span class="stat-label">Shared task coverage</span><strong>8 tasks</strong><span class="stat-foot">AI2D, TextVQA, five VQA panel measures, and GRAB-Lite.</span></article>
+      <article class="summary-card"><span class="stat-label">Model run records</span><strong id="variant-count">—</strong><span id="variant-names" class="stat-foot">—</span></article>
+      <article class="summary-card accent"><span class="stat-label">Shared task coverage</span><strong>8 tasks · 825 examples</strong><span class="stat-foot">AI2D, TextVQA, five VQA panel measures, and all 500 GRAB-Lite examples per model.</span></article>
+      <article class="summary-card"><span class="stat-label">Planned candidates not run</span><strong id="unrun-count">—</strong><span id="execution-summary" class="stat-foot">—</span></article>
     </section>
 
     <section class="section-block" aria-labelledby="selection-title">
@@ -46,15 +47,17 @@
       </div>
       <div class="method-footer">
         <p><b>Sampling:</b> seed 3407. The same selected indices are reused for every model.</p>
-        <p><b>Inference:</b> cached checkpoints, offline execution, one still image per request, no batching, and greedy decoding.</p>
-        <p><b>Prompts:</b> the shared wording is unchanged. PaliGemma adds `answer en`; Florence's experimental `<VQA>` route is scored only if real-image preflights pass.</p>
-        <p><b>Measures:</b> generation time is after preprocessing. Peak VRAM is process-local and excludes unrelated device use.</p>
+        <p><b>Inference:</b> cached checkpoints, offline execution, one still image per request, no batching, greedy decoding, and a 256-token generation limit.</p>
+        <p><b>Prompts:</b> the shared wording is unchanged. Molmo2 uses its processor chat template; PaliGemma adds `answer en`. Florence uses the experimental `<VQA>` route; exact option-text answers are mapped to their displayed labels for choice tasks, with raw text retained. Scoring starts only after real-image preflights pass.</p>
+        <p><b>Measures:</b> task scores are local comparison metrics. Generation time is after preprocessing. Peak VRAM is process-local and excludes unrelated device use; the report identifies its peak task.</p>
       </div>
     </section>
 
     <section class="section-block">
       <div class="section-head"><div><p class="eyebrow">01 / QUALITY</p><h2>Task scores and completion</h2><p class="section-copy">Failed, partial, and unsupported runs remain visible. Incomplete task scores are not ranked.</p></div></div>
       <div id="quality-table"></div>
+      <div class="subsection-head"><p class="eyebrow">REAL-IMAGE PREFLIGHT</p><h3>Answer-format and response checks</h3></div>
+      <div id="preflight-table"></div>
       <div class="subsection-head"><p class="eyebrow">GRAB-LITE TASK GROUPS</p><h3>Graph-analysis score by group</h3></div>
       <div id="graph-group-table"></div>
     </section>
@@ -68,8 +71,9 @@
     </section>
     <section class="section-block">
       <div class="section-head"><div><p class="eyebrow">04 / LIMITATIONS</p><h2>Run notes and provenance</h2><p class="section-copy">Compatibility failures, preflight outcomes, and measurement boundaries remain visible alongside the results.</p></div></div>
+      <div id="candidate-table"></div>
       <div id="limitations" class="panel notes"></div>
-      <div class="source-links"><a href="results/general_transformers/report.md">Full benchmark report</a><a href="results/general_transformers/results.json">Aggregate result data</a></div>
+      <div class="source-links"><a href="results/general_transformers/report.md">Full benchmark report</a><a href="data.json">Aggregate site data</a></div>
     </section>
     <footer><span>General Transformers VLM benchmark · shared eight-task suite</span><span>Aggregate metrics only · no prompt-level outputs</span></footer>
   </main>

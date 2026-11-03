@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-11-03 10:00:17 +0100",
+  "seed": 3407,
+  "memory_cap_gib": 30.0,
+  "task_sizes": {
+    "ai2d": 100,
+    "textvqa": 100,
+    "vqa_truth": 25,
+    "vqa_count": 25,
+    "vqa_description": 25,
+    "vqa_affordance": 25,
+    "vqa_negation": 25,
+    "graph_grab_lite": 500
+  },
+  "task_names": [
+    "ai2d",
+    "textvqa",
+    "vqa_truth",
+    "vqa_count",
+    "vqa_description",
+    "vqa_affordance",
+    "vqa_negation",
+    "graph_grab_lite"
+  ],
+  "model": {
+    "model_id": "OpenGVLab/InternVL3_5-30B-A3B",
+    "backend": "Transformers (local cached checkpoint)",
+    "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--OpenGVLab--InternVL3_5-30B-A3B/snapshots/ba1762d830e2aeddb3272b66ba9e0abf7e69f626",
+    "cache_status": "ready",
+    "cache_error": null,
+    "weight_bytes": 61700116360,
+    "weight_gib": 57.46271122246981,
+    "estimated_loaded_weight_gib": null,
+    "loaded_weight_estimate_method": "not estimated; NF4 loading includes non-quantized modules; see measured CUDA and sampled process peaks",
+    "runtime_versions": {
+      "python": "3.10.12",
+      "transformers": "5.19.0",
+      "torch": "2.13.0+cu130",
+      "torch_cuda": "13.0"
+    },
+    "runtime_packages": {
+      "transformers": "5.19.0",
+      "bitsandbytes": "0.50.2",
+      "flash-attn": "2.8.3.post2",
+      "torchvision": "0.28.0",
+      "timm": "1.0.27"
+    },
+    "prompt_route": "InternVL custom chat API",
+    "precision": "bfloat16 compute; NF4 double-quantized linear weights",
+    "attention_backend": "custom InternVL implementation default",
+    "tasks": {},
+    "status": "failed",
+    "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 30.15 GiB. GPU 0 has a total capacity of 31.35 GiB of which 29.93 GiB is free. Including non-PyTorch memory, this process has 498.00 MiB memory in use. 30.00 GiB allowed; Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+    "sampled_process_peak_gib": 0.486,
+    "sampled_process_sample_count": 24,
+    "sampled_process_monitor_error": null,
+    "failure_diagnosis": "Transformers 5.19 BNB NF4 quantizes Linear4bit modules, but the pinned Qwen3-MoE fused expert tensors remain BF16. A CPU meta-skeleton audit found 30,848,730,112 parameters and only 1,220,542,464 eligible for NF4 in 290 modules (3.96% of parameters). The loader therefore requested 30.15 GiB during allocator warmup with 29.93 GiB free; no inference started.",
+    "quantization_diagnostic": {
+      "method": "CPU meta-skeleton with Transformers 5.19 Bnb4BitHfQuantizer; no weights loaded and no GPU inference",
+      "total_parameter_elements": 30848730112,
+      "bnb_linear4bit_modules": 290,
+      "bnb_quantizable_parameter_elements": 1220542464,
+      "bnb_quantizable_parameter_share": 0.0395654038,
+      "fused_moe_expert_weights_quantized": false
+    }
+  },
+  "preflight": {
+    "passed": false,
+    "required": [
+      "ai2d",
+      "textvqa"
+    ],
+    "checks": {}
+  }
+}

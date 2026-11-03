@@ -1,0 +1,17 @@
+{
+  "environment": "project .venv",
+  "python": "3.13.13",
+  "packages": {
+    "transformers": "4.57.1",
+    "torch": "2.14.1+cu130",
+    "flash-attn": "2.8.4"
+  },
+  "torch_cuda_runtime": "13.0",
+  "checkpoint": "allenai/Molmo2-8B",
+  "snapshot": "e28fa28597e5ec5e0cca2201dd8ab33d48bc4a1b",
+  "cached_weight_gib": 32.27,
+  "precision": "bfloat16",
+  "estimated_loaded_weight_gib": 16.13,
+  "adapter": "AutoProcessor and AutoModelForImageTextToText; processor chat template; completion-only decode",
+  "benchmark_status": "complete: all eight shared tasks, 825/825 examples; real-image preflight passed"
+}

@@ -7,9 +7,14 @@
 - `unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit`
 - `google/paligemma2-3b-mix-224`
 
-These four checkpoints are present in `HF_HOME`. Keep each as a separate model configuration even though they share a Transformers backend.
+The cache has entries for all four, but the Llama Vision snapshot is incomplete:
+both indexed safetensors shards are missing. Keep each as a separate model
+configuration even though they share a Transformers backend. Do not fetch
+missing model files as part of this benchmark. Keep Llama Vision unrun until its
+pinned snapshot is complete in the local cache and model-term applicability is
+confirmed.
 
-`microsoft/Florence-2-large-ft` is also cached, but keep it as a conditional candidate rather than a scored member of this group for now. The local GUI project records an incompatibility between Florence-2's legacy cache/model code and the current Transformers version, and its current loader is disabled. Promote it only after a supported loading route is established; do not treat the old VLMExperiments monkey patch as verified compatibility.
+`microsoft/Florence-2-large-ft` was initially a conditional candidate because its legacy remote code did not load through the current shared Transformers runtime. The benchmark now has an isolated Transformers 4.44.2 loader for the exact cached snapshot. It passed real-image AI2D and TextVQA preflights and completed the shared suite. Its `<VQA>` route remains experimental because the processor does not register that token; the report discloses the text fallback and choice-label normalization. Do not treat the old VLMExperiments monkey patch as verified compatibility.
 
 ## Runner and prompt approach
 
@@ -17,7 +22,7 @@ Use each model's processor and documented input format. Preserve the shared benc
 
 For PaliGemma 2, use the cached `mix-224` checkpoint and `PaliGemmaProcessor`. Prefix the unchanged shared question with `answer en `, following the model's documented VQA format. Do not use a chat template. Record its 224-pixel input resolution because it differs from higher-resolution candidates. If the shared suite includes captioning, use the documented `describe en` prefix for that task while keeping the benchmark's caption instruction intact.
 
-If Florence-2 becomes loadable through a supported implementation, use its documented task-token interface and `processor.post_process_generation` for structured outputs. Its `<VQA>` task plus the shared question is suitable for a VQA comparison; `<CAPTION>` or `<DETAILED_CAPTION>` can serve caption tasks only if those tasks are already in the common suite. Keep its parsed structured results and raw generated text in artifacts. Do not add Florence-only tasks to the shared score; any detection or grounding capability should be a separately reported task group.
+Florence's isolated loader and experimental `<VQA>` route have now passed real-image preflight and completed the shared suite. Because its cached processor does not register `<VQA>`, the current adapter falls back to text and normalizes exact option-text matches for choice scoring. Keep that caveat and raw generated text in artifacts. Do not add Florence-only tasks to the shared score; any detection or grounding capability should be a separately reported task group.
 
 The shared Qwen-VL prompt remains the semantic comparison contract. Do not import extra task instructions from the older broad VLMExperiments benchmark. Add only the minimum architecture-required chat formatting, task prefix, or task token, and record that wrapper in result metadata.
 
@@ -32,8 +37,13 @@ The shared Qwen-VL prompt remains the semantic comparison contract. Do not impor
 
 ## Implementation order
 
-Start with Molmo2, PaliGemma 2, and Llama Vision. Add InternVL3.5 with a documented quantization or device-map configuration that fits the 30 GiB limit; do not silently quantize a different checkpoint. Resolve Florence-2's supported loading route before implementation or scoring. Preserve exact checkpoint identity, quantization, Transformers version, dtype, and image preprocessing in result metadata.
+Molmo2, PaliGemma 2, and Florence-2 have complete measured runs. The pinned InternVL3.5 NF4 load failed before inference because the Qwen3-MoE fused expert tensors remain BF16; the diagnosis and attempt record are in [`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). Do not retry the same route or silently switch checkpoints. Llama Vision remains unrun until its local snapshot is complete and Meta's terms are confirmed to apply.
+
+The current cache and failed-placement evidence for InternVL3.5 are recorded in
+[`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). Any new route needs a
+reviewed, checkpoint-preserving way to quantize fused expert weights and meet
+the single-GPU memory limits.
 
 ## Report site delivery
 
-After completing this group and writing `report.md`, keep its static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Show Florence-2 as conditional or unsupported unless its loading route is resolved and measured.
+Keep the static report page and assets at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Show completed runs and unresolved candidates with their actual status. Keep Florence-2's experimental route caveat visible.
