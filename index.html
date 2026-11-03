@@ -76,11 +76,45 @@
     .report-link h3 { margin: 0 0 8px; color: var(--green); font-size: 20px; }
     .report-link p { margin: 0; color: var(--muted); }
     .path { display: inline-block; margin-top: 15px; color: var(--cyan); font: 12px ui-monospace, monospace; }
+    .leaders { padding: 0 0 58px; }
+    .overall-leader {
+      display: grid;
+      grid-template-columns: minmax(180px, .7fr) 2fr;
+      gap: 8px 24px;
+      align-items: center;
+      margin: 0 0 30px;
+      padding: 22px;
+      border: 1px solid #c7fa7a70;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #253323, #111a22 72%);
+    }
+    .overall-label { margin: 0; color: var(--green); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .overall-score { color: var(--green); font-size: 30px; font-weight: 750; line-height: 1.15; }
+    .overall-model { margin: 5px 0 0; overflow-wrap: anywhere; font-size: 17px; font-weight: 650; }
+    .overall-model a, .leader-table a { color: inherit; text-decoration-color: #82dce080; text-underline-offset: 3px; }
+    .overall-note { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 14px; }
+    .leaders h3 { margin: 0 0 12px; font-size: 17px; }
+    .leader-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+    .leader-table-wrap:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+    .leader-table { width: 100%; min-width: 760px; border-collapse: collapse; background: var(--surface); text-align: left; }
+    .leader-table caption { padding: 12px 15px; color: var(--muted); text-align: left; }
+    .leader-table th, .leader-table td { padding: 12px 15px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .leader-table th { color: var(--cyan); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+    .leader-table td:first-child { font-weight: 650; }
+    .leader-table td:nth-child(2) { color: var(--green); font-weight: 700; white-space: nowrap; }
+    .leader-table code { overflow-wrap: anywhere; font: 12px/1.5 ui-monospace, monospace; }
+    .leader-table tr:last-child td { border-bottom: 0; }
+    .leader-suite { white-space: nowrap; }
+    .leader-method { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
     footer {
       border-top: 1px solid var(--line);
       padding: 20px 0 34px;
       color: var(--muted);
       font-size: 12px;
+    }
+    @media (max-width: 620px) {
+      .overall-leader { grid-template-columns: 1fr; gap: 8px; }
+      .overall-note { grid-column: auto; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
@@ -105,26 +139,63 @@
           <span class="path">/qwenVL_Bench/</span>
         </a>
         <a class="report-link" href="llava_Bench/">
-          <h3>LLaVA family</h3>
+          <h3>LLaVA</h3>
           <p>LLaVA model variants compared on the shared image benchmark tasks.</p>
           <span class="path">/llava_Bench/</span>
         </a>
         <a class="report-link" href="cosmos_Bench/">
-          <h3>Cosmos family</h3>
+          <h3>Cosmos</h3>
           <p>Cosmos model results, task coverage, runtime, and memory measurements.</p>
           <span class="path">/cosmos_Bench/</span>
         </a>
         <a class="report-link" href="general_transformers_Bench/">
-          <h3>General Transformers VLMs</h3>
+          <h3>Other Big VLMs</h3>
           <p>Transformer-based vision-language models, including their compatibility and task status.</p>
           <span class="path">/general_transformers_Bench/</span>
         </a>
         <a class="report-link" href="phi_Bench/">
-          <h3>Phi vision family</h3>
+          <h3>Φ-Vision</h3>
           <p>Phi vision and multimodal checkpoints on the shared image benchmark suite.</p>
           <span class="path">/phi_Bench/</span>
         </a>
       </div>
+    </section>
+
+    <section class="leaders" aria-labelledby="benchmark-leaders">
+      <h2 id="benchmark-leaders">Best across completed benchmarks</h2>
+      <div class="overall-leader">
+        <h3 class="overall-label">Best overall · complete on all eight shared tasks</h3>
+        <div>
+          <div class="overall-score">62.5%</div>
+          <p class="overall-model"><a href="qwenVL_Bench/"><code>Qwen/Qwen2.5-VL-7B-Instruct</code></a></p>
+        </div>
+        <p class="overall-note">Unweighted mean across AI2D, TextVQA/OCR, VQA truth, counting, description, affordance, negation, and GRAB-Lite.</p>
+      </div>
+
+      <h3>Best per category</h3>
+      <div class="leader-table-wrap" role="region" aria-label="Best model scores by category" tabindex="0">
+        <table class="leader-table">
+          <caption>Highest scores from completed task results across the published image benchmark reports.</caption>
+          <thead>
+            <tr><th scope="col">Category</th><th scope="col">Score</th><th scope="col">Model</th><th scope="col">Suite</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI2D</td><td>90.0%</td><td><code>unsloth/Qwen3-VL-30B-A3B-Thinking-GGUF:UD-Q4_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
+            <tr><td>TextVQA / OCR</td><td>88.0%</td><td><code>Qwen/Qwen2-VL-7B-Instruct</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
+            <tr><td>VQA truth</td><td>100.0%</td><td><code>unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
+            <tr><td>VQA counting</td><td>84.0%</td><td><code>unsloth/Qwen3-VL-32B-Instruct-GGUF:UD-Q4_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
+            <tr><td>VQA description</td><td>80.8%</td><td><code>llava-hf/llava-onevision-qwen2-7b-ov-hf</code></td><td class="leader-suite"><a href="llava_Bench/">LLaVA</a></td></tr>
+            <tr><td>VQA affordance</td><td>16.0%</td><td><code>nvidia/Cosmos3-Edge</code></td><td class="leader-suite"><a href="cosmos_Bench/">Cosmos</a></td></tr>
+            <tr>
+              <td>VQA negation</td><td>84.0%</td>
+              <td><code>unsloth/Qwen2.5-VL-72B-Instruct-GGUF:UD-IQ2_XXS</code><br><code>lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct</code></td>
+              <td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a><br><a href="llava_Bench/">LLaVA</a></td>
+            </tr>
+            <tr><td>GRAB-Lite graph analysis</td><td>15.0%</td><td><code>lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct</code></td><td class="leader-suite"><a href="llava_Bench/">LLaVA</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded while that benchmark is in progress. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-03.</p>
     </section>
 
     <footer>Each report describes its own model set, task coverage, scoring rules, and measurement limits.</footer>
