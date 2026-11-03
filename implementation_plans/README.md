@@ -19,7 +19,6 @@ The shared task prompts and score definitions are in [qwenVL_Bench/README.md](..
 
 | Group | Plan |
 |---|---|
-| Video-oriented VLMs | [video-vlms.md](video-vlms.md) |
 | Grounding specialists | [grounding-specialists.md](grounding-specialists.md) |
 | InternVL, Molmo, Llama Vision | [general-transformers-vlms.md](general-transformers-vlms.md) |
 | Local foundation and GGUF models | [local-foundation-and-gguf.md](local-foundation-and-gguf.md) |

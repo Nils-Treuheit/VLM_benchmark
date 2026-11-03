@@ -1,7 +1,7 @@
 {
   "title": "Video VLM Benchmark",
-  "generated_at_utc": "2026-11-03T13:13:07.092525+00:00",
-  "status": "not_started",
+  "generated_at_utc": "2026-11-03T16:09:15.540762+00:00",
+  "status": "complete",
   "scope": {
     "mvbench": {
       "items": 95,
@@ -34,6 +34,62 @@
     "qa_max_new_tokens": 64,
     "retrieval_max_new_tokens": 512,
     "cross_track_composite": null,
+    "sampling": {
+      "policy_id": "video_visual_uniform16_source_pts_seek_v2",
+      "max_frames": 16,
+      "target_positions": "evenly spaced from first source timestamp through estimated final frame timestamp, using native stream start, duration, and average frame period",
+      "frame_choice": "select the nearest decoded source-PTS frame independently for each timeline target",
+      "tie_break": "choose the earlier source presentation timestamp",
+      "duplicate_policy": "omit duplicate or non-increasing source PTS; record actual selected PTS values",
+      "timestamp_policy": "use selected frames original presentation timestamps; never synthesize timestamps",
+      "decoder_strategy": "decode sequentially for clips up to 120 seconds; use a backward keyframe seek and local nearest-frame decode for longer clips",
+      "source_resolution": "preserve through decoding and record per clip",
+      "audio": "ignore; do not pass audio to models",
+      "subtitles": {
+        "track_input": "disabled",
+        "burned_in_text": "retain unchanged in decoded video frames",
+        "note": "VUE-TR audio-only and vision-plus-audio items are excluded from the active model comparison."
+      }
+    },
+    "model_profiles": {
+      "internvideo3_8b_instruct": {
+        "setup_id": "internvideo3_8b_instruct",
+        "max_frames": 16,
+        "precision": "bf16",
+        "attention": "sdpa",
+        "device": "cuda:0",
+        "deterministic_default": true
+      },
+      "timelens2_8b": {
+        "setup_id": "timelens2_8b",
+        "max_frames": 16,
+        "precision": "bf16",
+        "native_video_only": true,
+        "deterministic_default": true
+      },
+      "llava_next_video_7b": {
+        "setup_id": "llava_next_video_7b",
+        "max_frames": 64,
+        "precision": "bf16",
+        "device_map": "auto",
+        "deterministic_default": true
+      },
+      "videochat3_4b": {
+        "setup_id": "videochat3_4b",
+        "max_frames": 32,
+        "precision": "fp16",
+        "attention": "auto",
+        "device_map": "auto",
+        "frame_min_pixels": 50176,
+        "frame_max_pixels": 50176,
+        "deterministic_default": true
+      }
+    },
+    "interval_parser": {
+      "version": "video-vlm-intervals-v2",
+      "accepted": "numeric endpoint pairs, numeric-string endpoint pairs, and a top-level numeric pair as one interval",
+      "malformed": "counted as parse failures and submitted as empty predictions to the official VUE-TR scorer"
+    },
     "note": "MVBench answer-choice accuracy and VUE-TR temporal grounding are separate tasks and are not combined."
   },
   "models": {
@@ -42,30 +98,160 @@
       "id": "internvideo3_8b_instruct",
       "tracks": {
         "mvbench": {
-          "status": "not_run",
+          "status": "complete",
           "expected": 95,
-          "completed": 0,
-          "correct": 0,
-          "accuracy": null,
-          "task_macro_accuracy": null,
+          "completed": 95,
+          "correct": 50,
+          "accuracy": 0.5263157894736842,
+          "task_macro_accuracy": 0.5263157894736843,
           "parse_failures": 0,
           "inference_errors": 0,
-          "mean_latency_ms": null,
-          "task_scores": {}
+          "mean_latency_ms": 945.4362460629598,
+          "task_scores": {
+            "action_antonym": {
+              "accuracy": 0.8,
+              "correct": 4,
+              "completed": 5
+            },
+            "action_count": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "action_localization": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "action_prediction": {
+              "accuracy": 0.8,
+              "correct": 4,
+              "completed": 5
+            },
+            "action_sequence": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "character_order": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "counterfactual_inference": {
+              "accuracy": 0.8,
+              "correct": 4,
+              "completed": 5
+            },
+            "egocentric_navigation": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "episodic_reasoning": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "fine_grained_action": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "moving_attribute": {
+              "accuracy": 0.8,
+              "correct": 4,
+              "completed": 5
+            },
+            "moving_count": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "moving_direction": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "object_existence": {
+              "accuracy": 1.0,
+              "correct": 5,
+              "completed": 5
+            },
+            "object_interaction": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "completed": 5
+            },
+            "object_shuffle": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "scene_transition": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "state_change": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "unexpected_action": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            }
+          }
         },
         "vue_tr": {
-          "status": "not_run",
+          "status": "complete",
           "expected": 100,
-          "completed": 0,
-          "success_auc": null,
-          "precision_auc": null,
-          "recall_auc": null,
+          "completed": 100,
+          "success_auc": 0.09654999999999998,
+          "precision_auc": 0.5326190476190475,
+          "recall_auc": 0.12810000000000002,
           "parse_failures": 0,
           "inference_errors": 0,
-          "mean_latency_ms": null,
+          "mean_latency_ms": 410.1355188305024,
           "strata": {
-            "duration_category": {},
-            "query_format": {}
+            "duration_category": {
+              "long": {
+                "queries": 18,
+                "parse_failures": 0
+              },
+              "medium": {
+                "queries": 24,
+                "parse_failures": 0
+              },
+              "short": {
+                "queries": 34,
+                "parse_failures": 0
+              },
+              "ultra-long": {
+                "queries": 7,
+                "parse_failures": 0
+              },
+              "ultra-short": {
+                "queries": 17,
+                "parse_failures": 0
+              }
+            },
+            "query_format": {
+              "keyword": {
+                "queries": 41,
+                "parse_failures": 0
+              },
+              "phrase": {
+                "queries": 33,
+                "parse_failures": 0
+              },
+              "sentence": {
+                "queries": 26,
+                "parse_failures": 0
+              }
+            }
           },
           "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
         }
@@ -76,18 +262,52 @@
       "id": "timelens2_8b",
       "tracks": {
         "vue_tr": {
-          "status": "not_run",
+          "status": "complete",
           "expected": 100,
-          "completed": 0,
-          "success_auc": null,
-          "precision_auc": null,
-          "recall_auc": null,
+          "completed": 100,
+          "success_auc": 0.30955,
+          "precision_auc": 0.3615499999999999,
+          "recall_auc": 0.5317000000000001,
           "parse_failures": 0,
           "inference_errors": 0,
-          "mean_latency_ms": null,
+          "mean_latency_ms": 451.81611551030073,
           "strata": {
-            "duration_category": {},
-            "query_format": {}
+            "duration_category": {
+              "long": {
+                "queries": 18,
+                "parse_failures": 0
+              },
+              "medium": {
+                "queries": 24,
+                "parse_failures": 0
+              },
+              "short": {
+                "queries": 34,
+                "parse_failures": 0
+              },
+              "ultra-long": {
+                "queries": 7,
+                "parse_failures": 0
+              },
+              "ultra-short": {
+                "queries": 17,
+                "parse_failures": 0
+              }
+            },
+            "query_format": {
+              "keyword": {
+                "queries": 41,
+                "parse_failures": 0
+              },
+              "phrase": {
+                "queries": 33,
+                "parse_failures": 0
+              },
+              "sentence": {
+                "queries": 26,
+                "parse_failures": 0
+              }
+            }
           },
           "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
         }
@@ -98,30 +318,160 @@
       "id": "llava_next_video_7b",
       "tracks": {
         "mvbench": {
-          "status": "not_run",
+          "status": "complete",
           "expected": 95,
-          "completed": 0,
-          "correct": 0,
-          "accuracy": null,
-          "task_macro_accuracy": null,
+          "completed": 95,
+          "correct": 43,
+          "accuracy": 0.45263157894736844,
+          "task_macro_accuracy": 0.4526315789473684,
           "parse_failures": 0,
           "inference_errors": 0,
-          "mean_latency_ms": null,
-          "task_scores": {}
+          "mean_latency_ms": 303.9412799263741,
+          "task_scores": {
+            "action_antonym": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "action_count": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "action_localization": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "action_prediction": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "action_sequence": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "character_order": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "counterfactual_inference": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "egocentric_navigation": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "episodic_reasoning": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "fine_grained_action": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "moving_attribute": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "moving_count": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "moving_direction": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "object_existence": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "object_interaction": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "object_shuffle": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "scene_transition": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "state_change": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "unexpected_action": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            }
+          }
         },
         "vue_tr": {
-          "status": "not_run",
+          "status": "complete",
           "expected": 100,
-          "completed": 0,
-          "success_auc": null,
-          "precision_auc": null,
-          "recall_auc": null,
-          "parse_failures": 0,
+          "completed": 100,
+          "success_auc": 0.0005,
+          "precision_auc": 0.14714285714285708,
+          "recall_auc": 0.044999999999999984,
+          "parse_failures": 86,
           "inference_errors": 0,
-          "mean_latency_ms": null,
+          "mean_latency_ms": 3268.213043840078,
           "strata": {
-            "duration_category": {},
-            "query_format": {}
+            "duration_category": {
+              "long": {
+                "queries": 18,
+                "parse_failures": 17
+              },
+              "medium": {
+                "queries": 24,
+                "parse_failures": 20
+              },
+              "short": {
+                "queries": 34,
+                "parse_failures": 29
+              },
+              "ultra-long": {
+                "queries": 7,
+                "parse_failures": 6
+              },
+              "ultra-short": {
+                "queries": 17,
+                "parse_failures": 14
+              }
+            },
+            "query_format": {
+              "keyword": {
+                "queries": 41,
+                "parse_failures": 31
+              },
+              "phrase": {
+                "queries": 33,
+                "parse_failures": 30
+              },
+              "sentence": {
+                "queries": 26,
+                "parse_failures": 25
+              }
+            }
           },
           "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
         }
@@ -132,30 +482,160 @@
       "id": "videochat3_4b",
       "tracks": {
         "mvbench": {
-          "status": "not_run",
+          "status": "complete",
           "expected": 95,
-          "completed": 0,
-          "correct": 0,
-          "accuracy": null,
-          "task_macro_accuracy": null,
+          "completed": 95,
+          "correct": 58,
+          "accuracy": 0.6105263157894737,
+          "task_macro_accuracy": 0.6105263157894738,
           "parse_failures": 0,
           "inference_errors": 0,
-          "mean_latency_ms": null,
-          "task_scores": {}
+          "mean_latency_ms": 169.9956553896252,
+          "task_scores": {
+            "action_antonym": {
+              "accuracy": 1.0,
+              "correct": 5,
+              "completed": 5
+            },
+            "action_count": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "action_localization": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "action_prediction": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "action_sequence": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "character_order": {
+              "accuracy": 1.0,
+              "correct": 5,
+              "completed": 5
+            },
+            "counterfactual_inference": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "egocentric_navigation": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "episodic_reasoning": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "fine_grained_action": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "moving_attribute": {
+              "accuracy": 0.8,
+              "correct": 4,
+              "completed": 5
+            },
+            "moving_count": {
+              "accuracy": 1.0,
+              "correct": 5,
+              "completed": 5
+            },
+            "moving_direction": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "object_existence": {
+              "accuracy": 1.0,
+              "correct": 5,
+              "completed": 5
+            },
+            "object_interaction": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            },
+            "object_shuffle": {
+              "accuracy": 0.2,
+              "correct": 1,
+              "completed": 5
+            },
+            "scene_transition": {
+              "accuracy": 0.8,
+              "correct": 4,
+              "completed": 5
+            },
+            "state_change": {
+              "accuracy": 0.4,
+              "correct": 2,
+              "completed": 5
+            },
+            "unexpected_action": {
+              "accuracy": 0.6,
+              "correct": 3,
+              "completed": 5
+            }
+          }
         },
         "vue_tr": {
-          "status": "not_run",
+          "status": "complete",
           "expected": 100,
-          "completed": 0,
-          "success_auc": null,
-          "precision_auc": null,
-          "recall_auc": null,
+          "completed": 100,
+          "success_auc": 0.013149999999999998,
+          "precision_auc": 0.2502898550724638,
+          "recall_auc": 0.01925,
           "parse_failures": 0,
           "inference_errors": 0,
-          "mean_latency_ms": null,
+          "mean_latency_ms": 197.39923912027734,
           "strata": {
-            "duration_category": {},
-            "query_format": {}
+            "duration_category": {
+              "long": {
+                "queries": 18,
+                "parse_failures": 0
+              },
+              "medium": {
+                "queries": 24,
+                "parse_failures": 0
+              },
+              "short": {
+                "queries": 34,
+                "parse_failures": 0
+              },
+              "ultra-long": {
+                "queries": 7,
+                "parse_failures": 0
+              },
+              "ultra-short": {
+                "queries": 17,
+                "parse_failures": 0
+              }
+            },
+            "query_format": {
+              "keyword": {
+                "queries": 41,
+                "parse_failures": 0
+              },
+              "phrase": {
+                "queries": 33,
+                "parse_failures": 0
+              },
+              "sentence": {
+                "queries": 26,
+                "parse_failures": 0
+              }
+            }
           },
           "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
         }

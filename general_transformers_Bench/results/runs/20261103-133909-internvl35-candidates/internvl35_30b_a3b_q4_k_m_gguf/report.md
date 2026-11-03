@@ -1,7 +1,7 @@
 # bartowski/OpenGVLab_InternVL3_5-30B-A3B-GGUF:Q4_K_M shared-suite run
 
-Generated: 2026-11-03 14:13:32 +0100
-Run status: partial
+Generated: 2026-11-03 14:41:22 +0100
+Run status: complete
 Backend: llama.cpp CUDA (GGUF plus matching mmproj); Transformers 4.57.1; PyTorch 2.14.1+cu130.
 Seed: 3407; memory ceiling: 30.0 GiB.
 All eight shared tasks run only after AI2D format and TextVQA real-image preflights pass.
@@ -20,16 +20,16 @@ Full-suite macro is the unweighted mean of all eight task scores and is withheld
 
 | Task | Completed / requested | Score |
 |---|---:|---:|
-| AI2D | 0/100 | — |
-| TextVQA / OCR | 0/100 | — |
-| Truth | 0/25 | — |
-| Counting | 0/25 | — |
-| Description | 0/25 | — |
-| Affordance | 0/25 | — |
-| Negation | 0/25 | — |
-| GRAB-Lite | 0/500 | — |
+| AI2D | 100/100 | 74.0% |
+| TextVQA / OCR | 100/100 | 71.4% |
+| Truth | 25/25 | 49.2% |
+| Counting | 25/25 | 55.2% |
+| Description | 25/25 | 56.4% |
+| Affordance | 25/25 | 4.0% |
+| Negation | 25/25 | 76.0% |
+| GRAB-Lite | 500/500 | 16.2% |
 
-Full-suite macro: —.
+Full-suite macro: 50.3%.
 
 ## Runtime and resources
 Load peak allocated/reserved: None / None GiB; sampled process peak: 19.48 GiB (nvidia-smi query-compute-apps sampled llama-server every 0.5 seconds).
@@ -39,14 +39,14 @@ Generation time covers model generation. Peak allocated VRAM is process-local an
 
 | Task | Mean generation seconds | Output tokens/second | Peak allocated GiB | Peak reserved GiB | Sampled process peak GiB | Parse errors |
 |---|---:|---:|---:|---:|---:|---:|
-| AI2D | — | — | — | — | — | 0 |
-| TextVQA / OCR | — | — | — | — | — | 0 |
-| Truth | — | — | — | — | — | 0 |
-| Counting | — | — | — | — | — | 0 |
-| Description | — | — | — | — | — | 0 |
-| Affordance | — | — | — | — | — | 0 |
-| Negation | — | — | — | — | — | 0 |
-| GRAB-Lite | — | — | — | — | — | 0 |
+| AI2D | 0.49 | 4.12 | 19.48 | — | 19.48 | 2 |
+| TextVQA / OCR | 1.18 | 3.98 | 19.48 | — | 19.48 | 0 |
+| Truth | 0.54 | 11.07 | 19.48 | — | 19.48 | 0 |
+| Counting | 0.48 | 4.84 | 19.48 | — | 19.48 | 0 |
+| Description | 0.45 | 7.93 | 19.48 | — | 19.48 | 0 |
+| Affordance | 1.15 | 2.57 | 19.48 | — | 19.48 | 0 |
+| Negation | 0.85 | 27.12 | 19.48 | — | 19.48 | 1 |
+| GRAB-Lite | 2.18 | 7.29 | 19.48 | — | 19.48 | 0 |
 
 ## Method and provenance
 

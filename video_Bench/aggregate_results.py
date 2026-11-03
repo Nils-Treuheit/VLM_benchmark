@@ -12,11 +12,13 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from scoring import INTERVAL_PARSER_VERSION, parse_intervals
 
 PROJECT = Path(__file__).resolve().parents[1]
-RAW = Path("data/video_bench/results/raw")
+DATA_ROOT = PROJECT / "data/video_bench"
+RAW = DATA_ROOT / "results/raw"
 OUT = Path(__file__).resolve().parent / "data.json"
-VUE_SOURCE = Path("data/video_bench/VUE-TR/source")
+VUE_SOURCE = DATA_ROOT / "VUE-TR/source"
 MODELS = {
     "internvideo3_8b_instruct": ("InternVideo3-8B-Instruct", ("mvbench", "vue_tr")),
     "timelens2_8b": ("TimeLens2-8B", ("vue_tr",)),
@@ -44,15 +46,21 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
+def finite_or_none(value: Any) -> float | None:
+    if value is None or not np.isfinite(value):
+        return None
+    return float(value)
+
+
 def score_mvbench(model: str, expected: list[dict[str, Any]]) -> dict[str, Any]:
     path = RAW / f"mvbench__{model}.jsonl"
     rows = load_jsonl(path) if path.exists() else []
     latest = {str(row.get("item_id")): row for row in rows}
-    expected_ids = {str(item["source_index"]) for item in expected}
+    expected_ids = {f"{item['task']}:{item['source_index']}" for item in expected}
     by_id = {key: row for key, row in latest.items() if row.get("status") == "complete"}
     per_task: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in expected:
-        row = by_id.get(str(item["source_index"]))
+        row = by_id.get(f"{item['task']}:{item['source_index']}")
         if row:
             per_task[item["task"]].append(row)
     task_scores = {
@@ -63,8 +71,7 @@ def score_mvbench(model: str, expected: list[dict[str, Any]]) -> dict[str, Any]:
     valid = [by_id[key] for key in expected_ids if key in by_id]
     correct = sum(bool(row.get("correct")) for row in valid)
     errors = sum(1 for key in expected_ids if key in latest and latest[key].get("status") != "complete")
-    if not valid and any(row.get("status") == "prepare_error" for row in rows):
-        errors += 1
+    errors += sum(1 for row in rows if row.get("status") == "prepare_error")
     return {
         "status": "complete" if len(valid) == len(expected) else ("incomplete" if rows else "not_run"),
         "expected": len(expected), "completed": len(valid), "correct": correct,
@@ -84,7 +91,14 @@ def score_vue(model: str, expected: list[dict[str, Any]], scorer) -> dict[str, A
     expected_ids = {str(item["query_id"]) for item in expected}
     by_id = {str(row.get("query_id")): row for row in latest.values()
              if row.get("status") == "complete" and row.get("query_id") is not None}
-    selected = [by_id[query_id] for query_id in expected_ids if query_id in by_id]
+    selected = []
+    for query_id in expected_ids:
+        row = by_id.get(query_id)
+        if row is not None:
+            parsed, parse_error, parse_status = parse_intervals(row.get("raw_output"))
+            selected.append({**row, "prediction_intervals_seconds": parsed,
+                             "parse_error": parse_error, "parse_status": parse_status,
+                             "interval_parser_version": INTERVAL_PARSER_VERSION})
     temporary = RAW / f".official_input__{model}.jsonl"
     official_rows = []
     for row in selected:
@@ -99,8 +113,7 @@ def score_vue(model: str, expected: list[dict[str, Any]], scorer) -> dict[str, A
         temporary.unlink(missing_ok=True)
     by_query = {int(row["query_id"]): row for row in selected}
     errors = sum(1 for key in expected_ids if key in latest and latest[key].get("status") != "complete")
-    if not selected and any(row.get("status") == "prepare_error" for row in rows):
-        errors += 1
+    errors += sum(1 for row in rows if row.get("status") == "prepare_error")
     strata: dict[str, dict[str, Any]] = {}
     for key in ("duration_category", "query_format"):
         groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -115,9 +128,9 @@ def score_vue(model: str, expected: list[dict[str, Any]], scorer) -> dict[str, A
     return {
         "status": "complete" if len(selected) == len(expected) else ("incomplete" if rows else "not_run"),
         "expected": len(expected), "completed": len(selected),
-        "success_auc": float(auc) if auc is not None else None,
-        "precision_auc": float(precision) if precision is not None else None,
-        "recall_auc": float(recall) if recall is not None else None,
+        "success_auc": finite_or_none(auc),
+        "precision_auc": finite_or_none(precision),
+        "recall_auc": finite_or_none(recall),
         "parse_failures": sum(bool(row.get("parse_error")) for row in selected),
         "inference_errors": errors,
         "mean_latency_ms": float(np.mean([r["latency_ms"] for r in selected])) if selected else None,
@@ -130,9 +143,37 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=OUT)
     args = parser.parse_args()
-    mv_manifest = json.loads(Path("data/video_bench/prepared/mvbench_manifest.json").read_text())
-    vue_manifest = json.loads(Path("data/video_bench/prepared/vue_tr_manifest.json").read_text())
+    mv_manifest = json.loads((DATA_ROOT / "prepared/mvbench_manifest.json").read_text())
+    vue_manifest = json.loads((DATA_ROOT / "prepared/vue_tr_manifest.json").read_text())
+    sampling_policy = json.loads((DATA_ROOT / "prepared/video_qa_sampling_policy.json").read_text())
+    inventory = json.loads((DATA_ROOT / "prepared/model_inventory.json").read_text())
     scorer = official_vue_scorer()
+    output_path = args.output if args.output.is_absolute() else PROJECT / args.output
+    profile_fields = (
+        "setup_id", "max_frames", "precision", "attention", "device", "device_map",
+        "frame_min_pixels", "frame_max_pixels", "native_video_only", "deterministic_default",
+    )
+    profiles = {
+        model["adapter_profile"]["setup_id"]: {
+            key: model["adapter_profile"][key]
+            for key in profile_fields if key in model["adapter_profile"]
+        }
+        for model in inventory.get("models", [])
+        if isinstance(model.get("adapter_profile"), dict) and model["adapter_profile"].get("setup_id")
+    }
+    sampling_summary = {
+        "policy_id": sampling_policy["policy_id"],
+        "max_frames": sampling_policy["max_frames"],
+        "target_positions": sampling_policy["selection"]["target_positions"],
+        "frame_choice": sampling_policy["selection"]["frame_choice"],
+        "tie_break": sampling_policy["selection"]["tie_break"],
+        "duplicate_policy": sampling_policy["selection"]["duplicate_policy"],
+        "timestamp_policy": sampling_policy["selection"]["timestamp_policy"],
+        "decoder_strategy": sampling_policy["selection"]["decoder_strategy"],
+        "source_resolution": sampling_policy["preprocessing"]["source_resolution"],
+        "audio": sampling_policy["audio"],
+        "subtitles": sampling_policy["subtitles"],
+    }
     report: dict[str, Any] = {
         "title": "Video VLM Benchmark",
         "generated_at_utc": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
@@ -145,9 +186,21 @@ def main() -> int:
                        "models": list(MODELS), "source": DATASET_LINKS["vue_tr"],
                        "sampling": "100 vision-only queries, one per video, seed 3407; audio and audiovisual queries excluded."},
         },
-        "method": {"frames": 16, "audio": "not supplied", "temperature": 0.0,
+        "method": {"frames": sampling_policy["max_frames"], "audio": "not supplied", "temperature": 0.0,
                    "qa_max_new_tokens": 64, "retrieval_max_new_tokens": 512,
                    "cross_track_composite": None,
+                   "sampling": sampling_summary,
+                   "model_profiles": {
+                       "internvideo3_8b_instruct": profiles.get("internvideo3_8b_instruct", {}),
+                       "timelens2_8b": profiles.get("timelens2_8b", {}),
+                       "llava_next_video_7b": profiles.get("llava_next_video_7b", {}),
+                       "videochat3_4b": profiles.get("videochat3_4b", {}),
+                   },
+                   "interval_parser": {
+                       "version": INTERVAL_PARSER_VERSION,
+                       "accepted": "numeric endpoint pairs, numeric-string endpoint pairs, and a top-level numeric pair as one interval",
+                       "malformed": "counted as parse failures and submitted as empty predictions to the official VUE-TR scorer",
+                   },
                    "note": "MVBench answer-choice accuracy and VUE-TR temporal grounding are separate tasks and are not combined."},
         "models": {},
     }
@@ -165,8 +218,8 @@ def main() -> int:
         report["status"] = "not_started"
     else:
         report["status"] = "in_progress"
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
     lines = [
         "# Video VLM Benchmark Report", "",
         f"**Evaluation status:** {report['status']}  ",
@@ -189,10 +242,18 @@ def main() -> int:
         score = model["tracks"].get("vue_tr")
         if score:
             lines.append(f"| {model['name']} | {pct_text(score['success_auc'])} | {pct_text(score['precision_auc'])} | {pct_text(score['recall_auc'])} | {score['completed']}/{score['expected']} | {ms_text(score['mean_latency_ms'])} | {score['parse_failures']} | {score['status']} |")
-    lines += ["", "## Protocol", "", f"{report['method']['frames']} shared source-PTS frames per clip; audio disabled; temperature {report['method']['temperature']}.", "", report["scope"]["mvbench"]["excluded"], "", report["scope"]["vue_tr"]["sampling"], "", "Dataset videos, annotations, queries, and item-level outputs remain local and are not included in the website bundle.", "", "## Sources", "", f"- [MVBench](<{report['scope']['mvbench']['source']}>)", f"- [VUE-TR](<{report['scope']['vue_tr']['source']}>)", ""]
+    sampling = report["method"]["sampling"]
+    profile_text = "; ".join(
+        f"{model['name']}: {profile.get('precision', 'adapter default')}, max {profile.get('max_frames', 'adapter default')} frames"
+        + (f", {profile['frame_min_pixels']} px/frame" if profile.get("frame_min_pixels") else "")
+        for model_id, model in report["models"].items()
+        if (profile := report["method"]["model_profiles"].get(model_id))
+    )
+    interval_parser = report["method"]["interval_parser"]
+    lines += ["", "## Protocol", "", f"Up to {sampling['max_frames']} shared source-PTS frames per clip. Target positions span the timeline; {sampling['frame_choice']}; {sampling['tie_break']}. {sampling['decoder_strategy']}.", "", f"Original source resolution is retained through decoding; pinned model processors apply each model's configured preprocessing. Profiles: {profile_text}.", "", f"Audio: {sampling['audio']}. Subtitles: {sampling['subtitles']['track_input']}; burned-in text is retained. Generation temperature is {report['method']['temperature']}; max new tokens are {report['method']['qa_max_new_tokens']} for QA and {report['method']['retrieval_max_new_tokens']} for temporal retrieval.", "", f"VUE-TR interval parser {interval_parser['version']} accepts {interval_parser['accepted']}. {interval_parser['malformed']}.", "", report["scope"]["mvbench"]["excluded"], "", report["scope"]["vue_tr"]["sampling"], "", "Dataset videos, annotations, queries, and item-level outputs remain local and are not included in the website bundle.", "", "## Sources", "", f"- [MVBench](<{report['scope']['mvbench']['source']}>)", f"- [VUE-TR](<{report['scope']['vue_tr']['source']}>)", ""]
     report_path = Path(__file__).resolve().parent / "report.md"
     report_path.write_text("\n".join(lines), encoding="utf-8")
-    print(f"wrote {args.output}; status={report['status']}")
+    print(f"wrote {output_path}; status={report['status']}")
     return 0
 
 

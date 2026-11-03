@@ -43,6 +43,7 @@ MODEL_RUNS_WITH_INTERNVL35 = (
     "internvl35_30b_a3b_q4_k_m_gguf",
     "internvl35_14b_q4_k_m_gguf",
     "internvl35_14b_q8_0_gguf",
+    "llama3_2_11b_vision_bnb_4bit",
 )
 UNRUN_CANDIDATES_PATH = HERE / "environments" / "unrun-candidates.json"
 
@@ -180,15 +181,20 @@ def write_report(path: Path, result: dict[str, Any]) -> None:
             + " | ".join(values)
             + f" | {model['complete_tasks']}/8 | {pct(model['full_benchmark_macro'])} |"
         )
-    lines += ["", "## Planned candidates not run", "",
-              "The following candidates are part of the implementation plan but lack a scored run in this report.",
-              "| Model | Cache status | Status | Reason |", "|---|---|---|---|"]
-    for candidate in result["planned_candidates_not_run"]:
-        reason = str(candidate.get("reason", "")).replace("|", "\\|")
-        lines.append(
-            f"| {candidate['model_id']} | {candidate.get('cache_status', 'unknown')} | "
-            f"{candidate.get('status', 'not_run')} | {reason} |"
-        )
+    lines += ["", "## Planned candidates not run", ""]
+    if result["planned_candidates_not_run"]:
+        lines += [
+            "The following candidates are part of the implementation plan but lack a scored run in this report.",
+            "| Model | Cache status | Status | Reason |", "|---|---|---|---|",
+        ]
+        for candidate in result["planned_candidates_not_run"]:
+            reason = str(candidate.get("reason", "")).replace("|", "\\|")
+            lines.append(
+                f"| {candidate['model_id']} | {candidate.get('cache_status', 'unknown')} | "
+                f"{candidate.get('status', 'not_run')} | {reason} |"
+            )
+    else:
+        lines.append("All candidates in the current plan have complete scored runs.")
     lines += ["", "## Task leaders", ""]
     if complete:
         for task in TASKS:
@@ -253,6 +259,8 @@ def write_report(path: Path, result: dict[str, Any]) -> None:
               "Tasks reuse the prepared examples, prompts, sample indices, and scorers described in `../../qwenVL_Bench/README.md`.",
               "AI2D uses 100 test examples; TextVQA uses 100 validation examples; the five additional VQA panel categories use 25 examples each; GRAB-Lite uses all 500 test examples.",
               "Requests run serially with one image and greedy decoding, with a 256-token generation limit. Molmo2 uses its chat template and bfloat16 weights. PaliGemma uses `answer en`, bfloat16 weights, SDPA, and 224-pixel inputs. Florence uses a separate Transformers 4.44.2 environment, float16 weights, eager attention, and the experimental `<VQA>` wrapper.",
+              "InternVL3.5 official 8B checkpoints use the official custom chat interface with bfloat16 weights and FlashAttention. The 14B and 30B-A3B GGUF candidates use CUDA-enabled llama.cpp with their matching vision projector and FlashAttention; the logged layer placement confirms full GPU offload.",
+              "Llama 3.2 Vision uses the Mllama image-text template with the cached Unsloth bitsandbytes 4-bit checkpoint and bfloat16 compute. SDPA is used because the Transformers 4.57 FlashAttention integration is incompatible with MllamaVisionAttention in this runtime. The user confirmed authorization for this local, non-commercial academic functional comparison.",
               "Florence's cached processor does not register `<VQA>` and post-processing falls back to plain text. It is scored only if its real-image preflights demonstrate parseable AI2D output and a nonempty TextVQA answer.",
               "For Florence AI2D and negation choice questions, exact generated option text is mapped to the displayed label before shared scoring; raw generated text is retained in per-item results.",
               "", "## Provenance and limitations", ""]
@@ -273,7 +281,7 @@ def main() -> int:
     parser.add_argument(
         "--include-internvl35-candidates",
         action="store_true",
-        help="Aggregate the three official 8B variants alongside the completed baselines.",
+        help="Aggregate the prepared InternVL 3.5 and Llama Vision candidates.",
     )
     args = parser.parse_args()
     model_runs = MODEL_RUNS_WITH_INTERNVL35 if args.include_internvl35_candidates else MODEL_RUNS

@@ -575,7 +575,7 @@ def main() -> int:
         PALIGEMMA_ID: "SDPA",
         FLORENCE_ID: "eager",
         INTERNVL_ID: "custom InternVL implementation default",
-        LLAMA_VISION_ID: "Transformers FlashAttention 2",
+        LLAMA_VISION_ID: "Transformers SDPA (Mllama vision compatibility)",
     }
     prompt_routes[LLAMA_VISION_ID] = "Mllama image-text conversation template"
     precision_routes[LLAMA_VISION_ID] = "Unsloth bitsandbytes 4-bit checkpoint with bfloat16 compute"

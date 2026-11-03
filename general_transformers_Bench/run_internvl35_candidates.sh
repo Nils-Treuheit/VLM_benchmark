@@ -55,11 +55,50 @@ run_one "OpenGVLab/InternVL3_5-8B" "internvl35_8b_cascaderl"
 run_one "bartowski/OpenGVLab_InternVL3_5-30B-A3B-GGUF:Q4_K_M" "internvl35_30b_a3b_q4_k_m_gguf"
 run_one "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M" "internvl35_14b_q4_k_m_gguf"
 run_one "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q8_0" "internvl35_14b_q8_0_gguf"
+run_one "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit" "llama3_2_11b_vision_bnb_4bit"
 
-BASELINE_RUN_ID="$("$PYTHON_BIN" -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["run_id"])' \
-    "$PROJECT_DIR/results/general_transformers/results.json")"
+BASELINE_RUN_ID="$("$PYTHON_BIN" - "$PROJECT_DIR" "$RUN_DIR" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+project = Path(sys.argv[1])
+run_dir = Path(sys.argv[2]).resolve()
+required = ("molmo2_8b", "paligemma2_mix_224", "florence2_large_ft")
+task_sizes = {
+    "ai2d": 100, "textvqa": 100, "vqa_truth": 25, "vqa_count": 25,
+    "vqa_description": 25, "vqa_affordance": 25, "vqa_negation": 25,
+    "graph_grab_lite": 500,
+}
+valid = []
+for directory in (project / "results" / "runs").iterdir():
+    if not directory.is_dir() or directory.resolve() == run_dir:
+        continue
+    complete = True
+    for slug in required:
+        path = directory / slug / "results.json"
+        try:
+            model = json.loads(path.read_text(encoding="utf-8"))["model"]
+        except (OSError, ValueError, KeyError, TypeError):
+            complete = False
+            break
+        tasks = model.get("tasks", {})
+        if model.get("status") != "complete" or any(
+            tasks.get(name, {}).get("completed_n") != size
+            or tasks.get(name, {}).get("requested_n") != size
+            or tasks.get(name, {}).get("failed_n") != 0
+            for name, size in task_sizes.items()
+        ):
+            complete = False
+            break
+    if complete:
+        valid.append(directory)
+if valid:
+    print(max(valid, key=lambda path: path.stat().st_mtime).name)
+PY
+)"
 if [[ ! "$BASELINE_RUN_ID" =~ ^[[:alnum:]-]+$ ]]; then
-    echo "Could not resolve the existing baseline run ID; candidate outputs were preserved." >&2
+    echo "Could not find a run with all three complete baseline artifacts; candidate outputs were preserved." >&2
     exit 1
 fi
 BASELINE_DIR="$PROJECT_DIR/results/runs/$BASELINE_RUN_ID"
@@ -76,7 +115,8 @@ if [[ -f "$RUN_DIR/internvl35_8b_instruct/results.json" \
    && -f "$RUN_DIR/internvl35_8b_cascaderl/results.json" \
    && -f "$RUN_DIR/internvl35_30b_a3b_q4_k_m_gguf/results.json" \
    && -f "$RUN_DIR/internvl35_14b_q4_k_m_gguf/results.json" \
-   && -f "$RUN_DIR/internvl35_14b_q8_0_gguf/results.json" ]]; then
+   && -f "$RUN_DIR/internvl35_14b_q8_0_gguf/results.json" \
+   && -f "$RUN_DIR/llama3_2_11b_vision_bnb_4bit/results.json" ]]; then
     if "$PYTHON_BIN" "$PROJECT_DIR/aggregate_results.py" \
         --run-dir "$RUN_DIR" --include-internvl35-candidates; then
         "$PYTHON_BIN" "$PROJECT_DIR/generate_data.py" || overall_status=1

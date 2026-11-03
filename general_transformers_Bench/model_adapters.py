@@ -297,7 +297,10 @@ def load_llama_vision(snapshot: str | Path):
         device_map={"": torch.cuda.current_device()},
         low_cpu_mem_usage=True,
         local_files_only=True,
-        attn_implementation="flash_attention_2",
+        # Transformers 4.57 routes MllamaVisionAttention through FlashAttention
+        # without the is_causal attribute expected by that integration. SDPA
+        # supports the model's image path in this runtime.
+        attn_implementation="sdpa",
     )
     model.eval()
     return model, processor

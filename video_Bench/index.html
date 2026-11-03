@@ -19,7 +19,7 @@
       <p class="eyebrow">VIDEO VISION-LANGUAGE MODELS · BENCHMARK REPORT</p>
       <h1>Compare models<br><span>across video tasks.</span></h1>
       <p class="hero-copy">A matched comparison of video answer quality, temporal grounding, and inference speed on fixed video samples.</p>
-      <div class="hero-meta"><span id="generated">Loading report data…</span><span id="run-state">—</span><span>16 shared source frames · audio disabled</span></div>
+      <div class="hero-meta"><span id="generated">Loading report data…</span><span id="run-state">—</span><span>Up to 16 shared source-PTS frames · audio disabled</span></div>
     </section>
 
     <div id="report-status" class="status-banner" role="status" hidden></div>
@@ -40,11 +40,12 @@
       <div class="method-grid">
         <article class="method-card"><p class="eyebrow">MVBENCH · VIDEO QA</p><h3>95 questions across 19 tasks</h3><p>Seeded sample with five questions per task. The five fine-grained-pose records requiring NTU RGB+D footage are excluded.</p><p><b>Score:</b> exact answer-choice accuracy overall and by task.</p><a data-source="mvbench" target="_blank" rel="noreferrer">MVBench code and benchmark ↗</a></article>
         <article class="method-card"><p class="eyebrow">VUE-TR · TEMPORAL GROUNDING</p><h3>100 vision-only queries</h3><p>One query per unique video. The fixed sample is stratified by duration and query format. Audio-only and audio-visual queries are excluded.</p><p><b>Score:</b> official temporal success, precision, and recall AUC.</p><a data-source="vue_tr" target="_blank" rel="noreferrer">VUE-TR data and scorer ↗</a></article>
-        <article class="method-card"><p class="eyebrow">SHARED VIDEO INPUT</p><h3>16 source-timestamped frames</h3><p>Targets span the source timeline. The nearest decoded frame is selected for each target, with earlier timestamps breaking ties.</p><p><b>Audio:</b> disabled for all models and tracks.</p></article>
+        <article class="method-card"><p class="eyebrow">SHARED VIDEO INPUT</p><h3>Up to 16 source-timestamped frames</h3><p>Targets span the source timeline. The nearest decoded frame is selected for each target, with earlier timestamps breaking ties. Duplicate or non-increasing PTS values are omitted; source timestamps are never synthesized.</p><p><b>Decode:</b> sequential through 120 seconds; backward keyframe seek for longer clips. Original resolution is retained until each pinned model processor runs.</p></article>
         <article class="method-card"><p class="eyebrow">MODEL TRACK COVERAGE</p><h3>Four requested checkpoints</h3><p>InternVideo3, LLaVA-NeXT-Video, and VideoChat3 run both tracks. TimeLens2 runs VUE-TR temporal retrieval.</p><p><b>Execution:</b> pinned local checkpoints, one model at a time, temperature zero.</p></article>
       </div>
       <div class="method-footer">
-        <p><b>Sampling:</b> seed 3407 for both fixed manifests. Identical selected frames are reused across assigned models.</p>
+        <p><b>Sampling:</b> policy `video_visual_uniform16_source_pts_seek_v2`; seed 3407 for both fixed manifests. Identical selected frames are reused across assigned models.</p>
+        <p><b>Temporal parsing:</b> numeric or numeric-string endpoint pairs and a top-level pair are accepted. Malformed outputs count as empty predictions and are reported as parse failures.</p>
         <p><b>Task compatibility:</b> TimeLens2 produces temporal intervals, so it is evaluated on VUE-TR and has no MVBench choice score.</p>
         <p><b>Data handling:</b> video files, query annotations, and per-item outputs remain local. This page contains aggregate scores only.</p>
         <p><b>Limitations:</b> the MVBench sample excludes fine-grained pose. VUE-TR reports the vision-only subset supported by all four adapters.</p>

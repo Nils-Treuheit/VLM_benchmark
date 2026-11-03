@@ -8,11 +8,23 @@ PYTHON="/mnt/HDD1/Project_Code/robotics_VLM/.venv/bin/python"
 cd "$ROOT"
 
 while read -r model track; do
-  release_output="$(cd "$PIPELINE" && python3 src/executor.py release-local)"
+  if ! python3 "$SCRIPT_DIR/model_control_gate.py"; then
+    echo "A model or other GPU process is active; refusing to release it or start another model." >&2
+    exit 4
+  fi
+  if ! release_output="$(cd "$PIPELINE" && python3 src/executor.py release-local)"; then
+    printf '%s\n' "$release_output" >&2
+    echo "Local model release was incomplete; refusing to start another model." >&2
+    exit 3
+  fi
   printf '%s\n' "$release_output"
   if [[ "$release_output" == *cleanup_failed* ]]; then
     echo "Local model release was incomplete; refusing to start another model." >&2
     exit 3
+  fi
+  if ! python3 "$SCRIPT_DIR/model_control_gate.py"; then
+    echo "Model-control did not confirm an idle GPU after release; refusing to launch." >&2
+    exit 4
   fi
   if ! "$PYTHON" video_Bench/run_video_benchmark.py --model "$model" --track "$track"; then
     printf 'Run stopped or failed: %s / %s\n' "$model" "$track" >&2

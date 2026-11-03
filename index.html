@@ -106,6 +106,36 @@
     .leader-table tr:last-child td { border-bottom: 0; }
     .leader-suite { white-space: nowrap; }
     .leader-method { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+    .edge-limited { padding: 0 0 58px; }
+    .edge-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 18px; }
+    .edge-controls label { font-weight: 650; }
+    .edge-controls select { min-width: 130px; padding: 9px 34px 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); font: inherit; }
+    .edge-controls select:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+    .edge-overall { margin: 0 0 24px; padding: 18px 20px; border: 1px solid #c7fa7a70; border-radius: 14px; background: linear-gradient(145deg, #253323, #111a22 72%); }
+    .edge-overall h3 { margin: 0 0 6px; color: var(--green); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+    .edge-overall p { margin: 0; }
+    .edge-score { color: var(--green); font-size: 25px; font-weight: 750; }
+    .edge-model { margin-top: 3px !important; overflow-wrap: anywhere; font-weight: 650; }
+    .edge-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+    .edge-table-wrap:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+    .edge-table { width: 100%; min-width: 880px; border-collapse: collapse; background: var(--surface); text-align: left; }
+    .edge-table caption { padding: 12px 15px; color: var(--muted); text-align: left; }
+    .edge-table th, .edge-table td { padding: 12px 15px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .edge-table th { color: var(--cyan); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+    .edge-table td:nth-child(2) { color: var(--green); font-weight: 700; white-space: nowrap; }
+    .edge-table code { overflow-wrap: anywhere; font: 12px/1.5 ui-monospace, monospace; }
+    .edge-profile { min-width: 245px; color: var(--muted); font-size: 12px; }
+    .edge-profile p { margin: 0 0 4px; }
+    .edge-profile p:last-child { margin-bottom: 0; }
+    .edge-table tr:last-child td { border-bottom: 0; }
+    .edge-status { color: var(--muted); min-height: 1.5em; }
+    .edge-method { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+    .edge-disclaimer { margin: 0 0 22px; padding: 20px 22px; border: 1px solid #e4c57a70; border-radius: 14px; background: linear-gradient(145deg, #261f13, #111a22 76%); color: #f2d9a5; }
+    .edge-disclaimer h2 { margin: 0 0 10px; color: #f2d9a5; }
+    .edge-disclaimer p { margin: 0 0 10px; }
+    .edge-disclaimer ul { margin: 8px 0 10px; padding-left: 22px; }
+    .edge-disclaimer li { margin: 4px 0; }
+    .edge-disclaimer a { color: var(--cyan); }
     footer {
       border-top: 1px solid var(--line);
       padding: 20px 0 34px;
@@ -153,6 +183,11 @@
           <p>Transformer-based vision-language models, including their compatibility and task status.</p>
           <span class="path">/general_transformers_Bench/</span>
         </a>
+        <a class="report-link" href="video_Bench/">
+          <h3>Video VLMs</h3>
+          <p>Video question answering and temporal retrieval, reported as separate tracks.</p>
+          <span class="path">/video_Bench/</span>
+        </a>
         <a class="report-link" href="phi_Bench/">
           <h3>Φ-Vision</h3>
           <p>Phi vision and multimodal checkpoints on the shared image benchmark suite.</p>
@@ -195,10 +230,44 @@
           </tbody>
         </table>
       </div>
-      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded while that benchmark is in progress. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-03.</p>
+      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded from the shared image-task rankings. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-03.</p>
     </section>
+
+    <section class="edge-limited" aria-labelledby="edge-limited-title">
+      <h2 id="edge-limited-title">Edge Limited</h2>
+      <p class="intro">Choose a VRAM ceiling to recalculate the best overall model and the leader in each shared category.</p>
+      <div class="edge-controls">
+        <label for="edge-vram-limit">VRAM restriction</label>
+        <select id="edge-vram-limit" name="vram-limit">
+          <option value="8">8 GiB</option>
+          <option value="10">10 GiB</option>
+          <option value="12">12 GiB</option>
+          <option value="14">14 GiB</option>
+          <option value="16" selected>16 GiB</option>
+        </select>
+      </div>
+      <p id="edge-status" class="edge-status" role="status" aria-live="polite">Loading benchmark memory and score records…</p>
+      <div id="edge-overall" class="edge-overall" aria-live="polite"></div>
+      <h3>Best per category under this cap</h3>
+      <div id="edge-categories" class="edge-table-wrap" role="region" aria-label="Best model scores by category under the selected VRAM cap" tabindex="0"></div>
+      <p class="edge-method">Each winner includes the context record and peak VRAM evidence behind its edge fit. Qwen shows an estimated maximum context and its estimated 8K residency plus desktop reserve; its measured benchmark peak may exceed the selected cap because those runs used longer contexts. LLaVA and Φ-Vision show measured process-local peaks; Cosmos shows measured whole-device peaks; Other Big VLMs show process-local peaks. The reports do not provide context sweeps: Qwen estimates an edge maximum, Cosmos records explicit run-context caps for some models, and other suites expose checkpoint context metadata. These records are not measured maximum contexts under the selected VRAM tier. Rankings include complete shared task scores only. Cross-suite memory comparisons have different scopes. Video results are excluded from the shared image-task rankings.</p>
+    </section>
+
+    <aside class="edge-disclaimer" aria-labelledby="edge-disclaimer-title">
+      <h2 id="edge-disclaimer-title">Edge Limited measurement disclaimer</h2>
+      <p>Current scores come from completed benchmark runs, but the current edge rankings have not all been rerun under the selected VRAM limit. Edge eligibility and context evidence use different measurements across suites:</p>
+      <ul>
+        <li><b>Qwen-VL:</b> task scores and benchmark peaks are measured at their recorded run context. The estimated 8K residency includes a 1 GiB desktop reserve; maximum context under 8, 10, 12, 14, or 16 GiB is interpolated from the context profile. These edge-context values are estimates, and measured benchmark peaks can exceed the selected limit.</li>
+        <li><b>LLaVA and Φ-Vision:</b> task scores and maximum process-local peak VRAM across the benchmark tasks are measured. The checkpoint context shown is advertised metadata; no context sweep established a maximum under each VRAM limit.</li>
+        <li><b>Cosmos:</b> task scores and peak whole-device VRAM, including desktop use, are measured. Cosmos3-Nano records a 16,384-token run cap; other runs use the checkpoint default. A configured run cap is not a measured maximum context under an edge limit.</li>
+        <li><b>Other Big VLMs:</b> task scores and process-local peak VRAM are measured. Checkpoint context is metadata; per-request context and edge-context sweeps are not recorded.</li>
+      </ul>
+      <p><b>Working hypothesis for refinement:</b> With model, inputs, context length, precision, and decoding held fixed, a VRAM ceiling alone should have little effect on answer quality; it mainly affects fit and speed. More context uses more KV-cache memory and can help or hurt task scores. We expect smaller context-driven changes on these mostly single-image tasks than on multi-image, video, or long-prompt tasks. This is a hypothesis to test, not a result established by current reports. See the <a href="https://huggingface.co/docs/transformers/kv_cache">KV-cache documentation</a> and <a href="https://arxiv.org/abs/2307.03172">long-context retrieval study</a>.</p>
+      <p>Until selective edge refinement is complete, treat these rankings as candidate screening, not as measured quality at the selected VRAM limit. The final Edge Limited results will include only scores, peak VRAM, and context limits measured in runs performed under that limit. See the <a href="implementation_plans/selective-edge-refinement.md">selective edge refinement plan</a>.</p>
+    </aside>
 
     <footer>Each report describes its own model set, task coverage, scoring rules, and measurement limits.</footer>
   </main>
+  <script src="edge-limited.js" defer></script>
 </body>
 </html>

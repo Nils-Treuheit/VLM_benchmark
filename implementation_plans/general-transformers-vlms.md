@@ -3,6 +3,8 @@
 ## Scope and locally cached checkpoints
 
 - `OpenGVLab/InternVL3_5-30B-A3B`
+- `OpenGVLab/InternVL3_5-8B-Instruct`, `OpenGVLab/InternVL3_5-8B-MPO`, and `OpenGVLab/InternVL3_5-8B`
+- InternVL3.5 30B-A3B Q4_K_M GGUF and 14B Q4_K_M/Q8_0 GGUF candidates
 - `allenai/Molmo2-8B`
 - `unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit`
 - `google/paligemma2-3b-mix-224`
@@ -14,6 +16,13 @@ local functional comparison. The user also confirmed their authorization under
 Meta's terms. Keep each model as a separate configuration, pin its revision,
 verify all indexed weight shards and processor files, and run the same real-image
 preflight plus all eight shared task groups.
+
+All three official 8B variants, the 30B-A3B Q4_K_M GGUF, both 14B GGUF quants,
+and Llama 3.2 Vision completed all 825 examples with no failed samples on
+2026-11-03. Llama uses Transformers SDPA because Transformers 4.57's
+FlashAttention integration fails on `MllamaVisionAttention`; this compatibility
+route passed the real-image preflight and full suite. The InternVL GGUF models
+ran through CUDA-enabled llama.cpp with full layer offload.
 
 `microsoft/Florence-2-large-ft` was initially a conditional candidate because its legacy remote code did not load through the current shared Transformers runtime. The benchmark now has an isolated Transformers 4.44.2 loader for the exact cached snapshot. It passed real-image AI2D and TextVQA preflights and completed the shared suite. Its `<VQA>` route remains experimental because the processor does not register that token; the report discloses the text fallback and choice-label normalization. Do not treat the old VLMExperiments monkey patch as verified compatibility.
 
@@ -38,12 +47,12 @@ The shared Qwen-VL prompt remains the semantic comparison contract. Do not impor
 
 ## Implementation order
 
-Molmo2, PaliGemma 2, and Florence-2 have complete measured runs. The pinned InternVL3.5 NF4 load failed before inference because the Qwen3-MoE fused expert tensors remain BF16; the diagnosis and attempt record are in [`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). Do not retry that route or silently switch checkpoints. The user has since authorized local Llama Vision comparison and confirmed license applicability; its complete snapshot and benchmark are being prepared.
+Molmo2, PaliGemma 2, Florence-2, all six InternVL3.5 candidates, and Llama 3.2 Vision have complete measured runs. The pinned InternVL3.5 NF4 load failed before inference because the Qwen3-MoE fused expert tensors remain BF16; the diagnosis and attempt record are in [`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). The benchmark used the separately requested GGUF candidates instead. Llama's snapshot and model revision are recorded in the per-model results.
 
-The current cache and failed-placement evidence for InternVL3.5 are recorded in
-[`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). Any new route needs a
-reviewed, checkpoint-preserving way to quantize fused expert weights and meet
-the single-GPU memory limits.
+The failed BF16 fused-expert placement for the original InternVL3.5 NF4 route
+remains documented in [`internvl3_5-run-plan.md`](internvl3_5-run-plan.md).
+The locally tested GGUF alternatives provide the completed comparison for the
+30B-A3B and 14B models; no unrun candidate remains in this plan.
 
 ## Report site delivery
 

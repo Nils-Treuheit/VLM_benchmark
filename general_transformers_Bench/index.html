@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101720">
   <meta name="description" content="General Transformers vision-language benchmark results across eight shared image tasks.">
   <link rel="icon" type="image/png" href="assets/vlm-family.png">
-  <title>Other Big VLM Benchmark</title>
+  <title>General Transformers VLM Benchmark</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -48,7 +48,7 @@
       <div class="method-footer">
         <p><b>Sampling:</b> seed 3407. The same selected indices are reused for every model.</p>
         <p><b>Inference:</b> cached checkpoints, offline execution, one still image per request, no batching, greedy decoding, and a 256-token generation limit.</p>
-        <p><b>Prompts:</b> the shared wording is unchanged. Molmo2 uses its processor chat template; PaliGemma adds `answer en`. Florence uses the experimental `<VQA>` route; exact option-text answers are mapped to their displayed labels for choice tasks, with raw text retained. Scoring starts only after real-image preflights pass.</p>
+        <p><b>Prompts:</b> the shared wording is unchanged. Molmo2 and InternVL use their model chat interfaces; PaliGemma adds `answer en`. GGUF candidates use llama.cpp multimodal chat. Llama Vision uses the Mllama image-text template with SDPA. Florence uses the experimental `<VQA>` route; exact option-text answers are mapped to their displayed labels for choice tasks, with raw text retained. Scoring starts only after real-image preflights pass.</p>
         <p><b>Measures:</b> task scores are local comparison metrics. Generation time is after preprocessing. Peak VRAM is process-local and excludes unrelated device use; the report identifies its peak task.</p>
       </div>
     </section>

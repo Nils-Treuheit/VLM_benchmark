@@ -14,6 +14,10 @@ REPO_ID = "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit"
 DEFAULT_ROOT = Path(
     "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/llama3_2_vision_candidates"
 )
+DEFAULT_CACHE_DIR = Path(
+    "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/"
+    "models--unsloth--Llama-3.2-11B-Vision-Instruct-bnb-4bit"
+)
 FILENAME = "Llama-3.2-11B-Vision-Instruct-bnb-4bit"
 
 
@@ -50,34 +54,34 @@ def verify(snapshot: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
+    parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR,
+                        help="reuse/resume files in this Hugging Face cache directory")
     parser.add_argument("--revision", help="pin a known Hugging Face commit SHA")
     parser.add_argument("--check-only", action="store_true", help="verify existing files without downloading")
     args = parser.parse_args()
 
     root = args.root.expanduser().resolve()
     snapshot = root / FILENAME
+    resolved_revision = args.revision
     if not args.check_only:
         from huggingface_hub import HfApi, snapshot_download
 
         api = HfApi()
-        revision = args.revision or api.model_info(REPO_ID).sha
-        if not revision:
+        resolved_revision = resolved_revision or api.model_info(REPO_ID).sha
+        if not resolved_revision:
             raise RuntimeError(f"could not resolve a pinned revision for {REPO_ID}")
         root.mkdir(parents=True, exist_ok=True)
         snapshot_download(
             repo_id=REPO_ID,
-            revision=revision,
+            revision=resolved_revision,
             local_dir=str(snapshot),
+            cache_dir=str(args.cache_dir.expanduser().resolve()),
             token=os.environ.get("HF_TOKEN"),
         )
     manifest = verify(snapshot)
-    manifest["revision"] = args.revision
+    manifest["revision"] = resolved_revision
     manifest_path = root / "download_manifest.json"
     if not args.check_only:
-        # The revision is re-read from the repository only when downloading.
-        from huggingface_hub import HfApi
-
-        manifest["revision"] = args.revision or HfApi().model_info(REPO_ID).sha
         manifest["downloaded_at_utc"] = datetime.now(timezone.utc).isoformat()
         manifest["user_license_scope_confirmation"] = (
             "User confirmed authorization for non-commercial academic local functional testing."
@@ -85,7 +89,7 @@ def main() -> int:
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     elif manifest_path.is_file():
         saved = json.loads(manifest_path.read_text(encoding="utf-8"))
-        manifest["revision"] = saved.get("revision")
+        manifest["revision"] = resolved_revision or saved.get("revision")
     print(json.dumps({**manifest, "snapshot": str(snapshot)}, indent=2))
     print("Llama 3.2 Vision files verified; no inference was run.")
     return 0

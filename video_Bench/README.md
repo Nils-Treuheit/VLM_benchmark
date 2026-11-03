@@ -1,7 +1,7 @@
 # Video VLM benchmark
 
-This in-progress suite evaluates local video-capable VLMs on video question answering and temporal retrieval. It keeps those task types as separate comparisons.
+This suite evaluates local video-capable VLMs on video question answering and temporal retrieval. It reports those task types separately.
 
-The benchmark plan defines the model roster, fixed samples, video sampling policy, scoring, and exclusions. Start with the [video benchmark plan](../implementation_plans/video-vlms.md). Video files and source annotations stay local and must not be committed or included in the report site.
+Open the [video benchmark report](index.html) for the completed model results. The [benchmark plan](../implementation_plans/video-vlms.md) defines the roster, fixed samples, sampling policy, scoring, and exclusions.
 
-The report page will be published in this folder after both tracks finish.
+The MVBench QA and VUE-TR temporal retrieval scores remain separate. Video files, query annotations, and item-level outputs stay local and are excluded from the report site.
