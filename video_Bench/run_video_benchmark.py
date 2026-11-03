@@ -61,15 +61,15 @@ def load_video_frames(dataset: str, item: dict[str, Any]):
     frames = []
     receipt = time.monotonic_ns()
     for sequence, (image, seconds) in enumerate(zip(images, metadata["selected_source_timestamps_seconds"], strict=True)):
-        source_index = metadata["selected_source_frame_indices"][sequence]
+        source_pts = metadata["selected_source_frame_pts"][sequence]
         frames.append(Frame(
             pixels_rgb=image,
-            uid=f"{dataset}-{item_id}-{source_index}",
+            uid=f"{dataset}-{item_id}-{source_pts}",
             capture_time_ns=round(seconds * 1_000_000_000),
             receive_monotonic_ns=receipt + sequence,
             clock_domain=ClockDomain.MEDIA_PTS,
             source_id=item_id,
-            source_frame_id=str(source_index),
+            source_frame_id=str(source_pts),
             receive_sequence=sequence,
         ))
     return tuple(frames), metadata
@@ -164,7 +164,15 @@ def run(model: str, track: str, limit: int | None = None) -> int:
     adapter = build_adapter(model)
     try:
         print(f"loading {MODEL_NAMES[model]} for {track}; {len(items)} items", flush=True)
-        adapter.prepare()
+        try:
+            adapter.prepare()
+        except Exception as error:
+            with out.open("a", encoding="utf-8") as sink:
+                sink.write(json.dumps({"item_id": "__model_prepare__", "status": "prepare_error",
+                                       "error": f"{type(error).__name__}: {error}", "model": model,
+                                       "track": track}, ensure_ascii=False) + "\n")
+            print(f"MODEL PREPARE FAILED: {type(error).__name__}: {error}", flush=True)
+            return 2
         print("model ready", flush=True)
         with out.open("a", encoding="utf-8") as sink:
             for position, item in enumerate(items, 1):
@@ -201,7 +209,8 @@ def run(model: str, track: str, limit: int | None = None) -> int:
                             "raw_output": output.text,
                         }
                     row.update({"model": model, "track": track, "latency_ms": output.latency_ms,
-                                "frames_used": output.frames_used, "frame_sampling": frame_meta})
+                                "frames_used": output.frames_used, "frame_sampling": frame_meta,
+                                "adapter_metadata": output.raw})
                 except Exception as error:
                     row = {"item_id": item_id, "status": "inference_error", "error": f"{type(error).__name__}: {error}", "model": model, "track": track}
                     sink.write(json.dumps(row, ensure_ascii=False) + "\n"); sink.flush()

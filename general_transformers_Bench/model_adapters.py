@@ -16,6 +16,11 @@ PALIGEMMA_ID = "google/paligemma2-3b-mix-224"
 FLORENCE_ID = "microsoft/Florence-2-large-ft"
 MOLMO2_ID = "allenai/Molmo2-8B"
 INTERNVL_ID = "OpenGVLab/InternVL3_5-30B-A3B"
+LLAMA_VISION_ID = "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit"
+LLAMA_VISION_ROOT = Path(
+    "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/llama3_2_vision_candidates"
+)
+LLAMA_VISION_SNAPSHOT = LLAMA_VISION_ROOT / "Llama-3.2-11B-Vision-Instruct-bnb-4bit"
 FLORENCE_VQA_TOKEN = "<VQA>"
 INTERNVL_REVISION = "ba1762d830e2aeddb3272b66ba9e0abf7e69f626"
 INTERNVL35_HF_CANDIDATES = {
@@ -246,9 +251,8 @@ def load_internvl35_hf(snapshot: str | Path, *, module_cache: str | Path):
     model_ref = config.get("auto_map", {}).get("AutoModel")
     if not model_ref:
         raise RuntimeError("InternVL3.5 HF config does not define its custom AutoModel class")
-    # Transformers 5 derives a module folder from the local snapshot name and
-    # can omit transitive relative imports while creating it. Seed that exact
-    # folder with the snapshot's Python support files before resolving classes.
+    # Dynamic loading can omit transitive relative imports while creating the
+    # model module. Seed its local folder with every support file first.
     module_dir = cache / "transformers_modules" / snapshot.name.replace("-", "_hyphen_")
     module_dir.mkdir(parents=True, exist_ok=True)
     for source in snapshot.glob("*.py"):
@@ -278,6 +282,52 @@ def load_internvl35_hf(snapshot: str | Path, *, module_cache: str | Path):
     )
     model.eval()
     return model, tokenizer
+
+
+def load_llama_vision(snapshot: str | Path):
+    """Load the local 4-bit Mllama checkpoint fully onto the selected CUDA device."""
+    import torch
+    from transformers import AutoProcessor, MllamaForConditionalGeneration
+
+    snapshot = Path(snapshot).resolve()
+    processor = AutoProcessor.from_pretrained(snapshot, local_files_only=True)
+    model = MllamaForConditionalGeneration.from_pretrained(
+        snapshot,
+        torch_dtype=torch.bfloat16,
+        device_map={"": torch.cuda.current_device()},
+        low_cpu_mem_usage=True,
+        local_files_only=True,
+        attn_implementation="flash_attention_2",
+    )
+    model.eval()
+    return model, processor
+
+
+def generate_llama_vision(model, processor, image, spec: PromptSpec, *, max_new_tokens: int = 256):
+    """Run the shared prompt through Mllama's image-aware conversation template."""
+    messages = [{
+        "role": "user",
+        "content": [{"type": "image"}, {"type": "text", "text": spec.text}],
+    }]
+    prompt = processor.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
+    )
+    inputs = processor(
+        text=prompt,
+        images=image.convert("RGB"),
+        return_tensors="pt",
+    ).to(model.device)
+    input_tokens = int(inputs.input_ids.shape[-1])
+    output_ids = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False)
+    completion_ids = output_ids[:, input_tokens:]
+    answer = processor.decode(
+        completion_ids[0], skip_special_tokens=True,
+        clean_up_tokenization_spaces=False,
+    ).strip()
+    return answer, input_tokens, int(completion_ids.shape[-1]), {
+        "chat_template": "Mllama image-text conversation template",
+        "image_transport": "local RGB image through AutoProcessor",
+    }
 
 
 class LlamaCppServer:
@@ -662,6 +712,10 @@ def generate(model_id: str, model, processor, image, task: str, shared_prompt: s
         if task in {"ai2d", "vqa_negation"}:
             answer, normalization = normalize_choice_text(answer, shared_prompt)
             postprocess_info["choice_normalization"] = normalization
+    elif model_id == LLAMA_VISION_ID:
+        answer, input_tokens, output_tokens, postprocess_info = generate_llama_vision(
+            model, processor, image, spec
+        )
     elif model_id in INTERNVL_GPU_IDS:
         if model_id in INTERNVL35_GGUF_CANDIDATES:
             answer, input_tokens, output_tokens, postprocess_info = model.generate(

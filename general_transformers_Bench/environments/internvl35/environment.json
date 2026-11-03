@@ -1,0 +1,22 @@
+{
+  "environment": "project .venv",
+  "python": "3.13.13",
+  "packages": {
+    "transformers": "4.57.1",
+    "torch": "2.14.1+cu130",
+    "torchvision": "0.29.1",
+    "accelerate": "1.15.0",
+    "bitsandbytes": "0.50.2",
+    "timm": "1.0.30",
+    "flash-attn": "2.8.4"
+  },
+  "torch_cuda_runtime": "13.0",
+  "official_hf_route": "InternVL3.5 custom chat code, full BF16, CUDA device 0, FlashAttention enabled",
+  "gguf_route": "llama.cpp built from source with CUDA 13.2, FlashAttention, and sm_120",
+  "runtime_module_cache": "environments/internvl/modules-tf519-run",
+  "notes": [
+    "The dynamic-module cache is seeded with the snapshot's Python support files before custom-code loading.",
+    "Run one model at a time after python3 src/executor.py release-local.",
+    "The llama.cpp source build uses MAX_JOBS=4 and NVCC_THREADS=1 from ~/.bashrc."
+  ]
+}

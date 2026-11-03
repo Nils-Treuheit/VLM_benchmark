@@ -26,9 +26,10 @@ import benchmark_runners as shared  # noqa: E402
 from model_adapters import (
     FLORENCE_ID, INTERNVL35_CANDIDATE_IDS, INTERNVL35_CANDIDATE_ROOT,
     INTERNVL35_GGUF_CANDIDATES, INTERNVL35_GGUF_IDS, INTERNVL35_HF_CANDIDATES,
-    INTERNVL_GPU_IDS, INTERNVL_ID, INTERNVL_REVISION, MOLMO2_ID, PALIGEMMA_ID,
+    INTERNVL_GPU_IDS, INTERNVL_ID, INTERNVL_REVISION, LLAMA_VISION_ID,
+    LLAMA_VISION_ROOT, LLAMA_VISION_SNAPSHOT, MOLMO2_ID, PALIGEMMA_ID,
     generate, load_florence, load_internvl, load_internvl35_hf,
-    load_llama_cpp_server, load_molmo2, load_paligemma,
+    load_llama_cpp_server, load_llama_vision, load_molmo2, load_paligemma,
 )
 
 HF_HOME = Path(os.environ.get("HF_HOME", "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface"))
@@ -53,6 +54,7 @@ MODEL_IDS = (
     FLORENCE_ID,
     *INTERNVL35_CANDIDATE_IDS,
     *INTERNVL35_GGUF_IDS,
+    LLAMA_VISION_ID,
 )
 ACTIVE_GPU_MONITOR = None
 
@@ -152,7 +154,10 @@ def resolve_snapshot(cache: Path) -> Path | None:
 def cache_entry(model_id: str) -> dict[str, Any]:
     is_hf_candidate = model_id in INTERNVL35_HF_CANDIDATES
     is_gguf_candidate = model_id in INTERNVL35_GGUF_CANDIDATES
-    if is_hf_candidate:
+    is_llama_candidate = model_id == LLAMA_VISION_ID
+    if is_llama_candidate:
+        snapshot = LLAMA_VISION_SNAPSHOT
+    elif is_hf_candidate:
         snapshot = INTERNVL35_CANDIDATE_ROOT / INTERNVL35_HF_CANDIDATES[model_id]
     elif is_gguf_candidate:
         snapshot = INTERNVL35_CANDIDATE_ROOT / INTERNVL35_GGUF_CANDIDATES[model_id]["directory"]
@@ -182,6 +187,14 @@ def cache_entry(model_id: str) -> dict[str, Any]:
                 revision = manifest["huggingface_revisions"][repo_id]
             except (OSError, ValueError, KeyError, TypeError) as exc:
                 reason = f"candidate download manifest is missing or invalid: {exc}"
+        elif is_llama_candidate:
+            try:
+                manifest = json.loads(
+                    (LLAMA_VISION_ROOT / "download_manifest.json").read_text(encoding="utf-8")
+                )
+                revision = manifest["revision"]
+            except (OSError, ValueError, KeyError, TypeError) as exc:
+                reason = f"Llama Vision download manifest is missing or invalid: {exc}"
         if is_gguf_candidate:
             spec = INTERNVL35_GGUF_CANDIDATES[model_id]
             filenames = (spec["model"], spec["mmproj"])
@@ -230,7 +243,10 @@ def cache_entry(model_id: str) -> dict[str, Any]:
             "Transformers (official InternVL3.5 HF-format checkpoint)"
             if is_hf_candidate else (
                 "llama.cpp CUDA (GGUF plus matching mmproj)"
-                if is_gguf_candidate else "Transformers (local cached checkpoint)"
+                if is_gguf_candidate else (
+                    "Transformers (Llama 3.2 Vision BNB 4-bit)"
+                    if is_llama_candidate else "Transformers (local cached checkpoint)"
+                )
             )
         ),
     }
@@ -259,11 +275,11 @@ def generation(model_id: str, model, processor, row: dict[str, Any], task: str, 
         torch.cuda.synchronize()
         record["peak_allocated_gib"] = round(torch.cuda.max_memory_allocated() / (1024**3), 3)
         record["peak_reserved_gib"] = round(torch.cuda.max_memory_reserved() / (1024**3), 3)
-    if model_id in INTERNVL_GPU_IDS:
+    if model_id in INTERNVL_GPU_IDS or model_id == LLAMA_VISION_ID:
         record["sampled_process_peak_gib"] = ACTIVE_GPU_MONITOR.peak_gib if ACTIVE_GPU_MONITOR else None
         if not is_gguf and record["peak_allocated_gib"] > INTERNVL_ALLOCATED_TARGET_GIB:
             raise ResourceLimitError(
-                f"InternVL allocated peak {record['peak_allocated_gib']:.3f} GiB exceeded "
+                f"Transformer model allocated peak {record['peak_allocated_gib']:.3f} GiB exceeded "
                 f"the {INTERNVL_ALLOCATED_TARGET_GIB:.1f} GiB target"
             )
         if ACTIVE_GPU_MONITOR and ACTIVE_GPU_MONITOR.peak_gib is not None \
@@ -358,7 +374,10 @@ def run_task(model_id: str, model, processor, task: str, count: int, seed: int,
             }
             if model_id in INTERNVL_GPU_IDS:
                 item["sampled_process_peak_gib"] = output.get("sampled_process_peak_gib")
-                item["image_tile_count"] = output["postprocess"]["image_tile_count"]
+                item["image_tile_count"] = (
+                    output["postprocess"].get("image_tile_count")
+                    if output.get("postprocess") is not None else None
+                )
             if output["postprocess"] is not None:
                 item["postprocess"] = output["postprocess"]
             items.append(item)
@@ -403,8 +422,14 @@ def run_task(model_id: str, model, processor, task: str, count: int, seed: int,
         "group_scores": group_scores,
         "mean_generation_s": statistics.mean(i["generation_s"] for i in successful) if successful else None,
         "generated_tokens_per_s": total_tokens / total_generation_s if total_generation_s else None,
-        "peak_allocated_gib": max((i["peak_allocated_gib"] for i in successful), default=None),
-        "peak_reserved_gib": max((i["peak_reserved_gib"] for i in successful), default=None),
+        "peak_allocated_gib": max(
+            (i.get("peak_allocated_gib") for i in successful if i.get("peak_allocated_gib") is not None),
+            default=None,
+        ),
+        "peak_reserved_gib": max(
+            (i.get("peak_reserved_gib") for i in successful if i.get("peak_reserved_gib") is not None),
+            default=None,
+        ),
         "sampled_process_peak_gib": max(
             (i["sampled_process_peak_gib"] for i in successful if i.get("sampled_process_peak_gib") is not None),
             default=None,
@@ -550,7 +575,10 @@ def main() -> int:
         PALIGEMMA_ID: "SDPA",
         FLORENCE_ID: "eager",
         INTERNVL_ID: "custom InternVL implementation default",
+        LLAMA_VISION_ID: "Transformers FlashAttention 2",
     }
+    prompt_routes[LLAMA_VISION_ID] = "Mllama image-text conversation template"
+    precision_routes[LLAMA_VISION_ID] = "Unsloth bitsandbytes 4-bit checkpoint with bfloat16 compute"
     for candidate_id in INTERNVL35_CANDIDATE_IDS:
         prompt_routes[candidate_id] = "InternVL3.5 official custom chat API"
         precision_routes[candidate_id] = "bfloat16 full checkpoint weights; no quantization"
@@ -622,7 +650,8 @@ def main() -> int:
     required_internvl_free_gib = (
         24.0 if model_id in INTERNVL35_GGUF_CANDIDATES else INTERNVL_ALLOCATED_TARGET_GIB
     )
-    if model_id in INTERNVL_GPU_IDS and free_memory < required_internvl_free_gib * 1024**3:
+    if (model_id in INTERNVL_GPU_IDS or model_id == LLAMA_VISION_ID) \
+            and free_memory < required_internvl_free_gib * 1024**3:
         result["model"].update(
             status="failed",
             error=(f"free CUDA memory {free_memory / (1024**3):.2f} GiB is below the "
@@ -715,6 +744,39 @@ def main() -> int:
                     f"sampled nvidia-smi process peak {load_monitor.peak_gib:.3f} GiB "
                     f"reached the {MEMORY_CAP_GIB:.1f} GiB hard cap"
                 )
+        elif model_id == LLAMA_VISION_ID:
+            load_monitor = SampledProcessMemory(os.getpid())
+            ACTIVE_GPU_MONITOR = load_monitor
+            load_monitor.start()
+            model, processor = load_llama_vision(entry["snapshot"])
+            result["model"]["placement"] = validate_internvl_placement(model)
+            torch.cuda.synchronize()
+            result["model"]["load_peak_allocated_gib"] = round(
+                torch.cuda.max_memory_allocated(device) / (1024**3), 3
+            )
+            result["model"]["load_peak_reserved_gib"] = round(
+                torch.cuda.max_memory_reserved(device) / (1024**3), 3
+            )
+            result["model"]["revision"] = entry.get("revision")
+            result["model"]["quantization"] = "bitsandbytes 4-bit checkpoint"
+            result["model"]["gpu_name"] = torch.cuda.get_device_name(device)
+            result["model"]["memory_target_allocated_gib"] = INTERNVL_ALLOCATED_TARGET_GIB
+            result["model"]["sampled_process_memory_interval_s"] = load_monitor.interval_s
+            result["model"]["sampled_process_peak_method"] = (
+                "nvidia-smi query-compute-apps sampled every 0.5 seconds"
+            )
+            if result["model"]["load_peak_allocated_gib"] > INTERNVL_ALLOCATED_TARGET_GIB:
+                raise ResourceLimitError(
+                    f"Llama Vision load allocated peak {result['model']['load_peak_allocated_gib']:.3f} GiB "
+                    f"exceeded the {INTERNVL_ALLOCATED_TARGET_GIB:.1f} GiB target"
+                )
+            if load_monitor.sample_count == 0:
+                raise RuntimeError("nvidia-smi did not return a process-memory sample for Llama Vision")
+            if load_monitor.peak_gib is not None and load_monitor.peak_gib >= MEMORY_CAP_GIB:
+                raise ResourceLimitError(
+                    f"sampled nvidia-smi process peak {load_monitor.peak_gib:.3f} GiB "
+                    f"reached the {MEMORY_CAP_GIB:.1f} GiB hard cap"
+                )
         elif model_id == PALIGEMMA_ID:
             model, processor = load_paligemma(entry["snapshot"], max_memory=max_memory)
         elif model_id == MOLMO2_ID:
@@ -726,7 +788,8 @@ def main() -> int:
         )
         if model_id == PALIGEMMA_ID:
             result["model"]["image_resolution_px"] = 224
-        if model_id in INTERNVL_GPU_IDS and model_id not in INTERNVL35_GGUF_CANDIDATES:
+        if (model_id in INTERNVL_GPU_IDS and model_id not in INTERNVL35_GGUF_CANDIDATES) \
+                or model_id == LLAMA_VISION_ID:
             torch.cuda.reset_peak_memory_stats(device)
         preflight_result, cached = preflight(model_id, model, processor, SEED)
         result["preflight"] = preflight_result

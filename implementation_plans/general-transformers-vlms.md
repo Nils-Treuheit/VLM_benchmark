@@ -7,12 +7,13 @@
 - `unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit`
 - `google/paligemma2-3b-mix-224`
 
-The cache has entries for all four, but the Llama Vision snapshot is incomplete:
-both indexed safetensors shards are missing. Keep each as a separate model
-configuration even though they share a Transformers backend. Do not fetch
-missing model files as part of this benchmark. Keep Llama Vision unrun until its
-pinned snapshot is complete in the local cache and model-term applicability is
-confirmed.
+The cache has entries for all four, but the Llama Vision snapshot was incomplete
+when this plan was written. The user authorized downloading and benchmarking
+`unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit` for non-commercial academic
+local functional comparison. The user also confirmed their authorization under
+Meta's terms. Keep each model as a separate configuration, pin its revision,
+verify all indexed weight shards and processor files, and run the same real-image
+preflight plus all eight shared task groups.
 
 `microsoft/Florence-2-large-ft` was initially a conditional candidate because its legacy remote code did not load through the current shared Transformers runtime. The benchmark now has an isolated Transformers 4.44.2 loader for the exact cached snapshot. It passed real-image AI2D and TextVQA preflights and completed the shared suite. Its `<VQA>` route remains experimental because the processor does not register that token; the report discloses the text fallback and choice-label normalization. Do not treat the old VLMExperiments monkey patch as verified compatibility.
 
@@ -37,7 +38,7 @@ The shared Qwen-VL prompt remains the semantic comparison contract. Do not impor
 
 ## Implementation order
 
-Molmo2, PaliGemma 2, and Florence-2 have complete measured runs. The pinned InternVL3.5 NF4 load failed before inference because the Qwen3-MoE fused expert tensors remain BF16; the diagnosis and attempt record are in [`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). Do not retry the same route or silently switch checkpoints. Llama Vision remains unrun until its local snapshot is complete and Meta's terms are confirmed to apply.
+Molmo2, PaliGemma 2, and Florence-2 have complete measured runs. The pinned InternVL3.5 NF4 load failed before inference because the Qwen3-MoE fused expert tensors remain BF16; the diagnosis and attempt record are in [`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). Do not retry that route or silently switch checkpoints. The user has since authorized local Llama Vision comparison and confirmed license applicability; its complete snapshot and benchmark are being prepared.
 
 The current cache and failed-placement evidence for InternVL3.5 are recorded in
 [`internvl3_5-run-plan.md`](internvl3_5-run-plan.md). Any new route needs a

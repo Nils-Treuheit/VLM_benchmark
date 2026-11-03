@@ -1,0 +1,165 @@
+{
+  "title": "Video VLM Benchmark",
+  "generated_at_utc": "2026-11-03T13:13:07.092525+00:00",
+  "status": "not_started",
+  "scope": {
+    "mvbench": {
+      "items": 95,
+      "tasks": 19,
+      "models": [
+        "internvideo3_8b_instruct",
+        "llava_next_video_7b",
+        "videochat3_4b"
+      ],
+      "source": "https://github.com/OpenGVLab/Ask-Anything",
+      "excluded": "Five NTU RGB+D fine-grained-pose examples were excluded at the user's direction."
+    },
+    "vue_tr": {
+      "items": 100,
+      "unique_videos": 100,
+      "models": [
+        "internvideo3_8b_instruct",
+        "timelens2_8b",
+        "llava_next_video_7b",
+        "videochat3_4b"
+      ],
+      "source": "https://github.com/bytedance/vidi/tree/main/VUE_TR",
+      "sampling": "100 vision-only queries, one per video, seed 3407; audio and audiovisual queries excluded."
+    }
+  },
+  "method": {
+    "frames": 16,
+    "audio": "not supplied",
+    "temperature": 0.0,
+    "qa_max_new_tokens": 64,
+    "retrieval_max_new_tokens": 512,
+    "cross_track_composite": null,
+    "note": "MVBench answer-choice accuracy and VUE-TR temporal grounding are separate tasks and are not combined."
+  },
+  "models": {
+    "internvideo3_8b_instruct": {
+      "name": "InternVideo3-8B-Instruct",
+      "id": "internvideo3_8b_instruct",
+      "tracks": {
+        "mvbench": {
+          "status": "not_run",
+          "expected": 95,
+          "completed": 0,
+          "correct": 0,
+          "accuracy": null,
+          "task_macro_accuracy": null,
+          "parse_failures": 0,
+          "inference_errors": 0,
+          "mean_latency_ms": null,
+          "task_scores": {}
+        },
+        "vue_tr": {
+          "status": "not_run",
+          "expected": 100,
+          "completed": 0,
+          "success_auc": null,
+          "precision_auc": null,
+          "recall_auc": null,
+          "parse_failures": 0,
+          "inference_errors": 0,
+          "mean_latency_ms": null,
+          "strata": {
+            "duration_category": {},
+            "query_format": {}
+          },
+          "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
+        }
+      }
+    },
+    "timelens2_8b": {
+      "name": "TimeLens2-8B",
+      "id": "timelens2_8b",
+      "tracks": {
+        "vue_tr": {
+          "status": "not_run",
+          "expected": 100,
+          "completed": 0,
+          "success_auc": null,
+          "precision_auc": null,
+          "recall_auc": null,
+          "parse_failures": 0,
+          "inference_errors": 0,
+          "mean_latency_ms": null,
+          "strata": {
+            "duration_category": {},
+            "query_format": {}
+          },
+          "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
+        }
+      }
+    },
+    "llava_next_video_7b": {
+      "name": "LLaVA-NeXT-Video-7B",
+      "id": "llava_next_video_7b",
+      "tracks": {
+        "mvbench": {
+          "status": "not_run",
+          "expected": 95,
+          "completed": 0,
+          "correct": 0,
+          "accuracy": null,
+          "task_macro_accuracy": null,
+          "parse_failures": 0,
+          "inference_errors": 0,
+          "mean_latency_ms": null,
+          "task_scores": {}
+        },
+        "vue_tr": {
+          "status": "not_run",
+          "expected": 100,
+          "completed": 0,
+          "success_auc": null,
+          "precision_auc": null,
+          "recall_auc": null,
+          "parse_failures": 0,
+          "inference_errors": 0,
+          "mean_latency_ms": null,
+          "strata": {
+            "duration_category": {},
+            "query_format": {}
+          },
+          "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
+        }
+      }
+    },
+    "videochat3_4b": {
+      "name": "VideoChat3-4B",
+      "id": "videochat3_4b",
+      "tracks": {
+        "mvbench": {
+          "status": "not_run",
+          "expected": 95,
+          "completed": 0,
+          "correct": 0,
+          "accuracy": null,
+          "task_macro_accuracy": null,
+          "parse_failures": 0,
+          "inference_errors": 0,
+          "mean_latency_ms": null,
+          "task_scores": {}
+        },
+        "vue_tr": {
+          "status": "not_run",
+          "expected": 100,
+          "completed": 0,
+          "success_auc": null,
+          "precision_auc": null,
+          "recall_auc": null,
+          "parse_failures": 0,
+          "inference_errors": 0,
+          "mean_latency_ms": null,
+          "strata": {
+            "duration_category": {},
+            "query_format": {}
+          },
+          "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader"
+        }
+      }
+    }
+  }
+}

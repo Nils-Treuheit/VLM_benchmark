@@ -33,13 +33,13 @@ For MVBench, preserve its choice prompt and apply only each model's required cha
 
 ## Data and implementation order
 
-The MVBench dataset and local clips are prepared. Fetch the VUE-TR public annotation file, scorer, and video ID list from the official repository. Create one reproducible 100-query, vision-only manifest. Download only videos required by that manifest. Preserve each video's source ID, duration, retrieval status, file size, and SHA-256. Keep all video files and source annotations out of Git and report-site assets.
+The active MVBench sample and the VUE-TR public annotations, scorer, 100-query vision-only manifest, and required local clips are prepared. All 100 VUE-TR assets have verified SHA-256 hashes. Keep video files and source annotations out of Git and report-site assets.
 
 Implement the MVBench QA track for its three supported models and the VUE-TR temporal-retrieval track for all four required models. Use the same fixed manifests and sampling policy across model comparisons. Run one model at a time. Preserve partial results and explicit unsupported/failure states. A model is complete only when it finishes every item in each track assigned to it.
 
 ## Report site delivery
 
-After completing both tracks and writing `report.md`, keep a working static report site at the benchmark folder root, following the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Show distinct MVBench QA and VUE-TR temporal-retrieval scorecards. Show which models participate in each track, full sampling and decoding settings, task or stratum breakdowns, incomplete/unsupported states, and the excluded ROSE/NTU category. Do not combine unlike task scores into one ranking.
+A working static report site and aggregate report generator are implemented at `video_Bench/`; final scores populate `data.json` and `report.md` after model runs. Follow the [general VLM report site design guideline](general-vlm-report-site-guideline.md). Show distinct MVBench QA and VUE-TR temporal-retrieval scorecards. Show which models participate in each track, full sampling and decoding settings, task or stratum breakdowns, incomplete/unsupported states, and the excluded ROSE/NTU category. Do not combine unlike task scores into one ranking.
 
 ## Validation plan draft
 
@@ -54,7 +54,7 @@ The model execution itself is the real benchmark run, not a CPU test substitute:
 
 ## Preparation audit (2026-11-03)
 
-- The required video roster is InternVideo3-8B-Instruct, TimeLens2-8B, LLaVA-NeXT-Video-7B, and VideoChat3-4B. The General Transformers comparison is outside this project and does not gate video work.
+- The required video roster is InternVideo3-8B-Instruct, TimeLens2-8B, LLaVA-NeXT-Video-7B, and VideoChat3-4B. The General Transformers comparison is outside this project and does not gate video work. GPU execution waits while a separately owned general benchmark process is active; do not interrupt it.
 - All four required checkpoints are present in the local HF cache with complete weight shards and processors. LLaVA-NeXT-Video 34B and Cosmos3-Nano exceed the 30 GiB cap and are outside this roster.
 - The read-only HF snapshot audit found complete local weight shards for VideoChat3-4B (8.33 GiB), TimeLens2-8B (16.33 GiB), InternVideo3-8B-Instruct (17.44 GiB), LLaVA-NeXT-Video-7B (13.16 GiB), Cosmos-Reason2-8B (16.33 GiB), Cosmos-Reason2-2B (4.54 GiB), and Cosmos3-Edge (8.50 GiB). LLaVA-NeXT-Video-34B is 64.73 GiB and Cosmos3-Nano is 32.50 GiB; both exceed the 30 GiB cap before runtime overhead and stay excluded.
 - Cached revisions: VideoChat3 `37fa901ec5913f84bc31108ebc1e60ad1903634c`; TimeLens2 `5392a2baa0f943e86b602fade8aa00578c59aa88`; InternVideo3 `c4602918b65225650d152db2850fe34e01d21fcd`; LLaVA-NeXT-Video-7B `f417d9edeb69a9eaa88283780332d00ce3c66593`; 34B `4603c5c2f3b2c1eb1c383c21014d4d53d8a34c4f`; Cosmos-Reason2-8B `a9fae2cf89dc64db96b12860417f0eb403013bb9`; 2B `9ce19a195e423419c349abfc86fd07178b230561`; Cosmos3-Edge `344d602b128d1bbdacb43b08d0a3626f46343e29`; Cosmos3-Nano `e59a53c25979a090fa8706c9acc0c254a6e89b92`.

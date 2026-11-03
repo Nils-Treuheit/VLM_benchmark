@@ -47,9 +47,9 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 def score_mvbench(model: str, expected: list[dict[str, Any]]) -> dict[str, Any]:
     path = RAW / f"mvbench__{model}.jsonl"
     rows = load_jsonl(path) if path.exists() else []
-    complete = [row for row in rows if row.get("status") == "complete"]
+    latest = {str(row.get("item_id")): row for row in rows}
     expected_ids = {str(item["source_index"]) for item in expected}
-    by_id = {str(row.get("item_id")): row for row in complete}
+    by_id = {key: row for key, row in latest.items() if row.get("status") == "complete"}
     per_task: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for item in expected:
         row = by_id.get(str(item["source_index"]))
@@ -60,15 +60,18 @@ def score_mvbench(model: str, expected: list[dict[str, Any]]) -> dict[str, Any]:
                "correct": sum(bool(r.get("correct")) for r in values), "completed": len(values)}
         for task, values in per_task.items() if values
     }
-    valid = [row for row in complete if row.get("item_id") in expected_ids]
+    valid = [by_id[key] for key in expected_ids if key in by_id]
     correct = sum(bool(row.get("correct")) for row in valid)
+    errors = sum(1 for key in expected_ids if key in latest and latest[key].get("status") != "complete")
+    if not valid and any(row.get("status") == "prepare_error" for row in rows):
+        errors += 1
     return {
         "status": "complete" if len(valid) == len(expected) else ("incomplete" if rows else "not_run"),
         "expected": len(expected), "completed": len(valid), "correct": correct,
         "accuracy": correct / len(valid) if valid else None,
         "task_macro_accuracy": float(np.mean([v["accuracy"] for v in task_scores.values()])) if task_scores else None,
         "parse_failures": sum(row.get("parse_status") not in ("letter", "exact_choice_text") for row in valid),
-        "inference_errors": sum(row.get("status") != "complete" for row in rows),
+        "inference_errors": errors,
         "mean_latency_ms": float(np.mean([r["latency_ms"] for r in valid])) if valid else None,
         "task_scores": task_scores,
     }
@@ -77,15 +80,17 @@ def score_mvbench(model: str, expected: list[dict[str, Any]]) -> dict[str, Any]:
 def score_vue(model: str, expected: list[dict[str, Any]], scorer) -> dict[str, Any]:
     path = RAW / f"vue_tr__{model}.jsonl"
     rows = load_jsonl(path) if path.exists() else []
-    complete = [row for row in rows if row.get("status") == "complete"]
+    latest = {str(row.get("item_id")): row for row in rows}
     expected_ids = {str(item["query_id"]) for item in expected}
-    by_id = {str(row.get("query_id")): row for row in complete}
+    by_id = {str(row.get("query_id")): row for row in latest.values()
+             if row.get("status") == "complete" and row.get("query_id") is not None}
     selected = [by_id[query_id] for query_id in expected_ids if query_id in by_id]
     temporary = RAW / f".official_input__{model}.jsonl"
     official_rows = []
     for row in selected:
         official_rows.append({"query_id": row["query_id"], "answer": row.get("prediction_intervals_seconds", [])})
-    temporary.write_text("\n".join(json.dumps(row) for row in official_rows) + "\n", encoding="utf-8")
+    payload = "\n".join(json.dumps(row) for row in official_rows)
+    temporary.write_text(payload + ("\n" if payload else ""), encoding="utf-8")
     try:
         evaluated = scorer.load_result(str(VUE_SOURCE / "VUE-TR_ground_truth.json"), str(temporary))
         _, auc = scorer.success_overlap(evaluated) if evaluated else (None, None)
@@ -93,6 +98,9 @@ def score_vue(model: str, expected: list[dict[str, Any]], scorer) -> dict[str, A
     finally:
         temporary.unlink(missing_ok=True)
     by_query = {int(row["query_id"]): row for row in selected}
+    errors = sum(1 for key in expected_ids if key in latest and latest[key].get("status") != "complete")
+    if not selected and any(row.get("status") == "prepare_error" for row in rows):
+        errors += 1
     strata: dict[str, dict[str, Any]] = {}
     for key in ("duration_category", "query_format"):
         groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -111,7 +119,7 @@ def score_vue(model: str, expected: list[dict[str, Any]], scorer) -> dict[str, A
         "precision_auc": float(precision) if precision is not None else None,
         "recall_auc": float(recall) if recall is not None else None,
         "parse_failures": sum(bool(row.get("parse_error")) for row in selected),
-        "inference_errors": sum(row.get("status") != "complete" for row in rows),
+        "inference_errors": errors,
         "mean_latency_ms": float(np.mean([r["latency_ms"] for r in selected])) if selected else None,
         "strata": strata,
         "scorer": "official ByteDance VUE-TR qa_eval.py: success_overlap, compute_precision_recall; prediction seconds floored/ceiled by official loader",
@@ -151,7 +159,12 @@ def main() -> int:
             entry["tracks"]["vue_tr"] = score_vue(model, vue_manifest["items"], scorer)
         report["models"][model] = entry
     statuses = [t["status"] for m in report["models"].values() for t in m["tracks"].values()]
-    report["status"] = "complete" if statuses and all(status == "complete" for status in statuses) else "in_progress"
+    if statuses and all(status == "complete" for status in statuses):
+        report["status"] = "complete"
+    elif statuses and all(status == "not_run" for status in statuses):
+        report["status"] = "not_started"
+    else:
+        report["status"] = "in_progress"
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     lines = [
@@ -164,18 +177,18 @@ def main() -> int:
         f"| VUE-TR temporal grounding | {report['scope']['vue_tr']['items']} queries / {report['scope']['vue_tr']['unique_videos']} videos | {len(report['scope']['vue_tr']['models'])} | Official success, precision, and recall AUC |",
         "", report["method"]["note"], "",
         "## Results", "", "### MVBench", "",
-        "| Model | Accuracy | Task macro accuracy | Coverage | Parse failures | Status |",
-        "|---|---:|---:|---:|---:|---|",
+        "| Model | Accuracy | Task macro accuracy | Coverage | Mean latency | Parse failures | Status |",
+        "|---|---:|---:|---:|---:|---:|---|",
     ]
     for model_id, model in report["models"].items():
         score = model["tracks"].get("mvbench")
         if score:
-            lines.append(f"| {model['name']} | {pct_text(score['accuracy'])} | {pct_text(score['task_macro_accuracy'])} | {score['completed']}/{score['expected']} | {score['parse_failures']} | {score['status']} |")
-    lines += ["", "### VUE-TR", "", "| Model | Success AUC | Precision AUC | Recall AUC | Coverage | Parse failures | Status |", "|---|---:|---:|---:|---:|---:|---|"]
+            lines.append(f"| {model['name']} | {pct_text(score['accuracy'])} | {pct_text(score['task_macro_accuracy'])} | {score['completed']}/{score['expected']} | {ms_text(score['mean_latency_ms'])} | {score['parse_failures']} | {score['status']} |")
+    lines += ["", "### VUE-TR", "", "| Model | Success AUC | Precision AUC | Recall AUC | Coverage | Mean latency | Parse failures | Status |", "|---|---:|---:|---:|---:|---:|---:|---|"]
     for model_id, model in report["models"].items():
         score = model["tracks"].get("vue_tr")
         if score:
-            lines.append(f"| {model['name']} | {pct_text(score['success_auc'])} | {pct_text(score['precision_auc'])} | {pct_text(score['recall_auc'])} | {score['completed']}/{score['expected']} | {score['parse_failures']} | {score['status']} |")
+            lines.append(f"| {model['name']} | {pct_text(score['success_auc'])} | {pct_text(score['precision_auc'])} | {pct_text(score['recall_auc'])} | {score['completed']}/{score['expected']} | {ms_text(score['mean_latency_ms'])} | {score['parse_failures']} | {score['status']} |")
     lines += ["", "## Protocol", "", f"{report['method']['frames']} shared source-PTS frames per clip; audio disabled; temperature {report['method']['temperature']}.", "", report["scope"]["mvbench"]["excluded"], "", report["scope"]["vue_tr"]["sampling"], "", "Dataset videos, annotations, queries, and item-level outputs remain local and are not included in the website bundle.", "", "## Sources", "", f"- [MVBench](<{report['scope']['mvbench']['source']}>)", f"- [VUE-TR](<{report['scope']['vue_tr']['source']}>)", ""]
     report_path = Path(__file__).resolve().parent / "report.md"
     report_path.write_text("\n".join(lines), encoding="utf-8")
@@ -185,6 +198,10 @@ def main() -> int:
 
 def pct_text(value: Any) -> str:
     return "—" if value is None else f"{100 * float(value):.1f}%"
+
+
+def ms_text(value: Any) -> str:
+    return "—" if value is None else f"{float(value):.0f} ms"
 
 
 if __name__ == "__main__":

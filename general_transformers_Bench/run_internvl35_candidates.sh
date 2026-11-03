@@ -34,11 +34,15 @@ run_one() {
     local model_id="$1"
     local slug="$2"
     local status=0
+    if [[ -f "$RUN_DIR/$slug/results.json" ]] && "$PYTHON_BIN" -c 'import json,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); m=r["model"]; tasks=m.get("tasks",{}); names=set(r.get("task_names",[])); ok=m.get("status")=="complete" and set(tasks)==names and bool(names) and all(t.get("completed_n")==t.get("requested_n") and t.get("failed_n")==0 for t in tasks.values()); raise SystemExit(0 if ok else 1)' "$RUN_DIR/$slug/results.json"; then
+        echo "Candidate $model_id already completed all eight tasks; retaining its results."
+        return 0
+    fi
     run_model "$model_id" "$RUN_DIR/$slug" || status=$?
     if [[ "$status" -ne 0 ]]; then
         overall_status=1
         echo "Candidate $model_id ended with status $status; continuing serially." >&2
-    elif ! "$PYTHON_BIN" -c 'import json,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); raise SystemExit(0 if r["model"].get("full_benchmark_complete") else 1)' \
+    elif ! "$PYTHON_BIN" -c 'import json,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); m=r["model"]; tasks=m.get("tasks",{}); names=set(r.get("task_names",[])); ok=m.get("status")=="complete" and set(tasks)==names and bool(names) and all(t.get("completed_n")==t.get("requested_n") and t.get("failed_n")==0 for t in tasks.values()); raise SystemExit(0 if ok else 1)' \
         "$RUN_DIR/$slug/results.json"; then
         overall_status=1
         echo "Candidate $model_id did not complete all eight tasks; continuing serially." >&2

@@ -2,76 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="A reproducible comparison of four video vision-language models on video QA and temporal retrieval.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101720">
+  <meta name="description" content="Video VLM benchmark results across multiple-choice video QA and temporal retrieval.">
+  <link rel="icon" type="image/png" href="assets/vlm-family.png">
   <title>Video VLM Benchmark</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#top"><span class="brand-mark">V</span><span>VIDEO<span class="brand-light">VLM</span></span></a>
-    <nav aria-label="Main navigation"><a href="#results">Results</a><a href="#protocol">Protocol</a><a href="#sources">Sources</a></nav>
-    <span class="badge" id="run-status"><i></i> Loading results</span>
+    <a class="brand" href="#top"><span class="brand-mark"><img src="assets/vlm-family.png" alt="VLM benchmark family mark"></span><span>Video Model Bench</span></a>
+    <span class="topbar-note">VIDEO · TEMPORAL REASONING · INFERENCE</span>
   </header>
-
   <main id="top">
     <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">VIDEO MODEL EVALUATION <span id="run-date"></span></p>
-        <h1>Seeing video.<br><em>Understanding time.</em></h1>
-        <p class="lede">Four video language models, evaluated on separate tracks for answer-choice reasoning and temporal grounding.</p>
-        <a class="jump" href="#results">Explore the results <span>↘</span></a>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
-        <div class="play"><span></span></div>
-        <div class="art-label label-top">16 FRAMES / CLIP</div><div class="art-label label-bottom">TIME IS THE SIGNAL</div>
-      </div>
-      <div class="hero-meta"><span>01 / BENCHMARK SUITE</span><span>VIDEO · QA · RETRIEVAL</span></div>
+      <p class="eyebrow">VIDEO VISION-LANGUAGE MODELS · BENCHMARK REPORT</p>
+      <h1>Compare models<br><span>across video tasks.</span></h1>
+      <p class="hero-copy">A matched comparison of video answer quality, temporal grounding, and inference speed on fixed video samples.</p>
+      <div class="hero-meta"><span id="generated">Loading report data…</span><span id="run-state">—</span><span>16 shared source frames · audio disabled</span></div>
     </section>
 
-    <section class="section results" id="results">
-      <div class="section-heading"><div><p class="eyebrow">01 — SCORECARDS</p><h2>Two tasks.<br><em>Four perspectives.</em></h2></div><p class="section-note">Scores stay within their task. No cross-track composite is reported.</p></div>
-      <div id="model-strip" class="model-strip" aria-label="Included models"></div>
-      <article class="track-card" id="mvbench-card">
-        <div class="track-head"><div><p class="eyebrow">TRACK A · MULTIPLE-CHOICE VIDEO QA</p><h3>MVBench</h3></div><a class="source-link" data-source="mvbench" target="_blank" rel="noreferrer">Dataset details ↗</a></div>
-        <p class="track-description">A seeded 95-question sample across 19 task types. Five NTU RGB+D pose examples were excluded under the dataset access constraints.</p>
-        <div class="table-wrap"><table><thead><tr><th>Model</th><th>Accuracy</th><th>Task macro</th><th>Coverage</th><th>Parse issues</th><th>Status</th></tr></thead><tbody id="mvbench-rows"></tbody></table></div>
-        <details class="details"><summary>Task-level accuracy</summary><div id="task-breakdown" class="task-grid"></div></details>
-      </article>
-      <article class="track-card" id="vue-card">
-        <div class="track-head"><div><p class="eyebrow">TRACK B · TEMPORAL GROUNDING</p><h3>VUE-TR</h3></div><a class="source-link" data-source="vue_tr" target="_blank" rel="noreferrer">Dataset & scorer ↗</a></div>
-        <p class="track-description">A common 100-query vision-only sample, one query per unique video, stratified by duration and query format. The official VUE-TR scorer is used.</p>
-        <div class="table-wrap"><table><thead><tr><th>Model</th><th>Success AUC</th><th>Precision AUC</th><th>Recall AUC</th><th>Coverage</th><th>Parse issues</th><th>Status</th></tr></thead><tbody id="vue-rows"></tbody></table></div>
-        <details class="details"><summary>Sample strata</summary><div id="strata-breakdown" class="strata-grid"></div></details>
-      </article>
-      <div class="legend-note"><span class="legend-dot"></span> Scores use only completed items; parse failures count as empty predictions in temporal scoring.</div>
+    <div id="report-status" class="status-banner" role="status" hidden></div>
+
+    <section class="summary-grid video-summary" aria-label="Benchmark summary">
+      <article class="summary-card"><span class="stat-label">Required video models</span><strong id="model-count">4 models</strong><span id="model-list" class="stat-foot">InternVideo3 · TimeLens2 · LLaVA-NeXT-Video · VideoChat3</span></article>
+      <article class="summary-card accent"><span class="stat-label">Video QA track</span><strong>19 tasks · 95 questions</strong><span class="stat-foot">MVBench sample · three answer-choice models · five ROSE/NTU examples excluded.</span></article>
+      <article class="summary-card"><span class="stat-label">Temporal grounding track</span><strong>100 queries · 100 videos</strong><span class="stat-foot">VUE-TR vision-only sample · all four required models.</span></article>
     </section>
 
-    <section class="section protocol" id="protocol">
-      <div class="section-heading"><div><p class="eyebrow">02 — EVALUATION PROTOCOL</p><h2>Same video.<br><em>Same frame budget.</em></h2></div><p class="section-note">Native video processors receive the same 16 source frames for each clip. Audio is disabled.</p></div>
-      <div class="protocol-grid">
-        <div class="protocol-item"><span class="step">01</span><h4>Sample</h4><p>Sixteen targets span the source timeline. The closest strictly increasing frames are selected by source presentation timestamps.</p></div>
-        <div class="protocol-item"><span class="step">02</span><h4>Compare</h4><p>Models run one at a time from pinned local checkpoints. Generation uses temperature zero.</p></div>
-        <div class="protocol-item"><span class="step">03</span><h4>Score</h4><p>MVBench reports exact-choice accuracy. VUE-TR reports temporal success, precision, and recall AUC.</p></div>
-      </div>
-      <div class="method-bar"><span>MVBench · 95 questions / 19 tasks</span><span>VUE-TR · 100 queries / 100 videos</span><span>16 shared frames / clip</span><span id="updated-at">Results data unavailable</span></div>
+    <section class="section-block" aria-labelledby="overview-title">
+      <div class="section-head"><div><p class="eyebrow">SELECTION GUIDE</p><h2 id="overview-title">Two tasks, distinct scores</h2><p class="section-copy">The QA and temporal retrieval tracks measure different abilities. They are reported separately without a combined ranking.</p></div></div>
+      <div id="model-strip" class="selection-grid" aria-label="Included model and track coverage"></div>
     </section>
 
-    <section class="section sources" id="sources">
-      <div class="section-heading"><div><p class="eyebrow">03 — REPRODUCIBILITY</p><h2>Sources &amp;<br><em>scope notes.</em></h2></div></div>
-      <div class="source-grid">
-        <a class="source-card" data-source="mvbench" target="_blank" rel="noreferrer"><span>DATASET · QA</span><strong>MVBench</strong><small>Original video understanding benchmark ↗</small></a>
-        <a class="source-card" data-source="vue_tr" target="_blank" rel="noreferrer"><span>DATASET · TEMPORAL</span><strong>VUE-TR</strong><small>Official data, task definition and scorer ↗</small></a>
-        <div class="source-card note-card"><span>DATA HANDLING</span><strong>Local assets only</strong><small>Videos, query text, annotations, and item outputs are excluded from this report site.</small></div>
+    <section class="panel methodology" aria-labelledby="method-title">
+      <div class="section-head"><div><p class="eyebrow">BENCHMARK METHOD</p><h2 id="method-title">Video understanding and time</h2><p class="section-copy">Fixed samples, shared frame selection, and task-appropriate scoring procedures are reused across models.</p></div></div>
+      <div class="method-grid">
+        <article class="method-card"><p class="eyebrow">MVBENCH · VIDEO QA</p><h3>95 questions across 19 tasks</h3><p>Seeded sample with five questions per task. The five fine-grained-pose records requiring NTU RGB+D footage are excluded.</p><p><b>Score:</b> exact answer-choice accuracy overall and by task.</p><a data-source="mvbench" target="_blank" rel="noreferrer">MVBench code and benchmark ↗</a></article>
+        <article class="method-card"><p class="eyebrow">VUE-TR · TEMPORAL GROUNDING</p><h3>100 vision-only queries</h3><p>One query per unique video. The fixed sample is stratified by duration and query format. Audio-only and audio-visual queries are excluded.</p><p><b>Score:</b> official temporal success, precision, and recall AUC.</p><a data-source="vue_tr" target="_blank" rel="noreferrer">VUE-TR data and scorer ↗</a></article>
+        <article class="method-card"><p class="eyebrow">SHARED VIDEO INPUT</p><h3>16 source-timestamped frames</h3><p>Targets span the source timeline. The nearest decoded frame is selected for each target, with earlier timestamps breaking ties.</p><p><b>Audio:</b> disabled for all models and tracks.</p></article>
+        <article class="method-card"><p class="eyebrow">MODEL TRACK COVERAGE</p><h3>Four requested checkpoints</h3><p>InternVideo3, LLaVA-NeXT-Video, and VideoChat3 run both tracks. TimeLens2 runs VUE-TR temporal retrieval.</p><p><b>Execution:</b> pinned local checkpoints, one model at a time, temperature zero.</p></article>
       </div>
-      <p class="fine-print" id="scope-notes">Benchmark preparation is in progress. The report will distinguish completed, incomplete, and not-run model tracks.</p>
+      <div class="method-footer">
+        <p><b>Sampling:</b> seed 3407 for both fixed manifests. Identical selected frames are reused across assigned models.</p>
+        <p><b>Task compatibility:</b> TimeLens2 produces temporal intervals, so it is evaluated on VUE-TR and has no MVBench choice score.</p>
+        <p><b>Data handling:</b> video files, query annotations, and per-item outputs remain local. This page contains aggregate scores only.</p>
+        <p><b>Limitations:</b> the MVBench sample excludes fine-grained pose. VUE-TR reports the vision-only subset supported by all four adapters.</p>
+      </div>
     </section>
+
+    <section class="section-block" id="results">
+      <div class="section-head"><div><p class="eyebrow">01 / QUALITY</p><h2>Track scores and coverage</h2><p class="section-copy">Incomplete and not-run model tracks remain visible. Temporal parse failures count as empty predictions in the official scorer.</p></div></div>
+      <div class="subsection-head"><p class="eyebrow">TRACK A · MULTIPLE-CHOICE VIDEO QA</p><h3>MVBench accuracy</h3></div>
+      <div class="table-shell"><table><thead><tr><th>Model</th><th>Accuracy</th><th>Task macro</th><th>Coverage</th><th>Mean latency</th><th>Parse errors</th><th>Status</th></tr></thead><tbody id="mvbench-rows"></tbody></table></div>
+      <div class="subsection-head"><p class="eyebrow">TASK BREAKDOWN</p><h3>MVBench accuracy by task</h3></div>
+      <details class="panel breakdown"><summary id="task-summary">Task-level accuracy by model</summary><div id="task-breakdown" class="task-grid"></div></details>
+      <div class="subsection-head"><p class="eyebrow">TRACK B · TEMPORAL GROUNDING</p><h3>VUE-TR retrieval</h3></div>
+      <div class="table-shell"><table><thead><tr><th>Model</th><th>Success AUC</th><th>Precision AUC</th><th>Recall AUC</th><th>Coverage</th><th>Mean latency</th><th>Parse errors</th><th>Status</th></tr></thead><tbody id="vue-rows"></tbody></table></div>
+      <div class="subsection-head"><p class="eyebrow">VUE-TR SAMPLE</p><h3>Query strata</h3></div>
+      <details class="panel breakdown"><summary id="strata-summary">Selected sample composition</summary><div id="strata-breakdown" class="task-grid"></div></details>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">02 / RUNTIME</p><h2>Inference latency</h2><p class="section-copy">Mean latency is measured per completed request, after shared frame decoding and before site aggregation.</p></div></div>
+      <div id="runtime-notes" class="panel notes"></div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head"><div><p class="eyebrow">03 / LIMITATIONS</p><h2>Run notes and provenance</h2><p class="section-copy">Dataset scope, adapter coverage, and incomplete evaluation states are documented alongside results.</p></div></div>
+      <div id="scope-notes" class="panel notes"></div>
+      <div class="source-links"><a data-source="mvbench" target="_blank" rel="noreferrer">MVBench source ↗</a><a data-source="vue_tr" target="_blank" rel="noreferrer">VUE-TR source ↗</a><a href="report.md">Full benchmark report</a><a href="data.json">Aggregate site data</a></div>
+    </section>
+    <footer><span>Video VLM benchmark · MVBench QA and VUE-TR temporal retrieval</span><span>Aggregate metrics only · no dataset assets or item-level outputs</span></footer>
   </main>
-  <footer><span>VIDEO VLM BENCHMARK</span><span>Reproducible evaluation · Aggregate results only</span></footer>
-  <script src="app.js"></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
