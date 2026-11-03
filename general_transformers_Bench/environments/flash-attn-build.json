@@ -1,0 +1,44 @@
+{
+  "package": "flash-attn",
+  "version": "2.8.4",
+  "source": "https://github.com/Dao-AILab/flash-attention",
+  "source_commit": "54b044c8cf897dfcc2577a665559d1bfda0bfc80",
+  "build": {
+    "cuda_toolkit": "13.2",
+    "cuda_home": "/usr/local/cuda-13.2",
+    "torch_cuda_arch_list": "12.0",
+    "flash_attn_cuda_archs": "120",
+    "max_jobs": 4,
+    "nvcc_threads": 1,
+    "forced_source_build": true
+  },
+  "validation": {
+    "device": "NVIDIA GeForce RTX 5090",
+    "compute_capability": "12.0",
+    "operation": "flash_attn.flash_attn_func on CUDA fp16 tensors, shape [1, 16, 8, 64]",
+    "criteria": "completed successfully; output shape matched input and all output values were finite"
+  },
+  "environments": [
+    {
+      "venv": ".venv",
+      "python": "3.13.13",
+      "torch": "2.14.1+cu130",
+      "torch_cuda_runtime": "13.0",
+      "validation": "passed"
+    },
+    {
+      "venv": "cosmos_Bench/.venv",
+      "python": "3.13.13",
+      "torch": "2.11.0+cu130",
+      "torch_cuda_runtime": "13.0",
+      "validation": "passed"
+    },
+    {
+      "venv": "general_transformers_Bench/environments/florence/.venv",
+      "python": "3.11.15",
+      "torch": "2.15.0+cu132",
+      "torch_cuda_runtime": "13.2",
+      "validation": "passed"
+    }
+  ]
+}
