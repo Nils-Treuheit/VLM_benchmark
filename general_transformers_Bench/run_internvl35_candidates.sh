@@ -107,7 +107,11 @@ for slug in molmo2_8b paligemma2_mix_224 florence2_large_ft; do
         echo "Completed baseline output is missing: $BASELINE_DIR/$slug/results.json" >&2
         exit 1
     fi
-    ln -sfn "$BASELINE_DIR/$slug" "$RUN_DIR/$slug"
+    if [[ -L "$RUN_DIR/$slug" ]]; then
+        rm "$RUN_DIR/$slug"
+    fi
+    mkdir -p "$RUN_DIR/$slug"
+    cp -r "$BASELINE_DIR/$slug/." "$RUN_DIR/$slug/"
 done
 
 if [[ -f "$RUN_DIR/internvl35_8b_instruct/results.json" \

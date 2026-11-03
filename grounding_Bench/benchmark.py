@@ -133,6 +133,24 @@ def duplicate_count(parsed: dict[str, Any]) -> int:
     return duplicates
 
 
+def enforce_no_target_policy(task: str, parsed: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
+    no_target_records = [record for record in parsed.get("records", []) if record.get("kind") == "none"]
+    if not no_target_records:
+        return parsed
+    has_target = {
+        "refcocog": True,
+        "screenspot_pro": True,
+        "coco": any(row.get("targets_by_category", {}).values()),
+        "hiertext": bool(row.get("target_boxes")),
+    }[task]
+    parsed["no_target_allowed"] = not has_target
+    if has_target:
+        for record in no_target_records:
+            record["valid"] = False
+        parsed["valid"] = False
+    return parsed
+
+
 def aggregate(task: str, items: list[dict[str, Any]]) -> dict[str, Any]:
     scores = [item.get("scores", {}) for item in items if item.get("status") == "complete"]
     fields = {
@@ -154,7 +172,8 @@ def aggregate(task: str, items: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "n_examples": len(items), "completed": len(scores), "metrics": metrics,
         "mean_latency_s": statistics.mean(latencies) if latencies else None,
-        "malformed": sum(bool(i.get("parse", {}).get("malformed")) or not i.get("parse", {}).get("valid") for i in items),
+        "malformed": sum(bool(i.get("parse", {}).get("malformed")) for i in items),
+        "invalid_outputs": sum(i.get("parse", {}).get("valid") is False for i in items),
         "empty_outputs": sum(bool(i.get("parse", {}).get("empty")) for i in items),
         "truncated": sum(i.get("finish_reason") == "length" for i in items),
         "duplicate_predictions": sum(i.get("duplicate_count", 0) for i in items),
@@ -243,6 +262,9 @@ def coco_official_ap(annotation_file: Path | None, rows: list[dict[str, Any]],
         evaluator.evaluate()
         evaluator.accumulate()
         evaluator.summarize()
+        if float(evaluator.stats[0]) < 0:
+            return {"status": "unsupported", "reason": "sampled image/category pairs contain no evaluable COCO positives",
+                    "image_count": len(set(image_ids))}
         return {"status": "complete", "metric": "COCOeval bbox AP on sampled image/category pairs",
                 "AP": float(evaluator.stats[0]), "AP50": float(evaluator.stats[1]),
                 "AP75": float(evaluator.stats[2]), "detections": len(predictions),
@@ -309,7 +331,7 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
                 with Image.open(row["_image_path"]) as image:
                     record["image_width"], record["image_height"] = image.size
                 response = model.generate(Path(row["_image_path"]), prompt, MAX_TOKENS[model_id])
-                parsed = response["parse"]
+                parsed = enforce_no_target_policy(task, response["parse"], row)
                 record.update({key: value for key, value in response.items() if key != "parse"})
                 record["parse"] = parsed
                 record["duplicate_count"] = duplicate_count(parsed)

@@ -2,7 +2,7 @@
 
 **Evaluation status:** not run
 
-**Generated:** 2026-11-03T16:33:21.537730+00:00
+**Generated:** 2026-11-03T16:38:31.072785+00:00
 
 ## Scope
 
@@ -37,8 +37,8 @@ Dataset: RefCOCOg test; target sample: 100 examples. Measures: Mean IoU and Acc@
 
 | Model | Status | Coverage | Scores | Mean latency | Output rate | Peak whole-device VRAM | Parse issues |
 |---|---|---:|---|---:|---:|---:|---:|
-| `nvidia/LocateAnything-3B` | not run | 0/100 | mean IoU —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
-| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | mean IoU —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
+| `nvidia/LocateAnything-3B` | not run | 0/100 | mean IoU —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
+| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | mean IoU —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
 
 ### Open-vocabulary detection
 
@@ -46,8 +46,8 @@ Dataset: COCO val2017; target sample: 100 examples. Measures: COCOeval AP on sam
 
 | Model | Status | Coverage | Scores | Mean latency | Output rate | Peak whole-device VRAM | Parse issues |
 |---|---|---:|---|---:|---:|---:|---:|
-| `nvidia/LocateAnything-3B` | not run | 0/100 | local F1@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
-| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | local F1@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
+| `nvidia/LocateAnything-3B` | not run | 0/100 | local F1@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
+| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | local F1@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
 
 ### GUI grounding
 
@@ -55,8 +55,8 @@ Dataset: ScreenSpot-Pro test; target sample: 100 examples. Measures: Point-in-ta
 
 | Model | Status | Coverage | Scores | Mean latency | Output rate | Peak whole-device VRAM | Parse issues |
 |---|---|---:|---|---:|---:|---:|---:|
-| `nvidia/LocateAnything-3B` | not run | 0/100 | point-in-target —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
-| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | point-in-target —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
+| `nvidia/LocateAnything-3B` | not run | 0/100 | point-in-target —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
+| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | point-in-target —; Acc@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
 
 ### Text-region detection
 
@@ -64,8 +64,8 @@ Dataset: HierText validation; target sample: 100 examples. Measures: Box-based F
 
 | Model | Status | Coverage | Scores | Mean latency | Output rate | Peak whole-device VRAM | Parse issues |
 |---|---|---:|---|---:|---:|---:|---:|
-| `nvidia/LocateAnything-3B` | not run | 0/100 | F1 —; P —; R — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
-| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | F1 —; P —; R — | — s | — tok/s | — GiB | 0 malformed, 0 truncated, 0 empty, 0 duplicate |
+| `nvidia/LocateAnything-3B` | not run | 0/100 | F1 —; P —; R — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
+| `GroundingPI/GroundAnything-VLM` | not run | 0/100 | F1 —; P —; R — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
 
 ## Selection guide
 
@@ -87,7 +87,7 @@ RefCOCOg reports mean IoU and Acc@IoU 0.5. COCO reports COCOeval AP on the selec
 
 ## Data availability and limitations
 
-No dataset annotations or image assets were found in the inspected local Hugging Face dataset cache at implementation time. No assets were downloaded or copied. The benchmark runner therefore has no measured results yet. Supply legally obtained local dataset exports and image paths using the schema in `README.md`, create shared manifests with `prepare_data.py`, then run both models.
+No dataset annotations or image assets were found in the inspected local Hugging Face dataset cache at implementation time. No assets were downloaded or copied. The runner had no measurements in the initial report. Supply legally obtained local dataset exports and image paths using the schema in `README.md`, create shared manifests with `prepare_data.py`, then run both models.
 RefCOCOg uses its public test split. COCO uses val2017. ScreenSpot-Pro uses test. HierText uses validation, matching the planned protocol. Dataset images and item-level predictions remain local.
 
 ## Runtime and artifacts
@@ -98,6 +98,7 @@ Per-item results preserve the prompt, raw output, canonical predictions, parser 
 
 - [LocateAnything-3B model card](https://huggingface.co/nvidia/LocateAnything-3B)
 - [LocateAnything evaluation](https://github.com/NVlabs/Eagle/tree/main/Embodied)
+- [LocateAnything evaluation data](https://huggingface.co/datasets/Mountchicken/Rex-Omni-EvalData)
 - [GroundAnything-VLM model card](https://huggingface.co/GroundingPI/GroundAnything-VLM)
 - [RefCOCOg](https://github.com/lichengunc/refer)
 - [COCO](https://cocodataset.org/#download)

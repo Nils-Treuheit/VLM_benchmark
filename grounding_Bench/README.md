@@ -10,6 +10,37 @@ The model snapshots and all indexed weight shards are cached locally. The requir
 
 Acquire each dataset under its own terms, then convert the selected split into one JSONL source per task under `data/source/`. Keep all images outside Git. Each row must use normalized `[x1,y1,x2,y2]` coordinates in the range 0–1 and point to a local image path. Image paths can be absolute or relative to this benchmark folder.
 
+`import_datasets.py` converts already available official exports into this schema. It reads the LocateAnything/Rex-Omni `RefCOCOg_test.jsonl` and `COCO.jsonl`, raw ScreenSpot-Pro annotations, the official HierText validation file, and the corresponding local images. It performs no downloads. The standard source layout is documented in the [LocateAnything evaluation guide](https://github.com/NVlabs/Eagle/blob/main/Embodied/evaluation/README.md), and ScreenSpot-Pro publishes its annotation files beside its screenshots.
+
+Write a local license/access review file after checking each dataset's terms:
+
+```json
+{
+  "refcocog": "reviewed terms and intended evaluation use",
+  "coco": "reviewed terms and intended evaluation use",
+  "screenspot_pro": "reviewed terms and intended evaluation use",
+  "hiertext": "reviewed terms and intended evaluation use"
+}
+```
+
+Then import the local exports. This example assumes the folders contain the official files; it does not create them:
+
+```bash
+python3 import_datasets.py \
+  --licenses-file /path/to/checked-licenses.json \
+  --refcocog-jsonl /path/to/EvalData/_annotations/box_eval/RefCOCOg_test.jsonl \
+  --eval-data-root /path/to/EvalData \
+  --coco-jsonl /path/to/EvalData/_annotations/box_eval/COCO.jsonl \
+  --coco-image-root /path/to/EvalData \
+  --coco-instances /path/to/EvalData/coco/instances_val2017.json \
+  --screenspot-annotations /path/to/ScreenSpot-Pro/annotations \
+  --screenspot-images /path/to/ScreenSpot-Pro/images \
+  --hiertext-validation /path/to/HierText/gt/validation.jsonl.gz \
+  --hiertext-images /path/to/HierText/validation
+```
+
+The importer uses word-level HierText regions and axis-aligned boxes. It uses image dimensions from the official annotations or local image headers, checks the COCO category mapping, and records the verified terms in each source sidecar.
+
 Required row fields:
 
 | File | Required fields | Notes |
@@ -68,6 +99,7 @@ Whole-device VRAM is sampled every 0.5 seconds with `nvidia-smi` and includes de
 ## References
 
 - [LocateAnything model and evaluation guide](https://github.com/NVlabs/Eagle/tree/main/Embodied)
+- [LocateAnything evaluation data package](https://huggingface.co/datasets/Mountchicken/Rex-Omni-EvalData)
 - [GroundAnything-VLM and evaluation tools](https://github.com/groundingpi/GroundAnything)
 - [RefCOCO repository](https://github.com/lichengunc/refer)
 - [COCO dataset](https://cocodataset.org/#download)

@@ -64,8 +64,9 @@ def parse_locateanything(raw: str) -> dict[str, Any]:
                 valid = _valid_box(box)
                 records.append({"label": None, "kind": "box", "box_xyxy_norm": box if valid else None,
                                 "point_xy_norm": None, "valid": valid})
+    has_geometry = any(record["kind"] in {"box", "point"} for record in records)
     return {"records": records, "valid": bool(records) and all(r["valid"] for r in records),
-            "empty": not bool(records)}
+            "empty": not has_geometry}
 
 
 def parse_groundanything(raw: str) -> dict[str, Any]:
@@ -104,8 +105,9 @@ def parse_groundanything(raw: str) -> dict[str, Any]:
                 malformed = True
     if not wrappers and re.search(r"<\|object_ref_start\|>|<\|box_start\|>|<\|box_end\|>", raw):
         malformed = True
+    has_geometry = any(record["kind"] in {"box", "point"} for record in records)
     return {"records": records, "valid": bool(records) and all(r["valid"] for r in records) and not malformed,
-            "empty": not bool(records), "malformed": malformed}
+            "empty": not has_geometry, "malformed": malformed}
 
 
 def iou_xyxy(a: list[float], b: list[float]) -> float:

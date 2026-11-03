@@ -52,14 +52,35 @@ def validate_row(task: str, row: dict[str, Any], source: Path, line: int) -> Non
         raise ValueError(f"{source}:{line}: missing required fields: {', '.join(missing)}")
     if not isinstance(row["image"], str) or not row["image"].strip():
         raise ValueError(f"{source}:{line}: image must be a non-empty path")
+    for key in ("phrase", "instruction"):
+        if key in row and (not isinstance(row[key], str) or not row[key].strip()):
+            raise ValueError(f"{source}:{line}: {key} must be a non-empty string")
     if task == "coco":
+        if not isinstance(row["image_id"], int):
+            raise ValueError(f"{source}:{line}: COCO image_id must be an integer")
         categories = row["categories"]
         if not isinstance(categories, list) or not categories:
             raise ValueError(f"{source}:{line}: categories must be a non-empty list")
         if any(not isinstance(item, dict) or not item.get("name") or not item.get("id") for item in categories):
             raise ValueError(f"{source}:{line}: each COCO category must contain numeric id and name")
+        if any(not isinstance(item["id"], int) or not isinstance(item["name"], str) for item in categories):
+            raise ValueError(f"{source}:{line}: COCO category id/name types are invalid")
+        if len({item["name"].casefold() for item in categories}) != len(categories):
+            raise ValueError(f"{source}:{line}: category names must be unique per image")
+        if len({item["id"] for item in categories}) != len(categories):
+            raise ValueError(f"{source}:{line}: COCO category IDs must be unique per image")
         if not isinstance(row["targets_by_category"], dict):
             raise ValueError(f"{source}:{line}: targets_by_category must map category names to xyxy boxes")
+        if set(row["targets_by_category"]) != {item["name"] for item in categories}:
+            raise ValueError(f"{source}:{line}: targets_by_category keys must match the requested categories")
+        for boxes in row["targets_by_category"].values():
+            if not isinstance(boxes, list):
+                raise ValueError(f"{source}:{line}: each category target must be a list of boxes")
+            for box in boxes:
+                if not isinstance(box, list) or len(box) != 4 or not all(isinstance(v, (int, float)) for v in box):
+                    raise ValueError(f"{source}:{line}: each COCO target must be a normalized xyxy box")
+                if not 0 <= box[0] < box[2] <= 1 or not 0 <= box[1] < box[3] <= 1:
+                    raise ValueError(f"{source}:{line}: each COCO target must be an ordered normalized box")
     for key in ("target_box",):
         if key in row:
             box = row[key]
@@ -71,8 +92,15 @@ def validate_row(task: str, row: dict[str, Any], source: Path, line: int) -> Non
     if not isinstance(boxes, list):
         raise ValueError(f"{source}:{line}: target_boxes must be a list")
     for box in boxes:
-        if not isinstance(box, list) or len(box) != 4 or not 0 <= box[0] < box[2] <= 1 or not 0 <= box[1] < box[3] <= 1:
+        if (not isinstance(box, list) or len(box) != 4
+                or not all(isinstance(v, (int, float)) for v in box)
+                or not 0 <= box[0] < box[2] <= 1 or not 0 <= box[1] < box[3] <= 1):
             raise ValueError(f"{source}:{line}: each target_boxes entry must be a normalized xyxy box")
+    if "target_point" in row:
+        point = row["target_point"]
+        if (not isinstance(point, list) or len(point) != 2
+                or not all(isinstance(v, (int, float)) and 0 <= v <= 1 for v in point)):
+            raise ValueError(f"{source}:{line}: target_point must be normalized [x,y]")
 
 
 def select_rows(task: str, source: Path, count: int, seed: int) -> list[dict[str, Any]]:
@@ -83,11 +111,17 @@ def select_rows(task: str, source: Path, count: int, seed: int) -> list[dict[str
         raise ValueError(f"{task}: source has {len(rows)} rows; {count} are required")
     indices = sorted(random.Random(seed).sample(range(len(rows)), count))
     selected = []
+    seen_ids: set[str] = set()
     for i, row_index in enumerate(indices):
         row = dict(rows[row_index])
         row["sample_index"] = i
         row["source_row"] = row_index
         row["id"] = str(row.get("id", f"{task}-{row_index}"))
+        if not row["id"]:
+            raise ValueError(f"{task}: row {row_index} has an empty id")
+        if row["id"] in seen_ids:
+            raise ValueError(f"{task}: sampled rows contain duplicate id {row['id']!r}")
+        seen_ids.add(row["id"])
         selected.append(row)
     return selected
 

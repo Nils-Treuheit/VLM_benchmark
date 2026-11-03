@@ -24,6 +24,7 @@ TASKS = {
 REFERENCES = {
     "LocateAnything-3B model card": "https://huggingface.co/nvidia/LocateAnything-3B",
     "LocateAnything evaluation": "https://github.com/NVlabs/Eagle/tree/main/Embodied",
+    "LocateAnything evaluation data": "https://huggingface.co/datasets/Mountchicken/Rex-Omni-EvalData",
     "GroundAnything-VLM model card": "https://huggingface.co/GroundingPI/GroundAnything-VLM",
     "RefCOCOg": "https://github.com/lichengunc/refer",
     "COCO": "https://cocodataset.org/#download",
@@ -79,6 +80,7 @@ def assemble(runs: dict[str, dict[str, Any]]) -> dict[str, Any]:
                 "mean_output_tokens_per_s": _mean_output_rate(task_result.get("items", [])),
                 "peak_whole_device_vram_gib": summary.get("peak_whole_device_vram_gib"),
                 "malformed": summary.get("malformed", 0),
+                "invalid_outputs": summary.get("invalid_outputs", 0),
                 "empty_outputs": summary.get("empty_outputs", 0),
                 "truncated": summary.get("truncated", 0),
                 "duplicate_predictions": summary.get("duplicate_predictions", 0),
@@ -106,10 +108,13 @@ def assemble(runs: dict[str, dict[str, Any]]) -> dict[str, Any]:
         candidates = [m for m in models if m["tasks"][task]["status"] == "complete"
                       and m["tasks"][task]["primary_score"] is not None]
         task_winners[task] = max(candidates, key=lambda m: m["tasks"][task]["primary_score"], default=None)
+    tested_model_count = sum(1 for m in models if any(t["completed"] for t in m["tasks"].values()))
+    manifests_present = any(bool(run.get("sampling", {}).get("tasks")) for run in runs.values())
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": "complete" if winner else "not run" if not runs else "partial",
-        "tested_model_count": sum(1 for m in models if any(t["completed"] for t in m["tasks"].values())),
+        "tested_model_count": tested_model_count,
+        "data_status": "local manifests used" if manifests_present else "not present in inspected cache",
         "candidate_model_count": len(MODEL_ORDER),
         "sample_count_per_task": 100,
         "seed": 3407,
@@ -189,7 +194,7 @@ def write_report(data: dict[str, Any]) -> None:
                          f"{score_text} | {fmt(task_result['mean_latency_s'])} s | "
                          f"{fmt(task_result['mean_output_tokens_per_s'])} tok/s | "
                          f"{fmt(task_result['peak_whole_device_vram_gib'])} GiB | "
-                         f"{task_result['malformed']} malformed, {task_result['truncated']} truncated, "
+                      f"{task_result['malformed']} malformed, {task_result['invalid_outputs']} invalid, {task_result['truncated']} truncated, "
                          f"{task_result['empty_outputs']} empty, {task_result['duplicate_predictions']} duplicate |")
         lines.append("")
     lines.extend([
@@ -226,10 +231,13 @@ def write_report(data: dict[str, Any]) -> None:
         "outputs are counted. Whole-device VRAM includes the desktop baseline.",
         "",
         "## Data availability and limitations", "",
-        "No dataset annotations or image assets were found in the inspected local Hugging Face dataset cache "
-        "at implementation time. No assets were downloaded or copied. The benchmark runner therefore has no "
-        "measured results yet. Supply legally obtained local dataset exports and image paths using the schema "
-        "in `README.md`, create shared manifests with `prepare_data.py`, then run both models.",
+        ("No dataset annotations or image assets were found in the inspected local Hugging Face dataset cache "
+         "at implementation time. No assets were downloaded or copied. The runner had no measurements in the "
+         "initial report. Supply legally obtained local dataset exports and image paths using the schema in "
+         "`README.md`, create shared manifests with `prepare_data.py`, then run both models." if not data["tested_model_count"] else
+         f"Local manifests were used for these runs. Dataset images and item-level annotations were not copied "
+         f"into the site. {data['tested_model_count']} model(s) have at least one completed example; partial "
+         "and failed coverage remains visible in the scorecards."),
         "RefCOCOg uses its public test split. COCO uses val2017. ScreenSpot-Pro uses test. HierText uses "
         "validation, matching the planned protocol. Dataset images and item-level predictions remain local.",
         "",

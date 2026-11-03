@@ -11,13 +11,13 @@
   $("#hero-meta").innerHTML = [
     `<span class="pill">Updated ${esc(Number.isNaN(date.valueOf()) ? data.generated_at : date.toLocaleString())}</span>`,
     `<span class="pill">${data.tested_model_count} tested · ${data.candidate_model_count} candidates</span>`,
-    `<span class="pill">${data.sample_count_per_task} examples per task · seed ${data.seed}</span>`,
+    `<span class="pill">${data.sample_count_per_task} planned examples per task · seed ${data.seed}</span>`,
     `<span class="pill">${esc(data.runtime_summary)}</span>`,
     status(data.status)
   ].join("");
   $("#summary").innerHTML = [
     `<article class="card"><div class="label">Model coverage</div><div class="value">${data.tested_model_count} / ${data.candidate_model_count}</div><p>Tested checkpoints / pinned candidates. Every task keeps its own coverage.</p></article>`,
-    `<article class="card"><div class="label">Task coverage</div><div class="value">${Object.keys(data.tasks).length} × ${data.sample_count_per_task}</div><p>RefCOCOg, COCO, ScreenSpot-Pro, and HierText; samples are shared across models.</p></article>`
+    `<article class="card"><div class="label">Task plan</div><div class="value">${Object.keys(data.tasks).length} × ${data.sample_count_per_task} planned</div><p>RefCOCOg, COCO, ScreenSpot-Pro, and HierText; samples are shared across models.</p></article>`
   ].join("");
   const complete = data.best_complete;
   const overallCopy = complete
@@ -45,7 +45,7 @@
   $("#task-results").innerHTML = Object.entries(data.tasks).map(([taskId, task]) => {
     const rows = data.models.map((model) => {
       const result = model.tasks[taskId];
-      return `<tr><td>${esc(model.model_id)}</td><td>${status(result.status)}</td><td>${result.completed}/${task.n}</td><td class="metric">${scoreCells(taskId, result)}</td><td>${num(result.mean_latency_s * 1000, 0)} ms</td><td>${num(result.peak_whole_device_vram_gib)} GiB</td><td>${result.malformed} malformed<br>${result.truncated} truncated<br>${result.empty_outputs} empty<br>${result.duplicate_predictions} duplicate</td></tr>`;
+      return `<tr><td>${esc(model.model_id)}</td><td>${status(result.status)}</td><td>${result.completed}/${task.n}</td><td class="metric">${scoreCells(taskId, result)}</td><td>${result.mean_latency_s == null ? "—" : `${num(result.mean_latency_s * 1000, 0)} ms`}</td><td>${num(result.peak_whole_device_vram_gib)} GiB</td><td>${result.malformed} malformed<br>${result.invalid_outputs} invalid<br>${result.truncated} truncated<br>${result.empty_outputs} empty<br>${result.duplicate_predictions} duplicate</td></tr>`;
     }).join("");
     return `<article class="task-card"><h3>${esc(task.label)}</h3><p class="subhead">${esc(task.split)} · target ${task.n} examples · ${esc(task.measure)}</p><div class="table-wrap" tabindex="0" role="region" aria-label="${esc(task.label)} results table"><table><caption>${esc(task.label)} scorecard; unsorted model rows are shown because runs may be incomplete.</caption><thead><tr><th scope="col">Model</th><th scope="col">Status</th><th scope="col">Coverage</th><th scope="col">Score</th><th scope="col">Mean latency</th><th scope="col">Peak VRAM</th><th scope="col">Output issues</th></tr></thead><tbody>${rows}</tbody></table></div></article>`;
   }).join("");
@@ -53,6 +53,6 @@
     `<tr><td>${esc(model.model_id)}</td><td>${esc(data.tasks[taskId].label)}</td><td>${status(task.status)}</td><td>${task.mean_latency_s == null ? "—" : `${num(task.mean_latency_s * 1000, 0)} ms`}</td><td>${num(task.mean_output_tokens_per_s, 2)} tok/s</td><td>${num(task.peak_whole_device_vram_gib)} GiB</td></tr>`).join("")).join("");
   const metadataRows = data.models.map((model) => `<tr><td>${esc(model.model_id)}</td><td><code>${esc(model.revision || "not run")}</code></td><td>${esc(model.backend || "not run")}</td><td>${esc(model.precision || "—")}</td><td>${esc(model.generation_mode || "—")}</td><td>${num(model.model_load_peak_whole_device_vram_gib)} GiB</td><td>${esc(Object.entries(model.package_versions || {}).filter(([,v]) => v).map(([k,v]) => `${k} ${v}`).join(" · ") || "not recorded")}</td></tr>`).join("");
   $("#runtime-results").innerHTML = `<div class="table-wrap" tabindex="0" role="region" aria-label="Model runtime metadata"><table><caption>Checkpoint and runtime metadata. Package versions describe the client runner; GroundAnything model load occurs before this client run.</caption><thead><tr><th scope="col">Model</th><th scope="col">Revision</th><th scope="col">Backend</th><th scope="col">Precision</th><th scope="col">Generation mode</th><th scope="col">Load peak VRAM</th><th scope="col">Runner package versions</th></tr></thead><tbody>${metadataRows}</tbody></table></div><div class="table-wrap" tabindex="0" role="region" aria-label="Runtime results table" style="margin-top:12px"><table><caption>Per-task runtime; blank fields mean no recorded measurement.</caption><thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col">Status</th><th scope="col">Mean latency</th><th scope="col">Output rate</th><th scope="col">Peak VRAM</th></tr></thead><tbody>${runtimeRows}</tbody></table></div>`;
-  $("#limitations-content").innerHTML = `<p>${data.tested_model_count ? "Partial runs and failures remain visible in the scorecards." : "No annotations or image assets were found in the inspected local Hugging Face dataset cache when this report was generated. No assets were downloaded or copied."} Dataset assets and item-level results stay local. The scorecards use the fixed sample and task-specific metrics described above. The full report links to per-item run artifacts and runtime details.</p>`;
+  $("#limitations-content").innerHTML = `<p>${data.data_status === "local manifests used" ? "Local manifests were used for these runs. Partial runs and failures remain visible in the scorecards." : "No annotations or image assets were found in the inspected local Hugging Face dataset cache when this report was generated. No assets were downloaded or copied."} Dataset assets and item-level results stay local. The scorecards use the fixed sample and task-specific metrics described above. The full report links to per-item run artifacts and runtime details.</p>`;
   $("#source-links").innerHTML = Object.entries(data.references).map(([label, url]) => `<li><a href="${esc(url)}" rel="noreferrer">${esc(label)}</a></li>`).join("");
 })();

@@ -19,6 +19,7 @@ function render(data) {
   const unrun = data.planned_candidates_not_run || [];
   const execution = data.execution || {};
   const full = models.filter(m => m.full_benchmark_complete && m.full_benchmark_macro != null);
+  const banner = $('report-status'); banner.hidden = true; banner.textContent = '';
   $('generated').textContent = `Updated ${data.generated_at || '—'}`;
   $('runtime-version').textContent = [...new Set(models.map(m => `Transformers ${m.runtime_versions?.transformers || '—'} · CUDA ${m.runtime_versions?.torch_cuda || '—'}`))].join(' · ');
   $('run-state').textContent = `${full.length}/${data.planned_candidate_count || models.length} planned candidates fully measured`;
@@ -83,10 +84,16 @@ function render(data) {
   notes.push('<li>Florence uses a separate Transformers 4.44.2 environment. Its unregistered &lt;VQA&gt; path is only scored after real-image AI2D and TextVQA preflights pass. Exact option-text matches are normalized to choice labels; raw output stays in per-item results.</li>');
   $('limitations').innerHTML = `<ul>${notes.join('')}</ul>`;
 
-  const candidateRows = unrun.map(m=>`<tr><td class="model">${esc(m.model_id)}</td><td>${esc(m.cache_status||'unknown')}</td><td>${esc(m.status)}</td><td>${esc(m.reason)}</td></tr>`);
-  table('candidate-table','Planned candidates without measured runs',['Model','Cache status','Run status','Reason'],candidateRows);
+  if (unrun.length) {
+    const candidateRows = unrun.map(m=>`<tr><td class="model">${esc(m.model_id)}</td><td>${esc(m.cache_status||'unknown')}</td><td>${esc(m.status)}</td><td>${esc(m.reason)}</td></tr>`);
+    table('candidate-table','Planned candidates without measured runs',['Model','Cache status','Run status','Reason'],candidateRows);
+  } else {
+    $('candidate-table').innerHTML = '<div class="panel empty">All planned candidates have complete scored runs.</div>';
+  }
 }
 
-fetch('data.json').then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+const dataUrl = new URL('data.json', window.location.href);
+dataUrl.searchParams.set('refresh', Date.now().toString());
+fetch(dataUrl, {cache:'no-store'}).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
   .then(render)
   .catch(error => { $('report-status').hidden = false; $('report-status').className = 'status-banner'; $('report-status').textContent = `Report data has not been generated yet (${error.message}).`; });
