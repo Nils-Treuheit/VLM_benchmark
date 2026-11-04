@@ -8,8 +8,10 @@ uses its documented model-specific OpenAI-compatible SGLang endpoint.
 from __future__ import annotations
 
 import base64
+import inspect
 import json
 import mimetypes
+import sys
 import time
 import urllib.error
 import urllib.request
@@ -47,6 +49,13 @@ def snapshot_for(model_id: str, hf_home: Path | None = None) -> tuple[Path, str]
 
 
 def prompt_for(model_id: str, task: str, row: dict[str, Any]) -> str:
+    if task in {"vqa_count", "vqa_truth", "vqa_description", "textvqa"}:
+        instruction = ("Read the text in the image as needed and answer the question. "
+                       "Return only the shortest exact answer, with no explanation or alternatives."
+                       if task == "textvqa" else
+                       "Answer the question based on the image. Return only the shortest direct answer, "
+                       "with no explanation or alternatives.")
+        return f"{row['question']}\n{instruction}"
     if model_id == LOCATE_ID:
         if task == "refcocog":
             return f"Locate a single instance that matches the following description: {row['phrase']}."
@@ -71,14 +80,75 @@ def prompt_for(model_id: str, task: str, row: dict[str, Any]) -> str:
 class LocateAnythingAdapter:
     def __init__(self, snapshot: Path):
         import torch
-        from transformers import AutoModel, AutoProcessor, AutoTokenizer
+        from transformers import AutoConfig, AutoModel, AutoProcessor, AutoTokenizer
+        from transformers.dynamic_module_utils import get_class_from_dynamic_module
+        from transformers.modeling_utils import PreTrainedModel
 
         self.torch = torch
         self.processor = AutoProcessor.from_pretrained(str(snapshot), trust_remote_code=True, local_files_only=True)
         self.tokenizer = AutoTokenizer.from_pretrained(str(snapshot), trust_remote_code=True, local_files_only=True)
+        # LocateAnything's pinned remote code predates Transformers 5's
+        # allow_all_kernels argument. Adapt its cached override in memory while
+        # forwarding the new argument to the upstream implementation.
+        config = AutoConfig.from_pretrained(str(snapshot), trust_remote_code=True, local_files_only=True)
+        serialized_config = json.loads((snapshot / "config.json").read_text(encoding="utf-8"))
+        saved_rope_theta = serialized_config.get("text_config", {}).get("rope_theta")
+        if not hasattr(config.text_config, "rope_theta"):
+            if saved_rope_theta is None:
+                raise RuntimeError("pinned LocateAnything config has no legacy Qwen2 rope_theta value")
+            # Transformers 5 normalizes this legacy field into rope_parameters;
+            # the pinned custom Qwen2 implementation still reads rope_theta.
+            config.text_config.rope_theta = saved_rope_theta
+        model_reference = config.auto_map.get("AutoModel")
+        if isinstance(model_reference, (list, tuple)):
+            model_reference = model_reference[-1]
+        def patch_attention_override(model_class: type, base_name: str) -> None:
+            custom_base = next(
+                (cls for cls in model_class.__mro__ if cls.__name__ == base_name), None,
+            )
+            if custom_base is None:
+                raise RuntimeError(f"{base_name} was not found in the pinned model snapshot")
+            original_check = custom_base._check_and_adjust_attn_implementation
+            if "allow_all_kernels" not in inspect.signature(original_check).parameters:
+                def compatible_check(self, attn_implementation, is_init_check=False, allow_all_kernels=False):
+                    if attn_implementation == "magi":
+                        return "magi"
+                    upstream_check = super(custom_base, self)._check_and_adjust_attn_implementation
+                    upstream_parameters = inspect.signature(upstream_check).parameters
+                    if "allow_all_kernels" in upstream_parameters:
+                        return upstream_check(
+                            attn_implementation, is_init_check, allow_all_kernels=allow_all_kernels,
+                        )
+                    return upstream_check(attn_implementation, is_init_check)
+
+                custom_base._check_and_adjust_attn_implementation = compatible_check
+
+            legacy_tied_keys = model_class.__dict__.get("_tied_weights_keys")
+            if isinstance(legacy_tied_keys, list) and hasattr(PreTrainedModel, "get_expanded_tied_weights_keys"):
+                if legacy_tied_keys != ["lm_head.weight"] or base_name != "Qwen2PreTrainedModel":
+                    raise RuntimeError(f"unsupported legacy tied-weight declaration on {model_class.__name__}")
+                model_class._tied_weights_keys = {"lm_head.weight": "model.embed_tokens.weight"}
+
+        model_class = get_class_from_dynamic_module(
+            model_reference, str(snapshot), local_files_only=True,
+        )
+        patch_attention_override(model_class, "LocateAnythingPreTrainedModel")
+        # Patch the Qwen class imported by LocateAnything's actual dynamic module
+        # so this is the same Python class used during model construction.
+        model_module = sys.modules[model_class.__module__]
+        qwen_model_class = getattr(model_module, "Qwen2ForCausalLM")
+        patch_attention_override(qwen_model_class, "Qwen2PreTrainedModel")
+        original_init = model_class.__init__
+        if (not hasattr(model_class, "all_tied_weights_keys")
+                and hasattr(PreTrainedModel, "get_expanded_tied_weights_keys")):
+            def init_with_tied_weight_metadata(self, *args, **kwargs):
+                original_init(self, *args, **kwargs)
+                self.all_tied_weights_keys = self.get_expanded_tied_weights_keys(all_submodels=True)
+
+            model_class.__init__ = init_with_tied_weight_metadata
         self.model = AutoModel.from_pretrained(
             str(snapshot), trust_remote_code=True, local_files_only=True,
-            torch_dtype=torch.bfloat16,
+            config=config, torch_dtype=torch.bfloat16,
         ).to("cuda:0").eval()
         self.device = "cuda:0"
         self.mode = "hybrid"

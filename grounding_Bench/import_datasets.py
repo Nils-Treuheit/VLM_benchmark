@@ -161,6 +161,7 @@ def import_hiertext(source: Path, image_root: Path) -> list[dict[str, Any]]:
         if image_size(image_path) != (width, height):
             raise ValueError(f"HierText annotation dimensions disagree with image: {image_path}")
         boxes = []
+        text_targets = []
         for paragraph in item.get("paragraphs", []):
             for line in paragraph.get("lines", []):
                 for word in line.get("words", []):
@@ -169,7 +170,11 @@ def import_hiertext(source: Path, image_root: Path) -> list[dict[str, Any]]:
                     box = polygon_box(word.get("vertices", []), width, height)
                     if box:
                         boxes.append(box)
-        rows.append({"id": f"hiertext-{image_id}", "image": str(image_path), "target_boxes": boxes})
+                        text = re.sub(r"\s+", " ", str(word.get("text", ""))).strip()
+                        if text:
+                            text_targets.append({"text": text, "box_xyxy_norm": box})
+        rows.append({"id": f"hiertext-{image_id}", "image": str(image_path),
+                     "target_boxes": boxes, "target_texts": text_targets})
     return rows
 
 

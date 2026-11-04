@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import os
+import re
 import statistics
 import subprocess
 import sys
@@ -22,7 +24,10 @@ sys.path.insert(0, str(HERE))
 import model_adapters as adapters  # noqa: E402
 import scoring  # noqa: E402
 
-TASKS = ("refcocog", "coco", "screenspot_pro", "hiertext")
+BASE_TASKS = ("refcocog", "coco", "screenspot_pro", "hiertext")
+AUX_TASKS = ("vqa_count", "vqa_truth", "vqa_description", "textvqa")
+TASKS = (*BASE_TASKS, *AUX_TASKS)
+TEXT_TASKS = set(AUX_TASKS)
 MODEL_IDS = (adapters.LOCATE_ID, adapters.GROUND_ID)
 SEED = 3407
 SAMPLE_COUNT = 100
@@ -68,11 +73,14 @@ class WholeDeviceMemory:
         return round(self.peak_mib / 1024, 3) if self.peak_mib is not None else None
 
 
-def load_manifest(path: Path, task: str, count: int) -> list[dict[str, Any]]:
+def load_manifest(path: Path, task: str, count: int | None = None) -> list[dict[str, Any]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if payload.get("task") != task:
         raise ValueError(f"{path} declares task={payload.get('task')!r}, expected {task!r}")
     rows = payload.get("examples")
+    count = count if count is not None else payload.get("sample_count")
+    if not isinstance(count, int) or count < 1:
+        raise ValueError(f"{path} must declare a positive sample_count")
     if not isinstance(rows, list) or len(rows) != count:
         raise ValueError(f"{path} must contain exactly {count} sampled examples")
     if payload.get("sample_count") != count:
@@ -84,7 +92,17 @@ def load_manifest(path: Path, task: str, count: int) -> list[dict[str, Any]]:
         if not image_path.is_file():
             raise FileNotFoundError(f"local image is missing: {image_path}")
         row["_image_path"] = str(image_path)
+        if task in TEXT_TASKS and (not row.get("question") or not isinstance(row.get("answers"), list) or not row["answers"]):
+            raise ValueError(f"{path}: every {task} row needs a question and reference answer list")
     return rows
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def score_item(task: str, parsed: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
@@ -96,15 +114,27 @@ def score_item(task: str, parsed: dict[str, Any], row: dict[str, Any]) -> dict[s
         predicted = [r["box_xyxy_norm"] for r in parsed["records"]
                     if r["kind"] == "box" and r["valid"]]
         counts = scoring.match_boxes(predicted, row["target_boxes"])
-        return {**counts, **scoring.f1_counts(**counts)}
+        ocr = scoring.score_ocr_words(parsed["records"], row.get("target_texts", []))
+        return {**counts, **scoring.f1_counts(**counts), **ocr}
+    if task in TEXT_TASKS:
+        answer = parsed.get("answer", "")
+        prediction = scoring.normalize_vqa_answer(answer)
+        canonical = scoring.normalize_vqa_answer(row.get("canonical_answer", ""))
+        return {"vqa_score": scoring.vqa_consensus_score(answer, row["answers"]),
+                "exact_match": (float(bool(prediction) and prediction == canonical) if canonical else None),
+                "count_exact_match": (float(bool(canonical) and prediction == canonical) if task == "vqa_count" else None),
+                "prediction_normalized": prediction}
     if task == "coco":
         tp = fp = fn = 0
         by_category = {}
+        aliases = {str(alias).casefold(): str(name).casefold()
+                   for alias, name in row.get("prediction_aliases", {}).items()}
         for category in row["categories"]:
             name = category["name"]
             targets = row["targets_by_category"].get(str(name), [])
             predicted = [r["box_xyxy_norm"] for r in parsed["records"]
-                         if r["kind"] == "box" and r["valid"] and (r.get("label") or "").casefold() == str(name).casefold()]
+                         if r["kind"] == "box" and r["valid"]
+                         and aliases.get((r.get("label") or "").casefold(), (r.get("label") or "").casefold()) == str(name).casefold()]
             counts = scoring.match_boxes(predicted, targets)
             by_category[str(name)] = {**counts, **scoring.f1_counts(**counts)}
             tp += counts["tp"]
@@ -112,13 +142,26 @@ def score_item(task: str, parsed: dict[str, Any], row: dict[str, Any]) -> dict[s
             fn += counts["fn"]
         expected_labels = {str(category["name"]).casefold() for category in row["categories"]}
         unknown_labels = [r.get("label") for r in parsed["records"] if r["kind"] == "box"
-                          and (r.get("label") or "").casefold() not in expected_labels]
+                          and aliases.get((r.get("label") or "").casefold(), (r.get("label") or "").casefold()) not in expected_labels]
         fp += len(unknown_labels)
         return {**{f"micro_{k}": v for k, v in scoring.f1_counts(tp, fp, fn).items()},
                 "tp": tp, "fp": fp, "fn": fn, "by_category": by_category,
                 "category_mapping_supported": not unknown_labels,
                 "unknown_label_predictions": len(unknown_labels)}
     raise ValueError(task)
+
+
+def plain_answer(raw: str) -> str:
+    value = raw.strip()
+    if "</think>" in value:
+        value = value.rsplit("</think>", 1)[-1].strip()
+    answer_match = list(re.finditer(r"(?im)^\s*(?:final\s+)?answer\s*:\s*(.+?)\s*$", value))
+    if answer_match:
+        value = answer_match[-1].group(1)
+    else:
+        value = next((line.strip() for line in reversed(value.splitlines()) if line.strip()), "")
+    value = re.sub(r"<\|(?:im_end|fim_suffix|end_of_task)\|>", "", value).strip()
+    return value.strip("`\"' ")
 
 
 def duplicate_count(parsed: dict[str, Any]) -> int:
@@ -134,6 +177,8 @@ def duplicate_count(parsed: dict[str, Any]) -> int:
 
 
 def enforce_no_target_policy(task: str, parsed: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
+    if task in TEXT_TASKS:
+        return parsed
     no_target_records = [record for record in parsed.get("records", []) if record.get("kind") == "none"]
     if not no_target_records:
         return parsed
@@ -153,18 +198,32 @@ def enforce_no_target_policy(task: str, parsed: dict[str, Any], row: dict[str, A
 
 def aggregate(task: str, items: list[dict[str, Any]]) -> dict[str, Any]:
     scores = [item.get("scores", {}) for item in items if item.get("status") == "complete"]
-    fields = {
+    fields = (("vqa_score", "exact_match", "count_exact_match") if task in TEXT_TASKS else {
         "refcocog": ("iou", "acc_iou_05"),
         "screenspot_pro": ("point_in_target", "acc_iou_05", "best_box_iou"),
         "hiertext": ("precision", "recall", "f1"),
         "coco": ("micro_precision", "micro_recall", "micro_f1"),
-    }[task]
+    }[task])
     if task in {"hiertext", "coco"}:
         count_keys = ("tp", "fp", "fn")
         totals = {key: sum(int(s.get(key, 0)) for s in scores) for key in count_keys}
         counts = scoring.f1_counts(**totals)
         metrics = ({name: counts[name] for name in fields} if task == "hiertext" else
                    {f"micro_{name}": counts[name] for name in ("precision", "recall", "f1")})
+        if task == "hiertext":
+            matched = sum(int(s.get("matched_text_regions", 0)) for s in scores)
+            exact = sum(int(s.get("exact_text_matches", 0)) for s in scores)
+            similarities = [(float(s["normalized_edit_similarity"]), int(s.get("matched_text_regions", 0)))
+                            for s in scores if s.get("normalized_edit_similarity") is not None
+                            and int(s.get("matched_text_regions", 0)) > 0]
+            metrics["ocr_exact_accuracy"] = exact / matched if matched else None
+            metrics["ocr_normalized_edit_similarity"] = (
+                sum(value * count for value, count in similarities) / sum(count for _, count in similarities)
+                if similarities else None)
+            metrics["ocr_matched_text_regions"] = matched
+    elif task in TEXT_TASKS:
+        metrics = {name: statistics.mean(s[name] for s in scores if s.get(name) is not None)
+                   if any(s.get(name) is not None for s in scores) else None for name in fields}
     else:
         metrics = {name: statistics.mean(s[name] for s in scores if s.get(name) is not None)
                    if any(s.get(name) is not None for s in scores) else None for name in fields}
@@ -207,12 +266,15 @@ def coco_official_ap(annotation_file: Path | None, rows: list[dict[str, Any]],
             row_categories[str(category["name"]).casefold()] = category_id
             requested_pairs.add((image_id, category_id))
             requested_category_ids.add(category_id)
+        aliases = {str(alias).casefold(): str(name).casefold()
+                   for alias, name in row.get("prediction_aliases", {}).items()}
+        for alias, name in aliases.items():
+            if name in row_categories:
+                row_categories[alias] = row_categories[name]
         item = item_by_id.get(str(row["id"]))
         if not item or item.get("status") != "complete":
             continue
         parsed = item.get("parse", {})
-        if not parsed.get("valid"):
-            continue
         width, height = item.get("image_width"), item.get("image_height")
         if not width or not height:
             continue
@@ -275,23 +337,25 @@ def coco_official_ap(annotation_file: Path | None, rows: list[dict[str, Any]],
 
 
 def release_local() -> None:
-    executor = ROOT / ".agentic_workflow" / "src" / "executor.py"
+    workflow = ROOT / ".agentic_workflow"
+    executor = workflow / "src" / "executor.py"
     if not executor.is_file():
         raise FileNotFoundError(f"required local engine release helper is missing: {executor}")
-    subprocess.run([sys.executable, str(executor), "release-local"], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, "src/executor.py", "release-local"], cwd=workflow, check=True)
 
 
 def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], tasks: list[str],
               output_path: Path, resume: bool, ground_base_url: str,
-              coco_annotations: Path | None, data_provenance: dict[str, Any]) -> dict[str, Any]:
+              coco_annotations: Path | None, data_provenance: dict[str, Any],
+              max_new_tokens: int | None) -> dict[str, Any]:
     snapshot, revision = adapters.snapshot_for(model_id)
     prior = {}
     if resume and output_path.is_file():
         prior = json.loads(output_path.read_text(encoding="utf-8"))
         if prior.get("sampling") != data_provenance:
             raise ValueError(f"cannot resume {output_path}: manifest provenance differs from the existing run")
+    release_local()
     if model_id == adapters.LOCATE_ID:
-        release_local()
         load_memory = WholeDeviceMemory()
         load_memory.start()
         model = adapters.LocateAnythingAdapter(snapshot)
@@ -308,6 +372,10 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         "backend": model.backend, "precision": model.precision, "generation_mode": model.mode,
         "client_package_versions": adapters.package_versions(), "service_inventory": service_inventory,
         "model_load_peak_whole_device_vram_gib": load_peak,
+        "max_new_tokens_by_task": {
+            task: 64 if task in TEXT_TASKS else max_new_tokens or MAX_TOKENS[model_id]
+            for task in tasks
+        },
         "sampling": data_provenance,
         "tasks": prior.get("tasks", {}), "status": "running",
     }
@@ -330,8 +398,13 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
                 from PIL import Image
                 with Image.open(row["_image_path"]) as image:
                     record["image_width"], record["image_height"] = image.size
-                response = model.generate(Path(row["_image_path"]), prompt, MAX_TOKENS[model_id])
-                parsed = enforce_no_target_policy(task, response["parse"], row)
+                max_tokens = 64 if task in TEXT_TASKS else max_new_tokens or MAX_TOKENS[model_id]
+                response = model.generate(Path(row["_image_path"]), prompt, max_tokens)
+                if task in TEXT_TASKS:
+                    answer = plain_answer(response.get("raw_output", ""))
+                    parsed = {"answer": answer, "records": [], "valid": bool(answer), "empty": not bool(answer)}
+                else:
+                    parsed = enforce_no_target_policy(task, response["parse"], row)
                 record.update({key: value for key, value in response.items() if key != "parse"})
                 record["parse"] = parsed
                 record["duplicate_count"] = duplicate_count(parsed)
@@ -368,7 +441,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=HERE / "data" / "manifests")
     parser.add_argument("--output-dir", type=Path, default=HERE / "results" / "runs")
-    parser.add_argument("--samples", type=int, default=SAMPLE_COUNT)
+    parser.add_argument("--samples", type=int, default=None,
+                        help="optional exact count required from each manifest; by default use each manifest's count")
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--tasks", nargs="+", choices=TASKS, default=list(TASKS))
     parser.add_argument("--models", nargs="+", choices=MODEL_IDS, default=[adapters.LOCATE_ID])
@@ -376,6 +450,8 @@ def main() -> int:
     parser.add_argument("--groundanything-base-url", default=adapters.GROUND_BASE_URL)
     parser.add_argument("--coco-annotations", type=Path,
                         help="local instances_val2017.json for COCOeval on the selected images")
+    parser.add_argument("--max-new-tokens", type=int,
+                        help="override the non-answer task output limit; the chosen value is saved in run metadata")
     parser.add_argument("--list-models", action="store_true")
     args = parser.parse_args()
     if args.list_models:
@@ -385,8 +461,11 @@ def main() -> int:
         return 0
     if len(args.models) != 1:
         parser.error("run one model per invocation; finish and release it before starting the other model")
+    if args.max_new_tokens is not None and args.max_new_tokens < 1:
+        parser.error("--max-new-tokens must be a positive integer")
     rows_by_task = {}
-    data_provenance = {"seed": args.seed, "samples_per_task": args.samples, "tasks": {}}
+    data_provenance = {"seed": args.seed, "samples_per_task": args.samples,
+                       "max_new_tokens_override": args.max_new_tokens, "tasks": {}}
     for task in args.tasks:
         manifest = args.data_dir / f"{task}.json"
         if not manifest.is_file():
@@ -398,12 +477,18 @@ def main() -> int:
         data_provenance["tasks"][task] = {
             key: payload.get(key) for key in ("dataset", "split", "source_sha256", "license_or_access_terms", "sample_count")
         }
+        data_provenance["tasks"][task]["manifest_sha256"] = sha256_file(manifest)
+        if task == "coco" and args.coco_annotations:
+            annotation_file = args.coco_annotations.expanduser().resolve()
+            if not annotation_file.is_file():
+                raise FileNotFoundError(f"COCO annotation file not found: {annotation_file}")
+            data_provenance["tasks"][task]["annotation_sha256"] = sha256_file(annotation_file)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for model_id in args.models:
         safe = model_id.replace("/", "--")
         run_model(model_id, rows_by_task, args.tasks,
                   args.output_dir / f"{safe}.json", args.resume, args.groundanything_base_url,
-                  args.coco_annotations, data_provenance)
+                  args.coco_annotations, data_provenance, args.max_new_tokens)
     return 0
 
 

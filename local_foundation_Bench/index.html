@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c1218">
+  <meta name="description" content="Measured comparison of locally cached foundation and GGUF vision-language models.">
+  <title>Local Foundation &amp; GGUF VLM Benchmark</title>
+  <link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Local foundation benchmark home"><img src="assets/mark.svg" alt="LF benchmark mark"><span>Model Bench</span></a>
+    <nav aria-label="Page sections"><a href="#results">Results</a><a href="#method">Method</a><a href="#inventory">Candidate coverage</a><a href="report.md">Full report</a></nav>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow">LOCAL FOUNDATION · GGUF · VISION QA</p>
+      <h1>Local models,<br><span>measured on shared tasks.</span></h1>
+      <p class="hero-copy">A comparison of supported cached checkpoints using the same fixed image and graph tasks, prompts, and scorers.</p>
+      <div class="hero-meta"><span id="updated">Loading results…</span><span id="count">—</span><span id="runtime-versions">Runtime versions loading…</span><span>Serial · one image per request</span><a href="report.md">Source report ↗</a></div>
+    </section>
+
+    <section class="summary-grid" aria-label="Benchmark summary">
+      <article class="summary-card"><span class="label">Scored models</span><strong id="model-count">—</strong><p id="models-note">—</p></article>
+      <article class="summary-card secondary"><span class="label">Task coverage</span><strong>8 tasks · 825 examples</strong><p>AI2D 100 · TextVQA 100 · five VQA panel categories 25 each · GRAB-Lite 500.</p></article>
+    </section>
+
+    <section class="section" id="selection">
+      <div class="section-head"><div><p class="eyebrow">SELECTION GUIDE</p><h2>Complete-run picks</h2><p class="copy">Only models with all 825 scored requests qualify. Task scores are local comparison measures.</p></div></div>
+      <div id="picks" class="pick-grid"></div>
+    </section>
+
+    <section class="panel method" id="method">
+      <div><p class="eyebrow">BENCHMARK METHOD</p><h2>Shared tasks and scoring</h2></div>
+      <div class="method-grid">
+        <article><h3>AI2D · diagram reasoning</h3><p>100 sampled test images, seed 3407. Four-choice questions use exact answer-letter accuracy.</p><a href="https://huggingface.co/datasets/lmms-lab/ai2d" rel="noreferrer">AI2D dataset card ↗</a></article>
+        <article><h3>TextVQA · image text</h3><p>100 validation images, seed 3407. Normalized consensus averages leave-one-reference-out matches.</p><a href="https://huggingface.co/datasets/facebook/textvqa" rel="noreferrer">TextVQA dataset card ↗</a></article>
+        <article><h3>VQA skill panel</h3><p>Truth, counting, visual description, affordance, and negation use 25 fixed examples each. The six-category macro weights OCR equally with these five categories.</p><a href="https://visualqa.org/download.html" rel="noreferrer">VQAv2 ↗</a> · <a href="https://huggingface.co/datasets/RyanWW/PercepTaxBench" rel="noreferrer">PercepTax ↗</a> · <a href="https://arxiv.org/abs/2505.22946" rel="noreferrer">NegVQA ↗</a></article>
+        <article><h3>GRAB-Lite · graph analysis</h3><p>500 fixed test questions across graph properties, functions, series, transformations, and real figures. The score is exact match.</p><a href="https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite" rel="noreferrer">GRAB-Lite data ↗</a></article>
+      </div>
+      <div class="method-footer"><p><b>Sampling:</b> shared fixed examples with seed 3407. Inputs run one at a time without batching.</p><p><b>Prompts:</b> the shared prompts and answer contracts are reused verbatim. Adapters only package the image for each backend.</p><p><b>Runtime:</b> latency covers each generation call. Token throughput uses backend token counters. Whole-device peak VRAM includes desktop baseline.</p><p><b>Macro:</b> the full-suite macro is the unweighted mean of all eight task scores and is withheld unless all 825 requests complete.</p></div>
+    </section>
+
+    <section class="section" id="results">
+      <div class="section-head"><div><p class="eyebrow">01 / QUALITY</p><h2>Task scores</h2><p class="copy">Click a column label to sort. Failed, unsupported, and incomplete checkpoints remain in the coverage inventory below.</p></div><a class="download" href="data.json">Aggregate data ↗</a></div>
+      <div id="score-table" class="table-shell" role="region" aria-label="Sortable task score comparison" tabindex="0"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><p class="eyebrow">02 / RUNTIME</p><h2>Latency, throughput, and memory</h2><p class="copy">Task rows show completion, generation latency, and token throughput. Whole-device peak VRAM is reported per model run because sampling did not reset at task boundaries.</p></div></div>
+      <div id="runtime-table" class="table-shell" role="region" aria-label="Per-task runtime metrics" tabindex="0"></div>
+    </section>
+
+    <section class="section" id="inventory">
+      <div class="section-head"><div><p class="eyebrow">03 / COVERAGE</p><h2>Candidate inventory</h2><p class="copy">Only complete image-question-answering routes with comparable output contracts enter the scored tables.</p></div></div>
+      <div id="inventory-table" class="table-shell" role="region" aria-label="Candidate status inventory" tabindex="0"></div>
+    </section>
+
+    <section class="panel provenance">
+      <div><p class="eyebrow">PROVENANCE &amp; LIMITS</p><h2>Read the evidence with its boundaries</h2></div>
+      <ul id="notes"></ul>
+      <p class="source-link"><a href="report.md">Open the complete benchmark report ↗</a> · <a href="data.json">Download aggregate data</a></p>
+    </section>
+    <footer><span>Local foundation and GGUF VLM benchmark</span><span>Aggregate display only · item outputs remain in results artifacts</span></footer>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

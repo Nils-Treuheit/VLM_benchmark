@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import math
 import re
+import statistics
 from typing import Any
 
 
@@ -162,3 +163,116 @@ def f1_counts(tp: int, fp: int, fn: int) -> dict[str, float]:
     recall = tp / (tp + fn) if tp + fn else (1.0 if fp == 0 else 0.0)
     return {"precision": precision, "recall": recall,
             "f1": 2 * precision * recall / (precision + recall) if precision + recall else 0.0}
+
+
+def normalize_vqa_answer(answer: Any) -> str:
+    """Apply the official VQAv2 punctuation, number, article, and contraction rules."""
+    value = str(answer or "").lower().replace("\n", " ").replace("\t", " ").strip()
+    punctuation = [";", "/", "[", "]", '"', "{", "}", "(", ")", "=", "+", "\\", "_", "-",
+                   ">", "<", "@", "`", ",", "?", "!"]
+    comma_between_digits = re.search(r"(\d),(\d)", value) is not None
+    for char in punctuation:
+        if f"{char} " in value or f" {char}" in value or comma_between_digits:
+            value = value.replace(char, "")
+        else:
+            value = value.replace(char, " ")
+    value = re.sub(r"(?<!\d)\.(?!\d)", "", value)
+    number_words = {"none": "0", "zero": "0", "one": "1", "two": "2", "three": "3", "four": "4",
+                    "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10"}
+    contractions = {
+        "aint": "ain't", "arent": "aren't", "cant": "can't", "couldve": "could've", "couldnt": "couldn't",
+        "couldn'tve": "couldn't've", "couldnt've": "couldn't've", "didnt": "didn't", "doesnt": "doesn't",
+        "dont": "don't", "hadnt": "hadn't", "hadnt've": "hadn't've", "hadn'tve": "hadn't've",
+        "hasnt": "hasn't", "havent": "haven't", "hed": "he'd", "hed've": "he'd've", "he'dve": "he'd've",
+        "hes": "he's", "howd": "how'd", "howll": "how'll", "hows": "how's", "id've": "i'd've",
+        "i'dve": "i'd've", "im": "i'm", "ive": "i've", "isnt": "isn't", "itd": "it'd", "itd've": "it'd've",
+        "it'dve": "it'd've", "itll": "it'll", "its": "it's", "lets": "let's", "maam": "ma'am",
+        "mightnt": "mightn't", "mightnt've": "mightn't've", "mightn'tve": "mightn't've", "mightve": "might've",
+        "mustnt": "mustn't", "mustve": "must've", "neednt": "needn't", "notve": "not've", "oclock": "o'clock",
+        "oughtnt": "oughtn't", "ow's'at": "'ow's'at", "'ows'at": "'ow's'at", "'ow'sat": "'ow's'at",
+        "shant": "shan't", "shed've": "she'd've", "she'dve": "she'd've", "she's": "she's",
+        "shouldve": "should've", "shouldnt": "shouldn't", "shouldnt've": "shouldn't've", "shouldn'tve": "shouldn't've",
+        "somebody'd": "somebodyd", "somebodyd've": "somebody'd've", "somebody'dve": "somebody'd've",
+        "somebodyll": "somebody'll", "somebodys": "somebody's", "someoned": "someone'd",
+        "someoned've": "someone'd've", "someone'dve": "someone'd've", "someonell": "someone'll",
+        "someones": "someone's", "somethingd": "something'd", "somethingd've": "something'd've",
+        "something'dve": "something'd've", "somethingll": "something'll", "thats": "that's",
+        "thered": "there'd", "thered've": "there'd've", "there'dve": "there'd've", "therere": "there're",
+        "theres": "there's", "theyd": "they'd", "theyd've": "they'd've", "they'dve": "they'd've",
+        "theyll": "they'll", "theyre": "they're", "theyve": "they've", "twas": "'twas", "wasnt": "wasn't",
+        "wed've": "we'd've", "we'dve": "we'd've", "weve": "we've", "werent": "weren't", "whatll": "what'll",
+        "whatre": "what're", "whats": "what's", "whatve": "what've", "whens": "when's", "whered": "where'd",
+        "wheres": "where's", "whereve": "where've", "whod": "who'd", "whod've": "who'd've", "who'dve": "who'd've",
+        "wholl": "who'll", "whos": "who's", "whove": "who've", "whyll": "why'll", "whyre": "why're",
+        "whys": "why's", "wont": "won't", "wouldve": "would've", "wouldnt": "wouldn't",
+        "wouldnt've": "wouldn't've", "wouldn'tve": "wouldn't've", "yall": "y'all", "yall'll": "y'all'll",
+        "y'allll": "y'all'll", "yall'd've": "y'all'd've", "y'alld've": "y'all'd've", "y'all'dve": "y'all'd've",
+        "youd": "you'd", "youd've": "you'd've", "you'dve": "you'd've", "youll": "you'll",
+        "youre": "you're", "youve": "you've",
+    }
+    articles = {"a", "an", "the"}
+    words = []
+    for word in value.split():
+        word = number_words.get(word, word)
+        if word not in articles:
+            words.append(contractions.get(word, word))
+    return " ".join(words)
+
+
+def vqa_consensus_score(prediction: str, references: list[Any]) -> float:
+    pred = normalize_vqa_answer(prediction)
+    answers = [normalize_vqa_answer(answer.get("answer", "") if isinstance(answer, dict) else answer)
+               for answer in references]
+    if not pred or not answers:
+        return 0.0
+    return statistics.mean(min(sum(answer == pred for index, answer in enumerate(answers) if index != held_out) / 3.0, 1.0)
+                          for held_out in range(len(answers)))
+
+
+def edit_similarity(left: str, right: str) -> float:
+    """Normalized Levenshtein similarity for OCR words."""
+    left = re.sub(r"\s+", " ", left.strip().casefold())
+    right = re.sub(r"\s+", " ", right.strip().casefold())
+    if not left and not right:
+        return 1.0
+    if not left or not right:
+        return 0.0
+    previous = list(range(len(right) + 1))
+    for i, char_left in enumerate(left, 1):
+        current = [i]
+        for j, char_right in enumerate(right, 1):
+            current.append(min(current[-1] + 1, previous[j] + 1,
+                               previous[j - 1] + (char_left != char_right)))
+        previous = current
+    return 1.0 - previous[-1] / max(len(left), len(right))
+
+
+def score_ocr_words(records: list[dict[str, Any]], targets: list[dict[str, Any]], threshold: float = 0.5) -> dict[str, Any]:
+    predicted = [r for r in records if r.get("kind") == "box" and r.get("valid") and r.get("box_xyxy_norm")]
+    pairs = sorted(((iou_xyxy(p["box_xyxy_norm"], t["box_xyxy_norm"]), pi, ti)
+                    for pi, p in enumerate(predicted) for ti, t in enumerate(targets)), reverse=True)
+    used_p: set[int] = set()
+    used_t: set[int] = set()
+    matched = []
+    for overlap, pi, ti in pairs:
+        if overlap < threshold:
+            break
+        if pi not in used_p and ti not in used_t:
+            used_p.add(pi)
+            used_t.add(ti)
+            matched.append((pi, ti))
+    exact = 0
+    similarities = []
+    for pi, ti in matched:
+        predicted_text = str(predicted[pi].get("label") or "")
+        target_text = str(targets[ti].get("text") or "")
+        exact += int(predicted_text.strip().casefold() == target_text.strip().casefold())
+        similarities.append(edit_similarity(predicted_text, target_text))
+    return {
+        "text_detection_tp": len(used_p), "text_detection_fp": len(predicted) - len(used_p),
+        "text_detection_fn": len(targets) - len(used_t), "matched_text_regions": len(used_p),
+        "exact_text_matches": exact,
+        "exact_text_accuracy": exact / len(used_p) if used_p else None,
+        "normalized_edit_similarity": statistics.mean(similarities) if similarities else None,
+        "text_target_count": len(targets),
+    }

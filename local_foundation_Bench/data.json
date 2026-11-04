@@ -1,0 +1,361 @@
+{
+  "generated_at": "2026-11-03 18:08:32 +0100",
+  "updated_at": "2026-11-03 18:40 CET",
+  "report_title": "Local foundation and GGUF VLM benchmark",
+  "report_updated_at": "2026-11-03 18:39 CET",
+  "models": [
+    {
+      "model_id": "unsloth/LFM2.5-VL-1.6B-GGUF",
+      "backend": "llama-cpp-python 0.3.31 MTMDChatHandler CUDA",
+      "runtime": null,
+      "revision": "6d323fde0c0a094eeeb2a2452c590fa17a3ff76b",
+      "quantization": "BF16 GGUF; F16 multimodal projector",
+      "configured_context": 8192,
+      "status": "complete",
+      "full_benchmark_complete": true,
+      "full_benchmark_macro": 0.132625,
+      "vqa_panel_macro": 0.08183333333333333,
+      "whole_device_peak_gib": 5.632,
+      "whole_device_memory_method": "nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline",
+      "runtime_versions": {
+        "llama-cpp-python": "0.3.31",
+        "torch": "2.13.0",
+        "numpy": "2.2.6",
+        "datasets": "5.0.1"
+      },
+      "generation": {
+        "max_new_tokens": 512,
+        "temperature": 0.1,
+        "top_p": 0.95,
+        "min_p": 0.05,
+        "repeat_penalty": 1.05,
+        "seed": null
+      },
+      "weight_bytes": 3197321312,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.53,
+          "parse_errors": 9,
+          "mean_generation_s": 0.377198,
+          "generated_tokens_per_s": 84.5709680327043,
+          "group_scores": null
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.079,
+          "parse_errors": 0,
+          "mean_generation_s": 0.093841,
+          "generated_tokens_per_s": 225.38122995279252,
+          "group_scores": null
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.0,
+          "parse_errors": 0,
+          "mean_generation_s": 0.069904,
+          "generated_tokens_per_s": 183.1082627603571,
+          "group_scores": null
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.0,
+          "parse_errors": 0,
+          "mean_generation_s": 0.101164,
+          "generated_tokens_per_s": 268.87034913605635,
+          "group_scores": null
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.052,
+          "parse_errors": 0,
+          "mean_generation_s": 0.069216,
+          "generated_tokens_per_s": 173.370319001387,
+          "group_scores": null
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.0,
+          "parse_errors": 0,
+          "mean_generation_s": 0.107072,
+          "generated_tokens_per_s": 255.5289898386134,
+          "group_scores": null
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.36,
+          "parse_errors": 0,
+          "mean_generation_s": 0.19194,
+          "generated_tokens_per_s": 272.37678441179537,
+          "group_scores": null
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": 0,
+          "score": 0.04,
+          "parse_errors": 3,
+          "mean_generation_s": 1.007684,
+          "generated_tokens_per_s": 280.93330845781014,
+          "group_scores": {
+            "function": 0.03,
+            "properties": 0.05,
+            "real": 0.06,
+            "series": 0.04,
+            "transform": 0.02
+          }
+        }
+      },
+      "preflight": {
+        "passed": true,
+        "required": [
+          "ai2d",
+          "textvqa"
+        ],
+        "checks": {
+          "ai2d": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          },
+          "textvqa": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          }
+        }
+      },
+      "run_path": "results/runs/20261103-175015/lfm25_vl_1_6b_bf16_gguf/results.json",
+      "generated_at": "2026-11-03 17:50:15 +0100"
+    },
+    {
+      "model_id": "qwen3.8:27b-mtp4-ud_q4_K_XL-128k",
+      "backend": "Ollama OpenAI-compatible multimodal chat API",
+      "runtime": "qwen3.8:27b-mtp4-ud_q4_K_XL-128k; MTP4; UD Q4_K_XL",
+      "revision": null,
+      "quantization": "UD Q4_K_XL; MTP4",
+      "configured_context": 131072,
+      "status": "complete",
+      "full_benchmark_complete": true,
+      "full_benchmark_macro": 0.635375,
+      "vqa_panel_macro": 0.6575,
+      "whole_device_peak_gib": 25.434,
+      "whole_device_memory_method": "nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline",
+      "runtime_versions": {
+        "ollama": "local managed service; version unavailable via benchmark API"
+      },
+      "generation": {
+        "num_predict": 512,
+        "temperature": 0,
+        "top_p": 1,
+        "seed": 3407,
+        "think": false
+      },
+      "weight_bytes": null,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.88,
+          "parse_errors": 0,
+          "mean_generation_s": 0.470814,
+          "generated_tokens_per_s": 4.247962040211207,
+          "group_scores": null
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.813,
+          "parse_errors": 0,
+          "mean_generation_s": 0.666131,
+          "generated_tokens_per_s": 6.545259115699461,
+          "group_scores": null
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.904,
+          "parse_errors": 0,
+          "mean_generation_s": 0.435056,
+          "generated_tokens_per_s": 4.597109337648486,
+          "group_scores": null
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.816,
+          "parse_errors": 0,
+          "mean_generation_s": 0.433496,
+          "generated_tokens_per_s": 4.798198829977668,
+          "group_scores": null
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.692,
+          "parse_errors": 0,
+          "mean_generation_s": 0.442304,
+          "generated_tokens_per_s": 6.240052090869629,
+          "group_scores": null
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.08,
+          "parse_errors": 0,
+          "mean_generation_s": 0.67224,
+          "generated_tokens_per_s": 4.046173985481375,
+          "group_scores": null
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.64,
+          "parse_errors": 0,
+          "mean_generation_s": 0.636008,
+          "generated_tokens_per_s": 3.1446145331505266,
+          "group_scores": null
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": 0,
+          "score": 0.258,
+          "parse_errors": 0,
+          "mean_generation_s": 2.8231192,
+          "generated_tokens_per_s": 2.3909723684355955,
+          "group_scores": {
+            "function": 0.24,
+            "properties": 0.42,
+            "real": 0.36,
+            "series": 0.13,
+            "transform": 0.14
+          }
+        }
+      },
+      "preflight": {
+        "passed": true,
+        "required": [
+          "ai2d",
+          "textvqa"
+        ],
+        "checks": {
+          "ai2d": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          },
+          "textvqa": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          }
+        }
+      },
+      "run_path": "results/runs/20261103-180832/qwen3_8_mtp4_ud_q4_k_xl_128k/results.json",
+      "generated_at": "2026-11-03 18:08:32 +0100"
+    }
+  ],
+  "candidates": [
+    {
+      "name": "Qwen3.8 27B, configured Ollama route",
+      "checkpoint": "qwen3.8:27b-mtp4-ud_q4_K_XL-128k",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B",
+      "license": "Apache-2.0",
+      "status": "scored",
+      "detail": "MTP4 UD Q4_K_XL at 128K context; complete shared-suite run is recorded in the results table."
+    },
+    {
+      "name": "LFM2.5-VL 1.6B BF16 GGUF",
+      "checkpoint": "unsloth/LFM2.5-VL-1.6B-GGUF",
+      "source": "https://huggingface.co/unsloth/LFM2.5-VL-1.6B-GGUF/blob/6d323fde0c0a094eeeb2a2452c590fa17a3ff76b/README.md",
+      "license": "LFM 1.0",
+      "status": "scored",
+      "detail": "BF16 GGUF with the matching F16 projector; complete shared-suite run uses the robotics MTMD adapter."
+    },
+    {
+      "name": "Qwen3.8 27B, official BF16",
+      "checkpoint": "Qwen/Qwen3.8-27B",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0/README.md",
+      "license": "Apache-2.0",
+      "status": "not_run",
+      "detail": "The cached full-precision snapshot is 51.77 GiB, above the 30 GiB device budget."
+    },
+    {
+      "name": "Qwen3.8 27B EXL3",
+      "checkpoint": "turboderp/Qwen3.8-27B-exl3",
+      "source": "https://huggingface.co/turboderp/Qwen3.8-27B-exl3/blob/a35e75a73baee51da709329d19294245cbeeb5d8/README.md",
+      "license": "See linked model card",
+      "status": "not_run",
+      "detail": "The benchmark used the configured MTP4 Ollama route; this separate EXL3 artifact has no runner in the shared suite."
+    },
+    {
+      "name": "Qwen3.8 optimized MTP heads",
+      "checkpoint": "HermiHg/Qwen3.8-27B-Optimized-MTP-Heads-exl3",
+      "source": "https://huggingface.co/HermiHg/Qwen3.8-27B-Optimized-MTP-Heads-exl3/blob/411edf8fac168a7f6ba9b5fb3fca439ff9dc98cb/README.md",
+      "license": "See linked model card",
+      "status": "incomplete",
+      "detail": "The cached snapshot contains MTP head files only and no base checkpoint."
+    },
+    {
+      "name": "Qwen3.8 27B NVFP4",
+      "checkpoint": "unsloth/Qwen3.8-27B-NVFP4",
+      "source": "https://huggingface.co/unsloth/Qwen3.8-27B-NVFP4/blob/f0b7c9e722f5565102fff8481c99e4d86ae099c7/README.md",
+      "license": "Apache-2.0",
+      "status": "not_run",
+      "detail": "The scored Qwen run used the configured MTP4 UD Q4_K_XL Ollama profile; the NVFP4 snapshot is a separate serving route."
+    },
+    {
+      "name": "DiffusionGemma 26B DJev NVFP4",
+      "checkpoint": "SVPG-Labs/diffusiongemma-26b-djev-v10-step160-NVFP4",
+      "source": "https://huggingface.co/SVPG-Labs/diffusiongemma-26b-djev-v10-step160-NVFP4/blob/65526826901a65e92e82540bd152d85f591e42f3/README.md",
+      "license": "Apache-2.0 plus Gemma terms",
+      "status": "not_run",
+      "detail": "The cached revision documents D-Jev structured decisions (noul/choice/score) and says ordinary chat/free-text generation was not benchmarked; a direct shared-answer route was not established."
+    },
+    {
+      "name": "DiffusionGemma 26B GGUF",
+      "checkpoint": "unsloth/diffusiongemma-26B-A4B-it-GGUF",
+      "source": "https://huggingface.co/unsloth/diffusiongemma-26B-A4B-it-GGUF/blob/aab0a2972da0e41310fbcca5ea63fc47eb932a71/README.md",
+      "license": "See linked model card",
+      "status": "incomplete",
+      "detail": "The cached snapshot contains a GGUF model file but no multimodal projector, so the local image-question route cannot be assembled."
+    },
+    {
+      "name": "MiMo-VL 7B GGUF",
+      "checkpoint": "unsloth/MiMo-VL-7B-RL-GGUF",
+      "source": "https://huggingface.co/unsloth/MiMo-VL-7B-RL-GGUF/blob/9a1d60e80d877e6ee044d2c3b92e95c1c35b04ab/README.md",
+      "license": "MIT",
+      "status": "incomplete",
+      "detail": "The cached snapshot is empty; model and projector files are absent."
+    }
+  ],
+  "notes": [
+    "Scores use the shared 3407 fixed samples and local task scorers.",
+    "Only complete 825-example runs qualify for the full-suite macro or selection picks.",
+    "Whole-device VRAM samples include the desktop baseline.",
+    "Candidate cache and compatibility dispositions are explained in report.md."
+  ],
+  "source_report": "report.md"
+}

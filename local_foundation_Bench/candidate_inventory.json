@@ -1,0 +1,76 @@
+{
+  "candidates": [
+    {
+      "name": "Qwen3.8 27B, configured Ollama route",
+      "checkpoint": "qwen3.8:27b-mtp4-ud_q4_K_XL-128k",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B",
+      "license": "Apache-2.0",
+      "status": "scored",
+      "detail": "MTP4 UD Q4_K_XL at 128K context; complete shared-suite run is recorded in the results table."
+    },
+    {
+      "name": "LFM2.5-VL 1.6B BF16 GGUF",
+      "checkpoint": "unsloth/LFM2.5-VL-1.6B-GGUF",
+      "source": "https://huggingface.co/unsloth/LFM2.5-VL-1.6B-GGUF/blob/6d323fde0c0a094eeeb2a2452c590fa17a3ff76b/README.md",
+      "license": "LFM 1.0",
+      "status": "scored",
+      "detail": "BF16 GGUF with the matching F16 projector; complete shared-suite run uses the robotics MTMD adapter."
+    },
+    {
+      "name": "Qwen3.8 27B, official BF16",
+      "checkpoint": "Qwen/Qwen3.8-27B",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0/README.md",
+      "license": "Apache-2.0",
+      "status": "not_run",
+      "detail": "The cached full-precision snapshot is 51.77 GiB, above the 30 GiB device budget."
+    },
+    {
+      "name": "Qwen3.8 27B EXL3",
+      "checkpoint": "turboderp/Qwen3.8-27B-exl3",
+      "source": "https://huggingface.co/turboderp/Qwen3.8-27B-exl3/blob/a35e75a73baee51da709329d19294245cbeeb5d8/README.md",
+      "license": "See linked model card",
+      "status": "not_run",
+      "detail": "The benchmark used the configured MTP4 Ollama route; this separate EXL3 artifact has no runner in the shared suite."
+    },
+    {
+      "name": "Qwen3.8 optimized MTP heads",
+      "checkpoint": "HermiHg/Qwen3.8-27B-Optimized-MTP-Heads-exl3",
+      "source": "https://huggingface.co/HermiHg/Qwen3.8-27B-Optimized-MTP-Heads-exl3/blob/411edf8fac168a7f6ba9b5fb3fca439ff9dc98cb/README.md",
+      "license": "See linked model card",
+      "status": "incomplete",
+      "detail": "The cached snapshot contains MTP head files only and no base checkpoint."
+    },
+    {
+      "name": "Qwen3.8 27B NVFP4",
+      "checkpoint": "unsloth/Qwen3.8-27B-NVFP4",
+      "source": "https://huggingface.co/unsloth/Qwen3.8-27B-NVFP4/blob/f0b7c9e722f5565102fff8481c99e4d86ae099c7/README.md",
+      "license": "Apache-2.0",
+      "status": "not_run",
+      "detail": "The scored Qwen run used the configured MTP4 UD Q4_K_XL Ollama profile; the NVFP4 snapshot is a separate serving route."
+    },
+    {
+      "name": "DiffusionGemma 26B DJev NVFP4",
+      "checkpoint": "SVPG-Labs/diffusiongemma-26b-djev-v10-step160-NVFP4",
+      "source": "https://huggingface.co/SVPG-Labs/diffusiongemma-26b-djev-v10-step160-NVFP4/blob/65526826901a65e92e82540bd152d85f591e42f3/README.md",
+      "license": "Apache-2.0 plus Gemma terms",
+      "status": "not_run",
+      "detail": "The cached revision documents D-Jev structured decisions (noul/choice/score) and says ordinary chat/free-text generation was not benchmarked; a direct shared-answer route was not established."
+    },
+    {
+      "name": "DiffusionGemma 26B GGUF",
+      "checkpoint": "unsloth/diffusiongemma-26B-A4B-it-GGUF",
+      "source": "https://huggingface.co/unsloth/diffusiongemma-26B-A4B-it-GGUF/blob/aab0a2972da0e41310fbcca5ea63fc47eb932a71/README.md",
+      "license": "See linked model card",
+      "status": "incomplete",
+      "detail": "The cached snapshot contains a GGUF model file but no multimodal projector, so the local image-question route cannot be assembled."
+    },
+    {
+      "name": "MiMo-VL 7B GGUF",
+      "checkpoint": "unsloth/MiMo-VL-7B-RL-GGUF",
+      "source": "https://huggingface.co/unsloth/MiMo-VL-7B-RL-GGUF/blob/9a1d60e80d877e6ee044d2c3b92e95c1c35b04ab/README.md",
+      "license": "MIT",
+      "status": "incomplete",
+      "detail": "The cached snapshot is empty; model and projector files are absent."
+    }
+  ]
+}

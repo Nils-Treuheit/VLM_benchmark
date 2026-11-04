@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Local foundation benchmark mark">
+  <rect width="64" height="64" rx="16" fill="#17232d"/>
+  <path d="M17 17h9v29h18v8H17z" fill="#c7fa7a"/>
+  <path d="M36 17h11a7 7 0 0 1 7 7v23a7 7 0 0 1-7 7H36v-8h10V25H36z" fill="#82dce0"/>
+</svg>

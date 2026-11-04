@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c1218">
-  <meta name="description" content="Local grounding specialist benchmark results for referring expressions, object detection, GUI grounding, and text detection.">
+  <meta name="description" content="Local specialist VLM benchmark results for grounding, OCR, VQA, counting, object detection, classification, segmentation, and speed.">
   <title>Grounding Specialists · VLM Benchmark</title>
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -20,7 +20,7 @@
     <section class="hero" aria-labelledby="title">
       <p class="eyebrow">Grounding specialists · Localization benchmark</p>
       <h1 id="title">Measure where<br><span>models look.</span></h1>
-      <p class="intro">A separate comparison of two specialist checkpoints across referring expressions, open vocabulary detection, GUI grounding, and text regions.</p>
+      <p class="intro">A separate comparison of specialist checkpoints across grounding, OCR, VQA, counting, detection, classification, segmentation, and speed.</p>
       <div class="hero-meta" id="hero-meta" aria-live="polite"></div>
     </section>
 
@@ -32,13 +32,28 @@
     </section>
 
     <section id="method" class="section">
-      <div class="section-head"><div><p class="eyebrow">Protocol</p><h2>Four localization tasks</h2></div><a href="report.md">Read the full report ↗</a></div>
+      <div class="section-head"><div><p class="eyebrow">Protocol</p><h2>Localization and answer tasks</h2></div><a href="report.md">Read the full report ↗</a></div>
       <div class="method-grid" id="method-grid"></div>
     </section>
 
     <section id="results" class="section">
       <div class="section-head"><div><p class="eyebrow">Results</p><h2>Task scorecard</h2></div><p class="section-note">Scores stay separate by task. Incomplete models remain visible.</p></div>
       <div id="task-results"></div>
+    </section>
+
+    <section id="answer-results" class="section">
+      <div class="section-head"><div><p class="eyebrow">Reading and reasoning</p><h2>OCR, VQA, and counting</h2></div><p class="section-note">TextVQA is OCR-dependent question answering. HierText adds direct word transcription scores to the text-region task.</p></div>
+      <div id="answer-task-results"></div>
+    </section>
+
+    <section id="vision-results" class="section">
+      <div class="section-head"><div><p class="eyebrow">COCO quality and speed</p><h2>Open vocabulary first</h2></div><p class="section-note">YOLOE-26-L is the primary detector and segmenter; YOLO26-L closed-vocabulary models are additional baselines.</p></div>
+      <div id="vision-task-results"></div>
+    </section>
+
+    <section id="dataset-results" class="section">
+      <div class="section-head"><div><p class="eyebrow">Beyond COCO</p><h2>Dataset fit and OBB track</h2></div><p class="section-note">Long-tail labels, aerial imagery, and pose-estimation datasets answer different questions, so their scores stay separate.</p></div>
+      <div id="dataset-track-results"></div>
     </section>
 
     <section class="section" id="runtime">
