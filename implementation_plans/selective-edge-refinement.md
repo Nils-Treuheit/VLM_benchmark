@@ -1,5 +1,7 @@
 # Selective Edge Limited benchmark refinement
 
+**Status checked:** 2026-11-04. This remains active. The host GPU is available after a successful `release-local`; the idle whole-device baseline was 1.249 GiB on an RTX 5090 with driver 595.99.02. No cap-specific context probes or scored runs have been recorded yet.
+
 ## Purpose
 
 Replace preliminary VRAM-filtered leader lists with measured quality, peak memory, and context limits for the 8, 10, 12, 14, and 16 GiB stages. Rerun only the strongest candidates at each stage rather than every cached VLM.
@@ -23,7 +25,7 @@ At fixed model, inputs, context length, precision, and decoding, a VRAM ceiling 
 
 Run five stages, one for each cap: 8, 10, 12, 14, and 16 GiB.
 
-For each stage, select every complete model that currently leads the overall eight-task macro or any shared category among candidates at that preliminary tier. Include all ties. Deduplicate identical model configurations within the stage, but keep a separate candidate-stage record for every VRAM cap. Across stages, a model may be rerun at several caps because its usable context and memory behavior can change.
+For each stage, select every complete model that currently leads the overall eight-task macro or any shared category among candidates at that preliminary tier. Include all ties. Deduplicate identical model configurations within the stage, but keep a separate candidate-stage record for every VRAM cap. Across stages, a model may be rerun at several caps because its usable context and memory behavior can change. Include the completed Local Foundation and GGUF suite in candidate screening; its measurements were added after the original landing-page filter was written.
 
 Use these eight shared measures: AI2D, TextVQA/OCR, VQA truth, counting, description, affordance, negation, and GRAB-Lite. Overall leaders require complete results on all eight measures. Category leaders require complete results for that category. Preserve model identity, quantization, backend, and task prompts. Do not change a model's quantization between cap stages.
 

@@ -304,11 +304,13 @@ def main() -> int:
         release_local()
         device_memory = DeviceMemory()
         device_memory.start()
+        model_load_started = time.perf_counter()
         if args.model == "sam3.1":
             model, processor, backend = load_sam31(weights[args.model])
         else:
             model, backend = load_yolo(args.model, weights[args.model])
             processor = None
+        model_load_duration_s = time.perf_counter() - model_load_started
         warmup_count = min(max(args.warmup_images, 0), len(rows))
         for warmup_row in rows[:warmup_count]:
             if args.model == "sam3.1":
@@ -442,6 +444,7 @@ def main() -> int:
             "runtime": {"latency_mean_s": statistics.mean(per_image_times) if per_image_times else None,
                         "latency_median_s": statistics.median(per_image_times) if per_image_times else None,
                         "images_per_s": len(per_image_times) / sum(per_image_times) if sum(per_image_times) else None,
+                        "model_load_duration_s": model_load_duration_s,
                         "peak_whole_device_vram_gib": device_memory.gib(),
                         "gpu_memory_samples": device_memory.samples,
                         "gpu_memory_error": device_memory.error,

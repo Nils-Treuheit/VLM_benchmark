@@ -1,6 +1,6 @@
-# Main VLM benchmark implementation plans
+# Benchmark plan index
 
-These plans describe benchmark groups that are still planned or in progress. Completed suites and their results are linked from the repository [README](../README.md). The groups reuse the Qwen-VL task set, sampling rules, prompts, scorers, serial execution, and reporting fields where appropriate.
+Completed suites are tracked in their reports and the repository [README](../README.md). This index keeps only active benchmark work and shared reporting guidance.
 
 ## Shared benchmark contract
 
@@ -20,9 +20,11 @@ The shared task prompts and score definitions are in [qwenVL_Bench/README.md](..
 | Group | Plan |
 |---|---|
 | Grounding specialists | [grounding-specialists.md](grounding-specialists.md) |
-| InternVL, Molmo, Llama Vision | [general-transformers-vlms.md](general-transformers-vlms.md) |
-| Local foundation and GGUF models | [local-foundation-and-gguf.md](local-foundation-and-gguf.md) |
-| Qwen-VL reference set | [qwen-vl-reference-set.md](qwen-vl-reference-set.md) |
+| Selective Edge Limited refinement | [selective-edge-refinement.md](selective-edge-refinement.md) |
+
+The completed General Transformers, local-foundation, Qwen-VL reference, and video comparisons are documented in their benchmark reports. Candidates excluded by cache, compatibility, or hardware gates remain listed in the relevant report inventory; they are not pending runs.
+
+Shared report-site guidance: [general VLM report-site guideline](general-vlm-report-site-guideline.md).
 
 ## Local model inventory
 

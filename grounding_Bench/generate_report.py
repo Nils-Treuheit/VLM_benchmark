@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import json
+import math
+import statistics
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -71,12 +73,13 @@ def load_runs() -> dict[str, dict[str, Any]]:
         path = RUNS / (model_id.replace("/", "--") + ".json")
         if path.is_file():
             result[model_id] = json.loads(path.read_text(encoding="utf-8"))
-        coco_path = (HERE / "results" / "domain_runs" / "coco_val2017" /
-                     "locateany_tf457" / (model_id.replace("/", "--") + ".json"))
-        if coco_path.is_file():
-            coco_run = json.loads(coco_path.read_text(encoding="utf-8"))
-            result.setdefault(model_id, {"model_id": model_id, "tasks": {}})
-            result[model_id].setdefault("tasks", {}).update(coco_run.get("tasks", {}))
+        for run_group in ("locateany_tf457", "specialists"):
+            coco_path = (HERE / "results" / "domain_runs" / "coco_val2017" /
+                         run_group / (model_id.replace("/", "--") + ".json"))
+            if coco_path.is_file():
+                coco_run = json.loads(coco_path.read_text(encoding="utf-8"))
+                result.setdefault(model_id, {"model_id": model_id, "tasks": {}})
+                result[model_id].setdefault("tasks", {}).update(coco_run.get("tasks", {}))
     return result
 
 
@@ -109,7 +112,27 @@ def load_domain_runs() -> dict[str, dict[str, dict[str, Any]]]:
     return result
 
 
-def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[str, Any]]:
+def query_latency_stats(items: list[dict[str, Any]]) -> dict[str, float | None]:
+    values = sorted(float(item["latency_s"]) for item in items
+                    if item.get("status", "complete") == "complete" and item.get("latency_s") is not None)
+    if not values:
+        return {"mean": None, "median": None, "p95": None}
+    return {"mean": sum(values) / len(values),
+            "median": statistics.median(values),
+            "p95": values[max(0, math.ceil(0.95 * len(values)) - 1)]}
+
+
+def recorded_timing_scope(model_id: str, run: dict[str, Any]) -> str | None:
+    scope = run.get("query_timing_scope")
+    if model_id == "nvidia/LocateAnything-3B" and run and scope in (
+            None, "model input encoding through output decoding; model load excluded"):
+        return ("Historical results time only model.generate(); model load, image reading, processor encoding, "
+                "output decoding, and parsing are excluded")
+    return scope
+
+
+def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]],
+                     vision_runs: dict[str, dict[str, Any]] | None = None) -> list[dict[str, Any]]:
     labels = {
         "yoloe26l-seg": "YOLOE-26-L",
         "yolo26l": "YOLO26-L",
@@ -129,6 +152,7 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[st
             tasks = run.get("tasks", {})
             if "object_detection" in tasks:
                 detection = tasks.get("object_detection", {})
+                class_aware_f1 = detection.get("class_aware_F1_IoU50")
                 segmentation = tasks.get("instance_segmentation", {})
                 official_lvis = run.get("lvis_official_evaluation", {})
                 if official_lvis:
@@ -136,6 +160,7 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[st
                     segmentation = official_lvis.get("instance_segmentation", segmentation)
                 runtime = run.get("runtime", {})
                 sample_count = int(run.get("sample_count", 0))
+                timing = query_latency_stats(run.get("items", []))
                 official_status = official_lvis.get("object_detection", {}).get("status")
                 if domain == "lvis_v1":
                     status = ("complete" if sample_count >= expected and official_status == "complete"
@@ -148,8 +173,12 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[st
                     "sample_count": sample_count, "expected_count": expected,
                     "input_size": run.get("input_size"),
                     "AP": detection.get("AP"), "AP50": detection.get("AP50"),
-                    "class_aware_F1_IoU50": detection.get("class_aware_F1_IoU50"),
+                    "class_aware_F1_IoU50": detection.get("class_aware_F1_IoU50", class_aware_f1),
                     "mask_AP": segmentation.get("AP"), "latency_s": runtime.get("latency_mean_s"),
+                    "latency_median_s": runtime.get("latency_median_s", timing["median"]),
+                    "latency_p95_s": timing["p95"],
+                    "model_load_duration_s": runtime.get("model_load_duration_s"),
+                    "query_timing_scope": runtime.get("timing_scope"),
                     "images_per_s": runtime.get("images_per_s"),
                     "AP_rare": detection.get("AP_rare"), "AP_common": detection.get("AP_common"),
                     "AP_frequent": detection.get("AP_frequent"),
@@ -159,7 +188,8 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[st
                 summary = task.get("summary", {})
                 official = summary.get("coco_official_ap", {})
                 sample_count = int(summary.get("completed", 0))
-                latency = summary.get("mean_latency_s")
+                timing = query_latency_stats(task.get("items", []))
+                latency = timing["mean"] or summary.get("mean_latency_s")
                 summaries.append({
                     "dataset": domain_label, "model_id": model_id, "model": labels.get(model_id, model_id),
                     "status": "complete" if sample_count >= expected and expected else "partial" if sample_count else "not run",
@@ -168,8 +198,51 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[st
                     "AP": official.get("AP"), "AP50": official.get("AP50"),
                     "class_aware_F1_IoU50": summary.get("metrics", {}).get("micro_f1"),
                     "mask_AP": None, "latency_s": latency,
+                    "latency_median_s": timing["median"], "latency_p95_s": timing["p95"],
+                    "model_load_duration_s": run.get("model_load_duration_s"),
+                    "query_timing_scope": recorded_timing_scope(model_id, run) or
+                        "HTTP request and response; model load excluded",
                     "images_per_s": 1.0 / latency if latency else None,
                 })
+        if domain == "coco_val2017":
+            for model_id, run in (vision_runs or {}).items():
+                if any(row["dataset"] == domain_label and row["model_id"] == model_id for row in summaries):
+                    continue
+                tasks = run.get("tasks", {})
+                runtime = run.get("runtime", {})
+                timing = query_latency_stats(run.get("items", []))
+                sample_count = int(run.get("sample_count", 0))
+                detection = tasks.get("object_detection", {})
+                segmentation = tasks.get("instance_segmentation", {})
+                summaries.append({
+                    "dataset": domain_label, "model_id": model_id, "model": labels.get(model_id, model_id),
+                    "status": "complete" if sample_count >= expected and expected else "partial" if sample_count else "not run",
+                    "sample_count": sample_count, "expected_count": expected,
+                    "input_size": run.get("input_size"),
+                    "AP": detection.get("AP"), "AP50": detection.get("AP50"),
+                    "class_aware_F1_IoU50": detection.get("class_aware_F1_IoU50"),
+                    "mask_AP": segmentation.get("AP"),
+                    "latency_s": runtime.get("latency_mean_s", timing["mean"]),
+                    "latency_median_s": runtime.get("latency_median_s", timing["median"]),
+                    "latency_p95_s": timing["p95"],
+                    "model_load_duration_s": runtime.get("model_load_duration_s"),
+                    "query_timing_scope": runtime.get("timing_scope"),
+                    "images_per_s": runtime.get("images_per_s"),
+                })
+    yolo_ids = {"yoloe26l-seg", "yolo26l", "yolo26l-seg"}
+    fastest_yolo: dict[str, dict[str, Any]] = {}
+    for result in summaries:
+        if result["model_id"] in yolo_ids and result["status"] == "complete" and result.get("latency_s"):
+            current = fastest_yolo.get(result["dataset"])
+            if current is None or result["latency_s"] < current["latency_s"]:
+                fastest_yolo[result["dataset"]] = result
+    for result in summaries:
+        reference = fastest_yolo.get(result["dataset"])
+        result["fastest_yolo_model"] = reference["model"] if reference else None
+        result["latency_ratio_to_fastest_yolo"] = (
+            result["latency_s"] / reference["latency_s"]
+            if result["status"] == "complete" and reference and result.get("latency_s")
+            and reference.get("latency_s") else None)
     return summaries
 
 
@@ -216,8 +289,12 @@ def vision_summary(runs: dict[str, dict[str, Any]], specialists: dict[str, dict[
             "segmentation": {"status": "unsupported", "reason": "the grounding output contains boxes, not masks"},
             "classification": {}, "grounding": {},
             "runtime": {"latency_mean_s": mean_latency,
+                        "latency_median_s": query_latency_stats(task.get("items", []))["median"],
+                        "latency_p95_s": query_latency_stats(task.get("items", []))["p95"],
                         "images_per_s": 1 / mean_latency if mean_latency else None,
                         "peak_whole_device_vram_gib": summary.get("peak_whole_device_vram_gib")},
+            "model_load_duration_s": run.get("model_load_duration_s"),
+            "query_timing_scope": run.get("query_timing_scope"),
         })
     return models
 
@@ -262,6 +339,8 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
                 "primary_score": primary_score,
                 "coco_official_ap": summary.get("coco_official_ap"),
                 "mean_latency_s": summary.get("mean_latency_s"),
+                "median_latency_s": summary.get("median_latency_s") or query_latency_stats(task_result.get("items", []))["median"],
+                "p95_latency_s": summary.get("p95_latency_s") or query_latency_stats(task_result.get("items", []))["p95"],
                 "mean_output_tokens_per_s": _mean_output_rate(task_result.get("items", [])),
                 "peak_whole_device_vram_gib": summary.get("peak_whole_device_vram_gib"),
                 "malformed": summary.get("malformed", 0),
@@ -280,6 +359,11 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
             "precision": run.get("precision") if run else None,
             "generation_mode": run.get("generation_mode") if run else None,
             "model_load_peak_whole_device_vram_gib": run.get("model_load_peak_whole_device_vram_gib") if run else None,
+            "model_load_duration_s": run.get("model_load_duration_s") if run else None,
+            "model_load_timing": run.get("model_load_timing") if run else None,
+            "query_timing_scope": (recorded_timing_scope(model_id, run) if run else None) or
+                ("HTTP request through complete response; model load excluded" if model_id == "GroundingPI/GroundAnything-VLM"
+                 else "full per-query timing is recorded after the next run" if run else None),
             "package_versions": run.get("client_package_versions") if run else {},
             "status": run.get("status", "not run") if run else "not run",
             "complete_suite": complete,
@@ -294,7 +378,6 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
                       and m["tasks"][task]["primary_score"] is not None]
         task_winners[task] = max(candidates, key=lambda m: m["tasks"][task]["primary_score"], default=None)
     tested_model_count = sum(1 for m in models if any(t["completed"] for t in m["tasks"].values()))
-    manifests_present = any(bool(run.get("sampling", {}).get("tasks")) for run in runs.values())
     local_manifests = HERE / "data" / "manifests"
     prepared_tasks = [task for task in (*TASKS, *AUX_TASKS) if (local_manifests / f"{task}.json").is_file()]
     prepared_aux_manifests = all((local_manifests / f"{task}.json").is_file() for task in AUX_TASKS)
@@ -302,19 +385,19 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
                                  for task in (*TASKS, *AUX_TASKS))
     dota_summary = dota_track_summary(dota_run or {})
     dataset_tracks = [
-        {"dataset": "COCO val2017", "status": "100-image shared manifest; YOLOE, YOLO26, SAM 3.1, and LocateAnything runs complete; GroundAnything runtime unavailable",
+        {"dataset": "COCO val2017", "status": "100-image shared manifest; YOLOE, YOLO26, SAM 3.1, LocateAnything, and GroundAnything runs complete",
          "task": "Shared detection, classification, instance segmentation, and speed",
          "note": "Every available vision baseline uses the same 100 annotated images and all 80 COCO classes. Grounding specialists are scored on boxes; models without confidence scores use uniform scores for COCO AP."},
-        {"dataset": "DOTA v1.0 validation", "status": "100-image shared HBB runs complete for YOLOE, YOLO26-L, and SAM 3.1; LocateAnything rerun pending GPU release; full-split YOLO26-L-OBB AP complete, speed rerun pending",
+        {"dataset": "DOTA v1.0 validation", "status": "100-image shared HBB runs complete for YOLOE, YOLO26-L, SAM 3.1, and GroundAnything; clean LocateAnything run partial (51/100, 49 CUDA OOM); full-split YOLO26-L-OBB metrics and timing complete",
          "task": "Shared aerial detection plus native OBB for YOLO26-L",
-         "note": "100 of 456 labeled validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and available grounding specialists. LocateAnything's first attempt overlapped another GPU job and is excluded; a clean rerun awaits the required GPU release check. YOLO26-L-OBB uses the full 458-file validation split, including two background-only images, for the separate native OBB reference. DOTA terms restrict use to academic purposes and prohibit commercial use."},
-        {"dataset": "BOP-H3 HOPE v2 validation", "status": "50-image shared manifest; LocateAnything, SAM 3.1, and YOLOE complete; closed-vocabulary YOLO26 omitted because its COCO label set does not cover HOPE classes",
+         "note": "100 of 456 labeled validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and available grounding specialists. GroundAnything completed all 100 items with five outputs truncated at 2,048 tokens; official COCO AP was unavailable because three predicted labels did not map to annotation categories. The clean LocateAnything run used the same manifest, Transformers 4.57.1, and a 2,048-token cap; 49 examples failed with CUDA OOM and only 51 completed outputs are scored. YOLO26-L-OBB uses the full 458-file validation split, including two background-only images, for the separate native OBB reference. Its clean rerun recorded 8.6 ms/image and 2.351 GiB peak whole-device VRAM. DOTA terms restrict use to academic purposes and prohibit commercial use."},
+        {"dataset": "BOP-H3 HOPE v2 validation", "status": "50-image shared manifest; LocateAnything, GroundAnything, SAM 3.1, and YOLOE complete; closed-vocabulary YOLO26 omitted because its COCO label set does not cover HOPE classes",
          "task": "Object-centric 2D detection; instance masks where supported",
-         "note": "All 50 local validation images are shared by YOLOE, SAM 3.1, and both grounding specialists. Box AP is common; mask AP is reported only for models that return masks. This is the 2D HOPE v2 subset, not the full BOP-H3 pose/onboarding protocol."},
-        {"dataset": "KITTI object detection", "status": "download image_2 training archive",
+         "note": "All 50 local validation images are shared by YOLOE, SAM 3.1, and both grounding specialists. GroundAnything's official COCO AP is unavailable because one predicted label did not map to the annotation categories; its class-aware F1 remains reportable. Mask AP is shown only for models that return masks. This is the 2D HOPE v2 subset, not the full BOP-H3 pose/onboarding protocol."},
+        {"dataset": "KITTI object detection", "status": "training data extracted; 2D protocol and fixed split pending",
          "task": "Automotive 2D detection",
-         "note": "Labels and calibration are local, but camera images are missing. Download the KITTI image_2 archive before using a fixed train/validation split."},
-        {"dataset": "LVIS v1 validation", "status": "100-image panel prepared; GPU runs pending",
+         "note": "The local training tree now contains 7,481 images, labels, calibration files, and Velodyne files. Verify pairing before selecting a fixed labeled train/validation split. Public test labels are unavailable."},
+        {"dataset": "LVIS v1 validation", "status": "GroundAnything and YOLOE-26-L complete at 100/100; LocateAnything and SAM 3.1 pending",
          "task": "Long-tail detection and instance segmentation",
          "note": "This exploratory panel uses 10 rare, 10 common, and 10 frequent categories across 100 fixed LVIS val images sourced from COCO 2017 train/val. It uses official LVIS AP and frequency-group metrics, not the full 1,203-category leaderboard; COCO-trained baselines may have seen some train images."},
         {"dataset": "RF100-VL", "status": "candidate; Roboflow API key not present",
@@ -328,7 +411,7 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": "complete" if winner else "not run" if not runs else "partial",
         "tested_model_count": tested_model_count,
-        "data_status": "local manifests used" if manifests_present else
+        "data_status": "some prepared tasks have recorded runs" if runs else
                        "local auxiliary manifests prepared" if prepared_aux_manifests else
                        "some local manifests prepared" if prepared_any_manifests else
                        "not present in inspected cache",
@@ -349,7 +432,7 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
         "vision": vision_summary(vision_runs or {}, runs, expected_images=100),
         "dota_track": dota_summary,
         "dataset_tracks": dataset_tracks,
-        "domain_benchmarks": domain_summaries(domain_runs or {}),
+        "domain_benchmarks": domain_summaries(domain_runs or {}, vision_runs or {}),
         "references": REFERENCES,
     }
 
@@ -400,8 +483,8 @@ def write_report(data: dict[str, Any]) -> None:
         lines.extend([f"### {task['label']}", "",
                       f"Dataset: {task['split']}; target sample: {task['n']} examples. "
                       f"Measures: {task['measure']}.", "",
-                      "| Model | Status | Coverage | Scores | Mean latency | Output rate | Peak whole-device VRAM | Parse issues |",
-                      "|---|---|---:|---|---:|---:|---:|---:|"])
+                      "| Model | Status | Coverage | Scores | Mean / median query (s) | p95 query (s) | Output rate | Peak whole-device VRAM | Parse issues |",
+                      "|---|---|---:|---|---:|---:|---:|---:|---:|"])
         for model in data["models"]:
             task_result = model["tasks"][task_id]
             metrics = task_result["metrics"]
@@ -418,7 +501,8 @@ def write_report(data: dict[str, Any]) -> None:
                 score_text = (f"Box F1 {fmt(metrics.get('f1'), True)}; OCR exact {fmt(metrics.get('ocr_exact_accuracy'), True)}; "
                               f"NED {fmt(metrics.get('ocr_normalized_edit_similarity'), True)}")
             lines.append(f"| `{model['model_id']}` | {task_result['status']} | {task_result['completed']}/{task['n']} | "
-                         f"{score_text} | {fmt(task_result['mean_latency_s'])} s | "
+                         f"{score_text} | {fmt(task_result['mean_latency_s'])} / {fmt(task_result['median_latency_s'])} | "
+                         f"{fmt(task_result['p95_latency_s'])} | "
                          f"{fmt(task_result['mean_output_tokens_per_s'])} tok/s | "
                          f"{fmt(task_result['peak_whole_device_vram_gib'])} GiB | "
                       f"{task_result['malformed']} malformed, {task_result['invalid_outputs']} invalid, {task_result['truncated']} truncated, "
@@ -429,8 +513,8 @@ def write_report(data: dict[str, Any]) -> None:
         "These answer-generation tasks are reported separately from localization and object detection. "
         "TextVQA measures question answering that depends on reading scene text. HierText adds word recognition "
         "to the existing text-box task by matching recognized words to word boxes at IoU 0.5.", "",
-        "| Model | Task | Status | Coverage | VQAv2 consensus / exact | Mean latency | Output rate | Peak VRAM |",
-        "|---|---|---|---:|---:|---:|---:|---:|",
+        "| Model | Task | Status | Coverage | VQAv2 consensus / exact | Mean / median query (s) | p95 query (s) | Output rate | Peak VRAM |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|",
     ])
     for model in data["models"]:
         for task_id, task in AUX_TASKS.items():
@@ -443,7 +527,8 @@ def write_report(data: dict[str, Any]) -> None:
                 score += f" / canonical exact {fmt(metrics.get('exact_match'), True)}"
             lines.append(f"| `{model['model_id']}` | {task['label']} | {result['status']} | "
                          f"{result['completed']}/{task['n']} | {score} | "
-                         f"{fmt(result['mean_latency_s'])} s | {fmt(result['mean_output_tokens_per_s'])} tok/s | "
+                         f"{fmt(result['mean_latency_s'])} / {fmt(result['median_latency_s'])} | "
+                         f"{fmt(result['p95_latency_s'])} | {fmt(result['mean_output_tokens_per_s'])} tok/s | "
                          f"{fmt(result['peak_whole_device_vram_gib'])} GiB |")
     lines.extend([
         "", "The VQAv2 panel reuses the exact 25-question sample from the general VLM skill panel. TextVQA uses a deterministic 100-question "
@@ -455,7 +540,7 @@ def write_report(data: dict[str, Any]) -> None:
         "with closed-vocabulary YOLO26-L detection and segmentation plus SAM 3.1 as additional references. "
         "Detection and segmentation use COCO AP. Classification is label accuracy among predictions matched "
         "to any ground-truth object at box IoU 0.5; it is not whole-image classification accuracy.", "",
-        "| Model | Status | Images | Box AP / AP50 | Mask AP / AP50 | Label accuracy / joint / class F1 | RefCOCOg Acc@0.5 / latency | Mean latency | Images/s | Peak VRAM |",
+        "| Model | Status | Images | Box AP / AP50 | Mask AP / AP50 | Label accuracy / joint / class F1 | RefCOCOg Acc@0.5 / latency | Mean / median query (s) | Images/s | Peak VRAM |",
         "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
     ])
     for model in data["vision"]:
@@ -471,7 +556,7 @@ def write_report(data: dict[str, Any]) -> None:
                      f"{fmt(classification.get('joint_detection_and_classification_accuracy'), True)} / "
                      f"{fmt(detection.get('class_aware_F1_IoU50'), True)} | "
                      f"{fmt(grounding.get('acc_iou_05'), True)} / {fmt(grounding.get('mean_latency_s'))} s | "
-                     f"{fmt(runtime.get('latency_mean_s'))} s | {fmt(runtime.get('images_per_s'))} | "
+                     f"{fmt(runtime.get('latency_mean_s'))} / {fmt(runtime.get('latency_median_s'))} | {fmt(runtime.get('images_per_s'))} | "
                      f"{fmt(runtime.get('peak_whole_device_vram_gib'))} GiB |")
     lines.extend([
         "", "YOLOE-26 and SAM 3.1 receive the same full COCO category-name list per image. SAM latency includes "
@@ -509,22 +594,26 @@ def write_report(data: dict[str, Any]) -> None:
         lines.append(f"| {track['dataset']} | {track['status']} | {track['task']} | {track['note']} |")
     lines.extend([
         "", "### Shared non-COCO domain runs", "",
-        "Every row uses the prepared image IDs and category list for its domain. Box AP and class-aware F1 are shared across vision models and grounding specialists; mask AP is shown when available.",
-        "", "| Dataset | Model | Status | Images | Input size | Box AP / AP50 | Class-aware F1 | Mask AP | AP rare / common / frequent | Mean latency | Images/s |",
-        "|---|---|---|---:|---|---:|---:|---:|---|---:|---:|",
+        "Every row uses the prepared image IDs and category list for its domain. Query latency excludes model load. YOLO timing includes image loading, preprocessing, and prompt setup; GroundAnything timing in the saved runs starts after local image reading, base64 encoding, and request serialization, then covers the HTTP call through the full response. Historical LocateAnything timings cover only model.generate(), excluding image reading, processor encoding, decoding, and parsing. The ratios compare each model with the fastest complete YOLO detector on that domain, but the saved timing scopes differ.",
+        "", "| Dataset | Model | Status | Images | Model load s | Input size | Box AP / AP50 | Class-aware F1 | Mask AP | AP rare / common / frequent | Mean query s | Median query s | p95 query s | Images/s | Latency / fastest YOLO |",
+        "|---|---|---|---:|---:|---|---:|---:|---:|---|---:|---:|---:|---:|---:|",
     ])
     for result in data["domain_benchmarks"]:
         lines.append(
             f"| {result['dataset']} | {result['model']} | {result['status']} | "
-            f"{result['sample_count']}/{result['expected_count']} | {result.get('input_size') or '—'} | "
+            f"{result['sample_count']}/{result['expected_count']} | {fmt(result.get('model_load_duration_s'))} | "
+            f"{result.get('input_size') or '—'} | "
             f"{fmt(result.get('AP'), True)} / {fmt(result.get('AP50'), True)} | "
             f"{fmt(result.get('class_aware_F1_IoU50'), True)} | {fmt(result.get('mask_AP'), True)} | "
             f"{fmt(result.get('AP_rare'), True)} / {fmt(result.get('AP_common'), True)} / "
             f"{fmt(result.get('AP_frequent'), True)} | "
-            f"{fmt(result.get('latency_s'))} s | {fmt(result.get('images_per_s'))} |"
+            f"{fmt(result.get('latency_s'))} | {fmt(result.get('latency_median_s'))} | "
+            f"{fmt(result.get('latency_p95_s'))} | {fmt(result.get('images_per_s'))} | "
+            f"{fmt(result.get('latency_ratio_to_fastest_yolo'))}× |"
         )
     if not data["domain_benchmarks"]:
-        lines.append("| DOTA v1.0 and BOP-H3 HOPE v2 | All shared models | not run | — | — | — | — | — | — | — |")
+        lines.append("| DOTA v1.0 and BOP-H3 HOPE v2 | All shared models | not run | — | — | — | — | — | — | — | — | — | — | — | — |")
+    lines.append("For LVIS official AP, GroundAnything boxes receive a uniform confidence score of 1.0 because it does not emit per-box confidence; YOLOE uses its model scores. Treat their AP comparison as a quality reference rather than a confidence-calibrated ranking.")
     dota = data["dota_track"]
     dota_metrics = dota.get("metrics", {})
     dota_runtime = dota.get("runtime", {})
@@ -536,7 +625,7 @@ def write_report(data: dict[str, Any]) -> None:
         f"{fmt(dota_metrics.get('AP'), True)}; AP50: {fmt(dota_metrics.get('AP50'), True)}; "
         f"inference latency: {dota_latency}; "
         f"whole-device peak VRAM: {fmt(dota_runtime.get('peak_whole_device_vram_gib'))} GiB.",
-        "This is an in-domain OBB reference, not a zero-shot YOLOE comparison. Validation speed excludes model load; the displayed speed and peak VRAM await a clean serial rerun.",
+        "This is an in-domain OBB reference, not a zero-shot YOLOE comparison. Validation speed excludes model load; peak whole-device VRAM includes model loading and host baseline use.",
     ])
     lines.extend([
         "", "## Method", "",
@@ -557,10 +646,14 @@ def write_report(data: dict[str, Any]) -> None:
         ("No model inference measurements are present yet. Local manifests are prepared for "
          f"{', '.join(data['prepared_tasks']) or 'no tasks'}. Any remaining grounding tasks and COCO vision "
          "assets still require local manifests. Follow `README.md` to prepare the remaining data and run each model." if not data["tested_model_count"] else
-         f"Local manifests were used for these runs. Dataset images and item-level annotations were not copied "
+         f"Prepared manifests exist for {', '.join(data['prepared_tasks']) or 'no task manifests'}. "
+         f"Core task manifests without local preparation include {', '.join(task for task in (*TASKS, *AUX_TASKS) if task not in data['prepared_tasks']) or 'none'}. "
+         f"Dataset images and item-level annotations were not copied "
          f"into the site. {data['tested_model_count']} model(s) have at least one completed example; partial "
          "and failed coverage remains visible in the scorecards."),
-        "RefCOCOg uses its public test split. COCO uses val2017. ScreenSpot-Pro uses test. HierText uses "
+        "The intended protocol uses RefCOCOg test, COCO val2017, ScreenSpot-Pro test, and HierText validation. "
+        "A dataset split is considered run-ready only when its local manifest and assets are present. "
+        "HierText uses "
         "validation, matching the planned protocol. VQAv2 uses a 25-question existing panel; TextVQA uses "
         "a deterministic sample of 100 validation questions. These specialists do not document general VQA "
         "as a native task, so their answer scores measure exploratory transfer. TextVQA is OCR-dependent VQA, "
@@ -568,9 +661,9 @@ def write_report(data: dict[str, Any]) -> None:
         "predictions remain local.",
         "",
         "## Runtime and artifacts", "",
-        "Per-item results preserve the prompt, raw output, canonical predictions, parser state, error, latency, "
+        "Per-item results preserve the prompt, raw output, canonical predictions, parser state, error, query latency, "
         "token counts, image dimensions, and scores in `results/runs/`. LocateAnything model-load peak and "
-        "per-task peaks are recorded separately; the GroundAnything server load happens before the client run. "
+        "per-task peaks are recorded separately. Model initialization is excluded from query timing; report its duration separately when captured. Existing LocateAnything results time only `model.generate()`, excluding local image reading, processor encoding, output decoding, and parsing. The updated runner records the full adapter query from local image reading and processor encoding through decoded and parsed output; it also saves pure generation latency separately for token-rate calculations. GroundAnything timing in the saved runs starts after local image reading, base64 encoding, and request serialization, then spans the HTTP response; YOLO timing includes single-image loading, preprocessing, prompt setup, and inference, with warmup images excluded. These model-specific scopes still differ, so latency ratios are indicative rather than fully matched end-to-end measurements. Model-load duration is recorded when measured; GroundAnything was preloaded before its client benchmark, so its load duration is not captured in these runs. "
         "This folder is excluded from the site. "
         "The site includes aggregate metrics only. Whole-device VRAM is sampled every 0.5 seconds with "
         "`nvidia-smi`; the reported maximum includes all processes and desktop use. Package versions describe "

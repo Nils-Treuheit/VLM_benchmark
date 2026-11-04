@@ -158,6 +158,7 @@ class LocateAnythingAdapter:
     def generate(self, image_path: Path, prompt: str, max_new_tokens: int) -> dict[str, Any]:
         from PIL import Image
 
+        query_started = time.perf_counter()
         image = Image.open(image_path).convert("RGB")
         messages = [{"role": "user", "content": [
             {"type": "image", "image": image}, {"type": "text", "text": prompt},
@@ -168,7 +169,8 @@ class LocateAnythingAdapter:
         images, videos = self.processor.process_vision_info(messages)
         encoded = self.processor(text=[text], images=images, videos=videos, return_tensors="pt").to(self.device)
         pixel_values = encoded["pixel_values"].to(self.torch.bfloat16)
-        started = time.perf_counter()
+        self.torch.cuda.synchronize(self.device)
+        generation_started = time.perf_counter()
         with self.torch.inference_mode():
             output = self.model.generate(
                 pixel_values=pixel_values,
@@ -183,14 +185,18 @@ class LocateAnythingAdapter:
                 do_sample=False,
                 verbose=False,
             )
-        elapsed = time.perf_counter() - started
+        self.torch.cuda.synchronize(self.device)
+        generation_elapsed = time.perf_counter() - generation_started
         prompt_tokens = int(encoded["input_ids"].shape[-1])
         raw = output[0] if isinstance(output, tuple) else output
         raw = raw if isinstance(raw, str) else self.tokenizer.decode(raw, skip_special_tokens=False)
         output_tokens = len(self.tokenizer.encode(raw, add_special_tokens=False))
-        return {"raw_output": raw, "latency_s": elapsed, "input_tokens": prompt_tokens,
+        parsed = scoring.parse_locateanything(raw)
+        query_elapsed = time.perf_counter() - query_started
+        return {"raw_output": raw, "latency_s": query_elapsed,
+                "generation_latency_s": generation_elapsed, "input_tokens": prompt_tokens,
                 "output_tokens": output_tokens, "finish_reason": "length" if output_tokens >= max_new_tokens else "stop",
-                "parse": scoring.parse_locateanything(raw)}
+                "parse": parsed}
 
 
 class GroundAnythingAdapter:
@@ -205,6 +211,7 @@ class GroundAnythingAdapter:
         self.backend = "GroundAnything custom SGLang"
 
     def generate(self, image_path: Path, prompt: str, max_new_tokens: int) -> dict[str, Any]:
+        query_started = time.perf_counter()
         image_type = mimetypes.guess_type(image_path.name)[0] or "image/jpeg"
         image_data = base64.b64encode(image_path.read_bytes()).decode("ascii")
         request_body = {
@@ -222,13 +229,11 @@ class GroundAnythingAdapter:
             self.base_url + "/chat/completions", data=json.dumps(request_body).encode("utf-8"),
             headers={"Content-Type": "application/json"}, method="POST",
         )
-        started = time.perf_counter()
         try:
             with urllib.request.urlopen(req, timeout=self.timeout_s) as response:
                 payload = json.loads(response.read())
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
             raise RuntimeError(f"GroundAnything request failed: {type(exc).__name__}: {exc}") from exc
-        elapsed = time.perf_counter() - started
         choices = payload.get("choices") or []
         if not choices:
             raise RuntimeError(f"GroundAnything returned no choices: {payload}")
@@ -239,9 +244,13 @@ class GroundAnythingAdapter:
         else:
             raw = str(content)
         usage = payload.get("usage") or {}
-        return {"raw_output": raw, "latency_s": elapsed,
+        parsed = scoring.parse_groundanything(raw)
+        query_elapsed = time.perf_counter() - query_started
+        return {"raw_output": raw, "latency_s": query_elapsed,
                 "input_tokens": usage.get("prompt_tokens"), "output_tokens": usage.get("completion_tokens"),
-                "finish_reason": choice.get("finish_reason"), "parse": scoring.parse_groundanything(raw)}
+                "finish_reason": choice.get("finish_reason"),
+                "timing_scope": ("local image read and base64/request serialization through HTTP response and parse; model load excluded"),
+                "parse": parsed}
 
     def model_inventory(self) -> dict[str, Any]:
         req = urllib.request.Request(self.base_url + "/models")

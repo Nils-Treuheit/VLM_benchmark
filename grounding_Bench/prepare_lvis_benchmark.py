@@ -146,6 +146,7 @@ def prepare(annotation_zip: Path, coco_root: Path, output_dir: Path,
             "categories": annotation_categories}
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "manifest.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    (output_dir / "coco.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     (output_dir / "lvis_annotations.json").write_text(json.dumps(official) + "\n", encoding="utf-8")
     (output_dir / "coco_annotations.json").write_text(json.dumps(coco) + "\n", encoding="utf-8")
     return {key: payload[key] for key in ("dataset", "split", "sample_count", "category_count",

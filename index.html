@@ -184,12 +184,12 @@
         </a>
         <a class="report-link" href="general_transformers_Bench/">
           <h3>Other Big VLMs</h3>
-          <p>Transformer-based vision-language models, including their compatibility and task status.</p>
+          <p>Completed shared-task comparisons for Transformer-based models, with compatibility and attempt details.</p>
           <span class="path">/general_transformers_Bench/</span>
         </a>
         <a class="report-link" href="local_foundation_Bench/">
           <h3>Local Foundation &amp; GGUF</h3>
-          <p>Configured Qwen3.8 and LFM2.5-VL runs, plus compatibility status for cached local candidates.</p>
+          <p>Measured Qwen3.8 and Liquid VLM runs, plus compatibility status for cached local candidates.</p>
           <span class="path">/local_foundation_Bench/</span>
         </a>
         <a class="report-link" href="video_Bench/">
@@ -215,8 +215,8 @@
       <div class="overall-leader">
         <h3 class="overall-label">Best overall · complete on all eight shared tasks</h3>
         <div>
-          <div class="overall-score">62.5%</div>
-          <p class="overall-model"><a href="qwenVL_Bench/"><code>Qwen/Qwen2.5-VL-7B-Instruct</code></a></p>
+          <div class="overall-score">63.5%</div>
+          <p class="overall-model"><a href="local_foundation_Bench/"><code>qwen3.8:27b-mtp4-ud_q4_K_XL-128k</code></a></p>
         </div>
         <p class="overall-note">Unweighted mean across AI2D, TextVQA/OCR, VQA truth, counting, description, affordance, negation, and GRAB-Lite.</p>
       </div>
@@ -229,7 +229,7 @@
             <tr><th scope="col">Category</th><th scope="col">Score</th><th scope="col">Model</th><th scope="col">Suite</th></tr>
           </thead>
           <tbody>
-            <tr><td>AI2D</td><td>90.0%</td><td><code>unsloth/Qwen3-VL-30B-A3B-Thinking-GGUF:UD-Q4_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
+            <tr><td>AI2D</td><td>92.0%</td><td><code>LiquidAI/LFM3-VL-2B-GGUF:NVFP4</code></td><td class="leader-suite"><a href="local_foundation_Bench/">Local foundation</a></td></tr>
             <tr><td>TextVQA / OCR</td><td>88.0%</td><td><code>Qwen/Qwen2-VL-7B-Instruct</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
             <tr><td>VQA truth</td><td>100.0%</td><td><code>unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
             <tr><td>VQA counting</td><td>84.0%</td><td><code>unsloth/Qwen3-VL-32B-Instruct-GGUF:UD-Q4_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
@@ -240,11 +240,11 @@
               <td><code>unsloth/Qwen2.5-VL-72B-Instruct-GGUF:UD-IQ2_XXS</code><br><code>lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct</code></td>
               <td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a><br><a href="llava_Bench/">LLaVA</a></td>
             </tr>
-            <tr><td>GRAB-Lite graph analysis</td><td>15.0%</td><td><code>lmms-lab-encoder/LLaVA-OneVision-2-8B-Instruct</code></td><td class="leader-suite"><a href="llava_Bench/">LLaVA</a></td></tr>
+            <tr><td>GRAB-Lite graph analysis</td><td>33.8%</td><td><code>LiquidAI/LFM3-VL-2B-GGUF:NVFP4</code></td><td class="leader-suite"><a href="local_foundation_Bench/">Local foundation</a></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded from the shared image-task rankings. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-03.</p>
+      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded from the shared image-task rankings. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-04.</p>
       <div class="specialist-leaders" aria-live="polite">
         <div>
           <h3>Video VLM categories</h3>
@@ -260,7 +260,7 @@
 
     <section class="edge-limited" aria-labelledby="edge-limited-title">
       <h2 id="edge-limited-title">Edge Limited</h2>
-      <p class="intro">Choose a VRAM ceiling to recalculate the best overall model and the leader in each shared category.</p>
+      <p class="intro">Choose a VRAM ceiling to view complete benchmark runs measured and verified under that whole-device limit.</p>
       <div class="edge-controls">
         <label for="edge-vram-limit">VRAM restriction</label>
         <select id="edge-vram-limit" name="vram-limit">
@@ -272,23 +272,23 @@
         </select>
       </div>
       <p id="edge-status" class="edge-status" role="status" aria-live="polite">Loading benchmark memory and score records…</p>
+      <div id="edge-stage-summary" class="edge-table-wrap" role="region" aria-label="Cap-specific validation status" tabindex="0"></div>
       <div id="edge-overall" class="edge-overall" aria-live="polite"></div>
       <h3>Best per category under this cap</h3>
       <div id="edge-categories" class="edge-table-wrap" role="region" aria-label="Best model scores by category under the selected VRAM cap" tabindex="0"></div>
-      <p class="edge-method">Each winner includes the context record and peak VRAM evidence behind its edge fit. Qwen shows an estimated maximum context and its estimated 8K residency plus desktop reserve; its measured benchmark peak may exceed the selected cap because those runs used longer contexts. LLaVA and Φ-Vision show measured process-local peaks; Cosmos shows measured whole-device peaks; Other Big VLMs show process-local peaks. The reports do not provide context sweeps: Qwen estimates an edge maximum, Cosmos records explicit run-context caps for some models, and other suites expose checkpoint context metadata. These records are not measured maximum contexts under the selected VRAM tier. Rankings include complete shared image-task scores only. Cross-suite memory comparisons have different scopes. Video and grounding specialist categories are listed separately above because their tasks and memory evidence do not match this shared image-task filter.</p>
+      <p class="edge-method">A model appears here only after its real-image context probe and complete eight-task run pass under the selected whole-device cap. The page reports measured context, probe peak VRAM, scoring-run peak VRAM, and complete task scores. Video and grounding results use separate metrics and do not enter these shared image-task rankings.</p>
     </section>
 
     <aside class="edge-disclaimer" aria-labelledby="edge-disclaimer-title">
       <h2 id="edge-disclaimer-title">Edge Limited measurement disclaimer</h2>
-      <p>Current scores come from completed benchmark runs, but the current edge rankings have not all been rerun under the selected VRAM limit. Edge eligibility and context evidence use different measurements across suites:</p>
+      <p>Cap-specific refinement is in progress. No model is eligible until a complete shared-task run and its real-image context probe both pass under the same measured whole-device limit.</p>
       <ul>
-        <li><b>Qwen-VL:</b> task scores and benchmark peaks are measured at their recorded run context. The estimated 8K residency includes a 1 GiB desktop reserve; maximum context under 8, 10, 12, 14, or 16 GiB is interpolated from the context profile. These edge-context values are estimates, and measured benchmark peaks can exceed the selected limit.</li>
-        <li><b>LLaVA and Φ-Vision:</b> task scores and maximum process-local peak VRAM across the benchmark tasks are measured. The checkpoint context shown is advertised metadata; no context sweep established a maximum under each VRAM limit.</li>
-        <li><b>Cosmos:</b> task scores and peak whole-device VRAM, including desktop use, are measured. Cosmos3-Nano records a 16,384-token run cap; other runs use the checkpoint default. A configured run cap is not a measured maximum context under an edge limit.</li>
-        <li><b>Other Big VLMs:</b> task scores and process-local peak VRAM are measured. Checkpoint context is metadata; per-request context and edge-context sweeps are not recorded.</li>
+        <li>Existing suite scores and memory records screen candidates only; they do not establish that a run fits any selected cap.</li>
+        <li>Candidate context must be measured with the model's real image path. Checkpoint metadata and estimated KV-cache profiles do not qualify.</li>
+        <li>A stage with no verified cap-specific run displays an explicit empty state.</li>
       </ul>
       <p><b>Working hypothesis for refinement:</b> With model, inputs, context length, precision, and decoding held fixed, a VRAM ceiling alone should have little effect on answer quality; it mainly affects fit and speed. More context uses more KV-cache memory and can help or hurt task scores. We expect smaller context-driven changes on these mostly single-image tasks than on multi-image, video, or long-prompt tasks. This is a hypothesis to test, not a result established by current reports. See the <a href="https://huggingface.co/docs/transformers/kv_cache">KV-cache documentation</a> and <a href="https://arxiv.org/abs/2307.03172">long-context retrieval study</a>.</p>
-      <p>Until selective edge refinement is complete, treat these rankings as candidate screening, not as measured quality at the selected VRAM limit. The final Edge Limited results will include only scores, peak VRAM, and context limits measured in runs performed under that limit. See the <a href="implementation_plans/selective-edge-refinement.md">selective edge refinement plan</a>.</p>
+      <p>No provisional estimates are shown as Edge Limited results. See the <a href="implementation_plans/selective-edge-refinement.md">selective edge refinement plan</a> for the run protocol and current execution status.</p>
     </aside>
 
     <footer>Each report describes its own model set, task coverage, scoring rules, and measurement limits.</footer>

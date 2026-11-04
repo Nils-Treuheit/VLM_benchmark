@@ -11,14 +11,31 @@ const sortState = new Map();
 const taskDone = item => item && item.completed_n === item.requested_n;
 const taskScoreText = item => item ? `${fmtPct(item.score)}${taskDone(item) ? "" : ` · ${item.completed_n ?? 0}/${item.requested_n ?? "—"}`}` : "—";
 
-function cell(row, value, className = "") {
-  const td = row.insertCell();
-  td.textContent = escapeText(value);
-  if (className) td.className = className;
-  return td;
+function rankRows(rows, rules) {
+  rows.forEach(row => { row.ranks = {}; });
+  for (const [column, rule] of Object.entries(rules)) {
+    const groups = new Map();
+    rows.forEach(row => {
+      const value = row.sort[column];
+      if (!rule.eligible(row) || typeof value !== "number" || !Number.isFinite(value)) return;
+      const group = rule.groupBy ? rule.groupBy(row) : "all";
+      if (!groups.has(group)) groups.set(group, []);
+      groups.get(group).push({row, value});
+    });
+    for (const entries of groups.values()) {
+      const values = [...new Set(entries.map(entry => entry.value))]
+        .sort((a, b) => rule.direction === "min" ? a - b : b - a);
+      const positions = new Map(values.map((value, index) => [value, index + 1]));
+      entries.forEach(({row, value}) => {
+        const rank = positions.get(value);
+        if (rank <= 5) row.ranks[column] = rank === 1 ? "best" : "top-five";
+      });
+    }
+  }
 }
 
-function tableShell(container, headers, rows, sortable = false) {
+function tableShell(container, headers, rows, sortable = false, rankRules = {}) {
+  rankRows(rows, rankRules);
   container.replaceChildren();
   if (!rows.length) {
     const empty = document.createElement("p");
@@ -38,9 +55,15 @@ function tableShell(container, headers, rows, sortable = false) {
     clear.textContent = "Clear sorting";
     clear.addEventListener("click", () => {
       sortState.delete(container.id);
-      tableShell(container, headers, originalRows, sortable);
+      tableShell(container, headers, originalRows, sortable, rankRules);
     });
     controls.append(clear);
+    if (Object.keys(rankRules).length) {
+      const legend = document.createElement("p");
+      legend.className = "comparison-legend";
+      legend.innerHTML = '<span class="rank-badge rank-best">Best</span> highest or lowest valid result <span class="rank-badge rank-top-five">Top 5</span> next four ranks';
+      controls.append(legend);
+    }
     container.append(controls);
   }
   const caption = document.createElement("caption");
@@ -69,7 +92,7 @@ function tableShell(container, headers, rows, sortable = false) {
             ? right - left : String(left ?? "").localeCompare(String(right ?? ""));
           return direction === "desc" ? order : -order;
         });
-        tableShell(container, headers, rows, sortable);
+        tableShell(container, headers, rows, sortable, rankRules);
       });
       th.append(button);
     } else th.textContent = header;
@@ -79,13 +102,30 @@ function tableShell(container, headers, rows, sortable = false) {
   rows.forEach(rowData => {
     const tr = body.insertRow();
     rowData.cells.forEach((value, index) => {
-      if (value && typeof value === "object" && value.href) {
-        const td = tr.insertCell();
+      const isObject = value && typeof value === "object";
+      const td = tr.insertCell();
+      if (index && typeof value === "number") td.classList.add("numeric");
+      if (isObject && value.className) td.classList.add(value.className);
+      if (rowData.ranks?.[index]) {
+        const rank = rowData.ranks[index];
+        td.classList.add(rank === "best" ? "best-rank-1" : "best-rank-2to5");
+      }
+      if (isObject && value.href) {
         const link = document.createElement("a");
         link.href = value.href; link.target = "_blank"; link.rel = "noreferrer";
         link.textContent = value.text;
         td.append(link);
-      } else cell(tr, value, index && typeof value === "number" ? "numeric" : "");
+      } else {
+        const text = isObject ? value.text : value;
+        td.append(document.createTextNode(escapeText(text)));
+      }
+      const rank = rowData.ranks?.[index];
+      if (rank) {
+        const badge = document.createElement("span");
+        badge.className = `rank-badge ${rank === "best" ? "rank-best" : "rank-top-five"}`;
+        badge.textContent = rank === "best" ? "Best" : "Top 5";
+        td.append(document.createTextNode(" "), badge);
+      }
     });
   });
   container.append(table);
@@ -134,26 +174,44 @@ function render(data) {
   const scoreRows = models.map(model => {
     const cells = [model.model_card ? {text:model.model_id,href:model.model_card} : model.model_id, model.status, model.full_benchmark_complete ? fmtPct(model.full_benchmark_macro) : "—", model.vqa_panel_macro == null ? "—" : fmtPct(model.vqa_panel_macro), ...TASKS.map(([key]) => taskScoreText(model.tasks?.[key]))];
     const sort = [model.model_id, model.status, model.full_benchmark_complete ? model.full_benchmark_macro : null, model.vqa_panel_macro, ...TASKS.map(([key]) => taskDone(model.tasks?.[key]) ? model.tasks[key].score : null)];
-    return {cells, sort};
+    cells[1] = {text:model.status, className:statusClass(model.status)};
+    return {cells, sort, model};
   });
-  tableShell(document.getElementById("score-table"), ["Model", "Status", "Full-suite macro", "VQA panel macro", ...TASKS.map(([,label]) => label)], scoreRows, true);
+  const scoreRanks = {
+    2: {direction:"max", eligible:row => row.model.full_benchmark_complete},
+    3: {direction:"max", eligible:row => row.model.vqa_panel_macro != null},
+  };
+  TASKS.forEach(([key], index) => {
+    scoreRanks[index + 4] = {direction:"max", eligible:row => taskDone(row.model.tasks?.[key])};
+  });
+  tableShell(document.getElementById("score-table"), ["Model", "Status", "Full-suite macro", "VQA panel macro", ...TASKS.map(([,label]) => label)], scoreRows, true, scoreRanks);
 
   const runtimeRows = [];
   for (const model of models) for (const [key, label] of TASKS) {
     const item = model.tasks?.[key];
     if (!item) continue;
-    runtimeRows.push({cells:[model.model_id,label,`${item.completed_n ?? 0}/${item.requested_n ?? "—"}`,fmt(item.mean_generation_s),fmt(item.generated_tokens_per_s)],sort:[model.model_id,label,item.completed_n,item.mean_generation_s,item.generated_tokens_per_s]});
+    runtimeRows.push({cells:[model.model_id,label,`${item.completed_n ?? 0}/${item.requested_n ?? "—"}`,fmt(item.mean_generation_s),fmt(item.generated_tokens_per_s)],sort:[model.model_id,label,item.completed_n,item.mean_generation_s,item.generated_tokens_per_s],item});
   }
-  tableShell(document.getElementById("runtime-table"), ["Model","Task","Completed","Mean seconds","Output tokens/s"], runtimeRows, true);
+  tableShell(document.getElementById("runtime-table"), ["Model","Task","Completed","Mean seconds","Output tokens/s"], runtimeRows, true, {
+    3: {direction:"min", groupBy:row => row.sort[1], eligible:row => taskDone(row.item)},
+    4: {direction:"max", groupBy:row => row.sort[1], eligible:row => taskDone(row.item)},
+  });
 
   const inventoryRows = (data.candidates || []).map(candidate => ({
-    cells:[candidate.name,{text:candidate.checkpoint,href:candidate.source},candidate.license || "See model card",candidate.status,candidate.detail],
+    cells:[candidate.name,{text:candidate.checkpoint,href:candidate.source},candidate.license || "See model card",{text:candidate.status,className:statusClass(candidate.status)},candidate.detail],
     sort:[candidate.name,candidate.checkpoint,candidate.license,candidate.status,candidate.detail],
   }));
   tableShell(document.getElementById("inventory-table"), ["Candidate","Checkpoint","License","Status","Disposition"], inventoryRows, true);
   const notes = document.getElementById("notes");
   notes.replaceChildren();
   (data.notes || []).forEach(text => {const li=document.createElement("li");li.textContent=text;notes.append(li);});
+}
+
+function statusClass(status) {
+  const normalized = String(status || "").toLowerCase();
+  if (["failed", "error", "preflight_failed"].includes(normalized)) return "status-label status-error";
+  if (["incomplete", "unsupported", "not_run", "partial", "skipped"].includes(normalized)) return "status-label status-warning";
+  return "status-label status-neutral";
 }
 
 fetch("data.json").then(response => {

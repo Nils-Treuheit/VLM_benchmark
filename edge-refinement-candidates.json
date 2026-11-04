@@ -1,0 +1,1429 @@
+{
+  "generated_at": "2026-11-04",
+  "selection_source": "Current completed suite results and the pre-refinement eligibility rules. This file is a screening roster, not measured edge results.",
+  "selection_rule": "All ties for overall eight-task macro and each category at each preliminary tier. Full task coverage is required for overall; each task winner must have complete coverage for that task.",
+  "caps": [
+    {
+      "cap_gib": 8,
+      "candidate_count": 8,
+      "candidates": [
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.86,
+            "textvqa": 0.742,
+            "vqa_truth": 0.612,
+            "vqa_count": 0.724,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": 0.276
+          },
+          "screening_peak_gib": 4.374
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.92,
+            "textvqa": 0.785,
+            "vqa_truth": 0.544,
+            "vqa_count": 0.756,
+            "vqa_description": 0.66,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.338
+          },
+          "screening_peak_gib": 4.899
+        },
+        {
+          "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.73,
+            "textvqa": 0.843,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.64,
+            "vqa_description": 0.676,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.134
+          },
+          "screening_peak_gib": 4.155
+        },
+        {
+          "model_id": "google/paligemma2-3b-mix-224",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.71,
+            "textvqa": 0.576,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.78,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": 0.026
+          },
+          "screening_peak_gib": 5.761
+        },
+        {
+          "model_id": "Qwen/Qwen2-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.67,
+            "textvqa": 0.8,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.72,
+            "vqa_description": 0.6880000000000001,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 6.988
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-2B-Thinking",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.7,
+            "textvqa": 0.68,
+            "vqa_truth": 0.892,
+            "vqa_count": 0.552,
+            "vqa_description": 0.592,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.68,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 6.284
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.768,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.72,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.4,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 24.676
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.64,
+            "textvqa": 0.695,
+            "vqa_truth": 0.876,
+            "vqa_count": 0.752,
+            "vqa_description": 0.504,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 23.707
+        }
+      ]
+    },
+    {
+      "cap_gib": 10,
+      "candidate_count": 16,
+      "candidates": [
+        {
+          "model_id": "nvidia/Cosmos3-Edge",
+          "suite": "Cosmos",
+          "suite_href": "cosmos_Bench/",
+          "scores": {
+            "ai2d": 0.63,
+            "textvqa": 0.741,
+            "vqa_truth": 0.904,
+            "vqa_count": 0.736,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.16,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.064
+          },
+          "screening_peak_gib": 9.4
+        },
+        {
+          "model_id": "xtuner/llava-phi-3-mini-hf",
+          "suite": "LLaVA",
+          "suite_href": "llava_Bench/",
+          "scores": {
+            "ai2d": 0.59,
+            "textvqa": 0.492,
+            "vqa_truth": 0.864,
+            "vqa_count": 0.412,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.32,
+            "graph_grab_lite": 0.082
+          },
+          "screening_peak_gib": 8.159
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.86,
+            "textvqa": 0.742,
+            "vqa_truth": 0.612,
+            "vqa_count": 0.724,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": 0.276
+          },
+          "screening_peak_gib": 4.374
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.92,
+            "textvqa": 0.785,
+            "vqa_truth": 0.544,
+            "vqa_count": 0.756,
+            "vqa_description": 0.66,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.338
+          },
+          "screening_peak_gib": 4.899
+        },
+        {
+          "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.73,
+            "textvqa": 0.843,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.64,
+            "vqa_description": 0.676,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.134
+          },
+          "screening_peak_gib": 4.155
+        },
+        {
+          "model_id": "google/paligemma2-3b-mix-224",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.71,
+            "textvqa": 0.576,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.78,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": 0.026
+          },
+          "screening_peak_gib": 5.761
+        },
+        {
+          "model_id": "Qwen/Qwen2-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.67,
+            "textvqa": 0.8,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.72,
+            "vqa_description": 0.6880000000000001,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 6.988
+        },
+        {
+          "model_id": "Qwen/Qwen2.5-VL-3B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.719,
+            "vqa_truth": 0.904,
+            "vqa_count": 0.732,
+            "vqa_description": 0.652,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 9.363
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.72,
+            "textvqa": 0.773,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.608,
+            "vqa_description": 0.524,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 6.06
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-2B-Thinking",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.7,
+            "textvqa": 0.68,
+            "vqa_truth": 0.892,
+            "vqa_count": 0.552,
+            "vqa_description": 0.592,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.68,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 6.284
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.768,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.72,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.4,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 24.676
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.64,
+            "textvqa": 0.695,
+            "vqa_truth": 0.876,
+            "vqa_count": 0.752,
+            "vqa_description": 0.504,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 23.707
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Instruct-1M-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.788,
+            "vqa_truth": 0.916,
+            "vqa_count": 0.644,
+            "vqa_description": 0.64,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 26.261
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.78,
+            "textvqa": 0.779,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.748,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 26.261
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Thinking-bnb-4bit",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.734,
+            "vqa_truth": 0.796,
+            "vqa_count": 0.688,
+            "vqa_description": 0.444,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 9.359
+        },
+        {
+          "model_id": "microsoft/Phi-3.5-vision-instruct",
+          "suite": "\u03a6-Vision",
+          "suite_href": "phi_Bench/",
+          "scores": {
+            "ai2d": 0.74,
+            "textvqa": 0.198,
+            "vqa_truth": 0.24,
+            "vqa_count": 0.048,
+            "vqa_description": 0.092,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 8.41
+        }
+      ]
+    },
+    {
+      "cap_gib": 12,
+      "candidate_count": 22,
+      "candidates": [
+        {
+          "model_id": "nvidia/Cosmos-Reason2-2B",
+          "suite": "Cosmos",
+          "suite_href": "cosmos_Bench/",
+          "scores": {
+            "ai2d": 0.66,
+            "textvqa": 0.706,
+            "vqa_truth": 0.928,
+            "vqa_count": 0.556,
+            "vqa_description": 0.52,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.072
+          },
+          "screening_peak_gib": 10.691
+        },
+        {
+          "model_id": "nvidia/Cosmos3-Edge",
+          "suite": "Cosmos",
+          "suite_href": "cosmos_Bench/",
+          "scores": {
+            "ai2d": 0.63,
+            "textvqa": 0.741,
+            "vqa_truth": 0.904,
+            "vqa_count": 0.736,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.16,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.064
+          },
+          "screening_peak_gib": 9.4
+        },
+        {
+          "model_id": "xtuner/llava-phi-3-mini-hf",
+          "suite": "LLaVA",
+          "suite_href": "llava_Bench/",
+          "scores": {
+            "ai2d": 0.59,
+            "textvqa": 0.492,
+            "vqa_truth": 0.864,
+            "vqa_count": 0.412,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.32,
+            "graph_grab_lite": 0.082
+          },
+          "screening_peak_gib": 8.159
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.86,
+            "textvqa": 0.742,
+            "vqa_truth": 0.612,
+            "vqa_count": 0.724,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": 0.276
+          },
+          "screening_peak_gib": 4.374
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.92,
+            "textvqa": 0.785,
+            "vqa_truth": 0.544,
+            "vqa_count": 0.756,
+            "vqa_description": 0.66,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.338
+          },
+          "screening_peak_gib": 4.899
+        },
+        {
+          "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.73,
+            "textvqa": 0.843,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.64,
+            "vqa_description": 0.676,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.134
+          },
+          "screening_peak_gib": 4.155
+        },
+        {
+          "model_id": "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.659,
+            "vqa_truth": 0.572,
+            "vqa_count": 0.224,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.72,
+            "graph_grab_lite": 0.148
+          },
+          "screening_peak_gib": 10.74
+        },
+        {
+          "model_id": "google/paligemma2-3b-mix-224",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.71,
+            "textvqa": 0.576,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.78,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": 0.026
+          },
+          "screening_peak_gib": 5.761
+        },
+        {
+          "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.74,
+            "textvqa": 0.668,
+            "vqa_truth": 0.532,
+            "vqa_count": 0.24,
+            "vqa_description": 0.296,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.24,
+            "graph_grab_lite": 0.07
+          },
+          "screening_peak_gib": 10.418
+        },
+        {
+          "model_id": "Qwen/Qwen2-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.67,
+            "textvqa": 0.8,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.72,
+            "vqa_description": 0.6880000000000001,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 6.988
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.72,
+            "textvqa": 0.773,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.608,
+            "vqa_description": 0.524,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 6.06
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-4B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.78,
+            "textvqa": 0.802,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.696,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.6,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 10.457
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-4B-Thinking",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.77,
+            "textvqa": 0.722,
+            "vqa_truth": 0.88,
+            "vqa_count": 0.696,
+            "vqa_description": 0.528,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.8,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 10.464
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.768,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.72,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.4,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 24.676
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.64,
+            "textvqa": 0.695,
+            "vqa_truth": 0.876,
+            "vqa_count": 0.752,
+            "vqa_description": 0.504,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 23.707
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.78,
+            "textvqa": 0.779,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.748,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 26.261
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.795,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.736,
+            "vqa_description": 0.644,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 28.647
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Thinking-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.76,
+            "textvqa": 0.738,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.724,
+            "vqa_description": 0.516,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 28.646
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-1M-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.81,
+            "textvqa": 0.831,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.62,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 28.766
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.81,
+            "textvqa": 0.8,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.728,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.76,
+            "graph_grab_lite": 0.14
+          },
+          "screening_peak_gib": 28.777
+        },
+        {
+          "model_id": "microsoft/Phi-3-vision-128k-instruct",
+          "suite": "\u03a6-Vision",
+          "suite_href": "phi_Bench/",
+          "scores": {
+            "ai2d": 0.28,
+            "textvqa": 0.03,
+            "vqa_truth": 0.0,
+            "vqa_count": 0.0,
+            "vqa_description": 0.0,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.08,
+            "graph_grab_lite": 0.074
+          },
+          "screening_peak_gib": 11.045
+        },
+        {
+          "model_id": "microsoft/Phi-3.5-vision-instruct",
+          "suite": "\u03a6-Vision",
+          "suite_href": "phi_Bench/",
+          "scores": {
+            "ai2d": 0.74,
+            "textvqa": 0.198,
+            "vqa_truth": 0.24,
+            "vqa_count": 0.048,
+            "vqa_description": 0.092,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 8.41
+        }
+      ]
+    },
+    {
+      "cap_gib": 14,
+      "candidate_count": 22,
+      "candidates": [
+        {
+          "model_id": "nvidia/Cosmos-Reason2-2B",
+          "suite": "Cosmos",
+          "suite_href": "cosmos_Bench/",
+          "scores": {
+            "ai2d": 0.66,
+            "textvqa": 0.706,
+            "vqa_truth": 0.928,
+            "vqa_count": 0.556,
+            "vqa_description": 0.52,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.072
+          },
+          "screening_peak_gib": 10.691
+        },
+        {
+          "model_id": "nvidia/Cosmos3-Edge",
+          "suite": "Cosmos",
+          "suite_href": "cosmos_Bench/",
+          "scores": {
+            "ai2d": 0.63,
+            "textvqa": 0.741,
+            "vqa_truth": 0.904,
+            "vqa_count": 0.736,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.16,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.064
+          },
+          "screening_peak_gib": 9.4
+        },
+        {
+          "model_id": "xtuner/llava-phi-3-mini-hf",
+          "suite": "LLaVA",
+          "suite_href": "llava_Bench/",
+          "scores": {
+            "ai2d": 0.59,
+            "textvqa": 0.492,
+            "vqa_truth": 0.864,
+            "vqa_count": 0.412,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.32,
+            "graph_grab_lite": 0.082
+          },
+          "screening_peak_gib": 8.159
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.86,
+            "textvqa": 0.742,
+            "vqa_truth": 0.612,
+            "vqa_count": 0.724,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": 0.276
+          },
+          "screening_peak_gib": 4.374
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.92,
+            "textvqa": 0.785,
+            "vqa_truth": 0.544,
+            "vqa_count": 0.756,
+            "vqa_description": 0.66,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.338
+          },
+          "screening_peak_gib": 4.899
+        },
+        {
+          "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.73,
+            "textvqa": 0.843,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.64,
+            "vqa_description": 0.676,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.134
+          },
+          "screening_peak_gib": 4.155
+        },
+        {
+          "model_id": "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.659,
+            "vqa_truth": 0.572,
+            "vqa_count": 0.224,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.72,
+            "graph_grab_lite": 0.148
+          },
+          "screening_peak_gib": 10.74
+        },
+        {
+          "model_id": "google/paligemma2-3b-mix-224",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.71,
+            "textvqa": 0.576,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.78,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": 0.026
+          },
+          "screening_peak_gib": 5.761
+        },
+        {
+          "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.74,
+            "textvqa": 0.668,
+            "vqa_truth": 0.532,
+            "vqa_count": 0.24,
+            "vqa_description": 0.296,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.24,
+            "graph_grab_lite": 0.07
+          },
+          "screening_peak_gib": 10.418
+        },
+        {
+          "model_id": "Qwen/Qwen2-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.67,
+            "textvqa": 0.8,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.72,
+            "vqa_description": 0.6880000000000001,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 6.988
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.72,
+            "textvqa": 0.773,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.608,
+            "vqa_description": 0.524,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 6.06
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-4B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.78,
+            "textvqa": 0.802,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.696,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.6,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 10.457
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-4B-Thinking",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.77,
+            "textvqa": 0.722,
+            "vqa_truth": 0.88,
+            "vqa_count": 0.696,
+            "vqa_description": 0.528,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.8,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 10.464
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.768,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.72,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.4,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 24.676
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.64,
+            "textvqa": 0.695,
+            "vqa_truth": 0.876,
+            "vqa_count": 0.752,
+            "vqa_description": 0.504,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 23.707
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.78,
+            "textvqa": 0.779,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.748,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 26.261
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.795,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.736,
+            "vqa_description": 0.644,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 28.647
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-4B-Thinking-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.76,
+            "textvqa": 0.738,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.724,
+            "vqa_description": 0.516,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 28.646
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-1M-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.81,
+            "textvqa": 0.831,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.62,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 28.766
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.81,
+            "textvqa": 0.8,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.728,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.76,
+            "graph_grab_lite": 0.14
+          },
+          "screening_peak_gib": 28.777
+        },
+        {
+          "model_id": "microsoft/Phi-3-vision-128k-instruct",
+          "suite": "\u03a6-Vision",
+          "suite_href": "phi_Bench/",
+          "scores": {
+            "ai2d": 0.28,
+            "textvqa": 0.03,
+            "vqa_truth": 0.0,
+            "vqa_count": 0.0,
+            "vqa_description": 0.0,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.08,
+            "graph_grab_lite": 0.074
+          },
+          "screening_peak_gib": 11.045
+        },
+        {
+          "model_id": "microsoft/Phi-3.5-vision-instruct",
+          "suite": "\u03a6-Vision",
+          "suite_href": "phi_Bench/",
+          "scores": {
+            "ai2d": 0.74,
+            "textvqa": 0.198,
+            "vqa_truth": 0.24,
+            "vqa_count": 0.048,
+            "vqa_description": 0.092,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 8.41
+        }
+      ]
+    },
+    {
+      "cap_gib": 16,
+      "candidate_count": 19,
+      "candidates": [
+        {
+          "model_id": "nvidia/Cosmos-Reason2-2B",
+          "suite": "Cosmos",
+          "suite_href": "cosmos_Bench/",
+          "scores": {
+            "ai2d": 0.66,
+            "textvqa": 0.706,
+            "vqa_truth": 0.928,
+            "vqa_count": 0.556,
+            "vqa_description": 0.52,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.072
+          },
+          "screening_peak_gib": 10.691
+        },
+        {
+          "model_id": "nvidia/Cosmos3-Edge",
+          "suite": "Cosmos",
+          "suite_href": "cosmos_Bench/",
+          "scores": {
+            "ai2d": 0.63,
+            "textvqa": 0.741,
+            "vqa_truth": 0.904,
+            "vqa_count": 0.736,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.16,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.064
+          },
+          "screening_peak_gib": 9.4
+        },
+        {
+          "model_id": "llava-hf/LLaVA-NeXT-Video-7B-hf",
+          "suite": "LLaVA",
+          "suite_href": "llava_Bench/",
+          "scores": {
+            "ai2d": 0.58,
+            "textvqa": 0.581,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.58,
+            "vqa_description": 0.712,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.32,
+            "graph_grab_lite": 0.048
+          },
+          "screening_peak_gib": 15.134
+        },
+        {
+          "model_id": "llava-hf/llava-v1.6-mistral-7b-hf",
+          "suite": "LLaVA",
+          "suite_href": "llava_Bench/",
+          "scores": {
+            "ai2d": 0.64,
+            "textvqa": 0.778,
+            "vqa_truth": 0.984,
+            "vqa_count": 0.592,
+            "vqa_description": 0.756,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.4,
+            "graph_grab_lite": 0.068
+          },
+          "screening_peak_gib": 15.019
+        },
+        {
+          "model_id": "xtuner/llava-phi-3-mini-hf",
+          "suite": "LLaVA",
+          "suite_href": "llava_Bench/",
+          "scores": {
+            "ai2d": 0.59,
+            "textvqa": 0.492,
+            "vqa_truth": 0.864,
+            "vqa_count": 0.412,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.32,
+            "graph_grab_lite": 0.082
+          },
+          "screening_peak_gib": 8.159
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.86,
+            "textvqa": 0.742,
+            "vqa_truth": 0.612,
+            "vqa_count": 0.724,
+            "vqa_description": 0.604,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.56,
+            "graph_grab_lite": 0.276
+          },
+          "screening_peak_gib": 4.374
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.92,
+            "textvqa": 0.785,
+            "vqa_truth": 0.544,
+            "vqa_count": 0.756,
+            "vqa_description": 0.66,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.338
+          },
+          "screening_peak_gib": 4.899
+        },
+        {
+          "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+          "suite": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "scores": {
+            "ai2d": 0.73,
+            "textvqa": 0.843,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.64,
+            "vqa_description": 0.676,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.134
+          },
+          "screening_peak_gib": 4.155
+        },
+        {
+          "model_id": "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.659,
+            "vqa_truth": 0.572,
+            "vqa_count": 0.224,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.72,
+            "graph_grab_lite": 0.148
+          },
+          "screening_peak_gib": 10.74
+        },
+        {
+          "model_id": "google/paligemma2-3b-mix-224",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.71,
+            "textvqa": 0.576,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.78,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": 0.026
+          },
+          "screening_peak_gib": 5.761
+        },
+        {
+          "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
+          "suite": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "scores": {
+            "ai2d": 0.74,
+            "textvqa": 0.668,
+            "vqa_truth": 0.532,
+            "vqa_count": 0.24,
+            "vqa_description": 0.296,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.24,
+            "graph_grab_lite": 0.07
+          },
+          "screening_peak_gib": 10.418
+        },
+        {
+          "model_id": "Qwen/Qwen2-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.67,
+            "textvqa": 0.8,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.72,
+            "vqa_description": 0.6880000000000001,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 6.988
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-2B-Instruct",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.72,
+            "textvqa": 0.773,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.608,
+            "vqa_description": 0.524,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.28,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 6.06
+        },
+        {
+          "model_id": "Qwen/Qwen3-VL-4B-Thinking",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.77,
+            "textvqa": 0.722,
+            "vqa_truth": 0.88,
+            "vqa_count": 0.696,
+            "vqa_description": 0.528,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.8,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 10.464
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.79,
+            "textvqa": 0.768,
+            "vqa_truth": 0.956,
+            "vqa_count": 0.72,
+            "vqa_description": 0.532,
+            "vqa_affordance": 0.12,
+            "vqa_negation": 0.4,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 24.676
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-1M-GGUF:UD-Q4_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.81,
+            "textvqa": 0.831,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.62,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 28.766
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL",
+          "suite": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "scores": {
+            "ai2d": 0.85,
+            "textvqa": 0.811,
+            "vqa_truth": 1.0,
+            "vqa_count": 0.764,
+            "vqa_description": 0.624,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": null
+          },
+          "screening_peak_gib": 23.065
+        },
+        {
+          "model_id": "microsoft/Phi-3-vision-128k-instruct",
+          "suite": "\u03a6-Vision",
+          "suite_href": "phi_Bench/",
+          "scores": {
+            "ai2d": 0.28,
+            "textvqa": 0.03,
+            "vqa_truth": 0.0,
+            "vqa_count": 0.0,
+            "vqa_description": 0.0,
+            "vqa_affordance": 0.0,
+            "vqa_negation": 0.08,
+            "graph_grab_lite": 0.074
+          },
+          "screening_peak_gib": 11.045
+        },
+        {
+          "model_id": "microsoft/Phi-3.5-vision-instruct",
+          "suite": "\u03a6-Vision",
+          "suite_href": "phi_Bench/",
+          "scores": {
+            "ai2d": 0.74,
+            "textvqa": 0.198,
+            "vqa_truth": 0.24,
+            "vqa_count": 0.048,
+            "vqa_description": 0.092,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.44,
+            "graph_grab_lite": 0.062
+          },
+          "screening_peak_gib": 8.41
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "generated_at_utc": null,
+  "status": "pending_measurements",
+  "method": "Cap-specific results require a passing real-image context probe and a complete shared-task run below the same whole-device VRAM cap.",
+  "caps": [
+    {"cap_gib": 8, "status": "pending_measurements", "verified_candidate_count": 0, "overall": null, "category_leaders": {}, "records": []},
+    {"cap_gib": 10, "status": "pending_measurements", "verified_candidate_count": 0, "overall": null, "category_leaders": {}, "records": []},
+    {"cap_gib": 12, "status": "pending_measurements", "verified_candidate_count": 0, "overall": null, "category_leaders": {}, "records": []},
+    {"cap_gib": 14, "status": "pending_measurements", "verified_candidate_count": 0, "overall": null, "category_leaders": {}, "records": []},
+    {"cap_gib": 16, "status": "pending_measurements", "verified_candidate_count": 0, "overall": null, "category_leaders": {}, "records": []}
+  ]
+}

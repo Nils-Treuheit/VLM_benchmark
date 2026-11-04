@@ -7,6 +7,7 @@ import argparse
 import copy
 import hashlib
 import json
+import math
 import os
 import re
 import statistics
@@ -231,6 +232,9 @@ def aggregate(task: str, items: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "n_examples": len(items), "completed": len(scores), "metrics": metrics,
         "mean_latency_s": statistics.mean(latencies) if latencies else None,
+        "median_latency_s": statistics.median(latencies) if latencies else None,
+        "p95_latency_s": (sorted(latencies)[max(0, math.ceil(0.95 * len(latencies)) - 1)]
+                           if latencies else None),
         "malformed": sum(bool(i.get("parse", {}).get("malformed")) for i in items),
         "invalid_outputs": sum(i.get("parse", {}).get("valid") is False for i in items),
         "empty_outputs": sum(bool(i.get("parse", {}).get("empty")) for i in items),
@@ -354,11 +358,17 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         prior = json.loads(output_path.read_text(encoding="utf-8"))
         if prior.get("sampling") != data_provenance:
             raise ValueError(f"cannot resume {output_path}: manifest provenance differs from the existing run")
-    release_local()
     if model_id == adapters.LOCATE_ID:
+        # LocateAnything loads into this process, so release managed local
+        # engines immediately before its GPU work. GroundAnything runs in its
+        # dedicated SGLang service; the caller releases managed engines before
+        # starting that service, and the endpoint inventory below verifies it.
+        release_local()
         load_memory = WholeDeviceMemory()
         load_memory.start()
+        model_load_started = time.perf_counter()
         model = adapters.LocateAnythingAdapter(snapshot)
+        model_load_duration_s = time.perf_counter() - model_load_started
         load_memory.stop()
         load_peak = load_memory.peak_gib
         service_inventory = None
@@ -367,11 +377,17 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         # Check that the configured model-specific endpoint is alive before any examples run.
         service_inventory = model.model_inventory()
         load_peak = None
+        model_load_duration_s = None
     result = {
         "model_id": model_id, "revision": revision, "snapshot": str(snapshot),
         "backend": model.backend, "precision": model.precision, "generation_mode": model.mode,
         "client_package_versions": adapters.package_versions(), "service_inventory": service_inventory,
         "model_load_peak_whole_device_vram_gib": load_peak,
+        "model_load_duration_s": model_load_duration_s,
+        "model_load_timing": ("measured during in-process model initialization" if model_load_duration_s is not None
+                              else "dedicated service was loaded before client timing; duration not captured"),
+        "query_timing_scope": ("local image read and base64/request serialization through HTTP response and parse; model load excluded" if model_id == adapters.GROUND_ID
+                               else "local image read, processor encoding, model generation, output decoding and parse; prompt prepared before timing; model load excluded"),
         "max_new_tokens_by_task": {
             task: 64 if task in TEXT_TASKS else max_new_tokens or MAX_TOKENS[model_id]
             for task in tasks
@@ -409,8 +425,9 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
                 record["parse"] = parsed
                 record["duplicate_count"] = duplicate_count(parsed)
                 record["scores"] = score_item(task, parsed, row)
-                if record.get("output_tokens") and record.get("latency_s"):
-                    record["output_tokens_per_s"] = record["output_tokens"] / record["latency_s"]
+                token_timing = record.get("generation_latency_s") or record.get("latency_s")
+                if record.get("output_tokens") and token_timing:
+                    record["output_tokens_per_s"] = record["output_tokens"] / token_timing
                 record["status"] = "complete"
             except Exception as exc:
                 record["error"] = f"{type(exc).__name__}: {exc}"

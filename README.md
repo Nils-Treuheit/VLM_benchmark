@@ -9,7 +9,8 @@ This repository compares vision-language models already available on the local s
 | Qwen-VL | Complete | [Open report](qwenVL_Bench/) |
 | LLaVA | Complete | [Open report](llava_Bench/) |
 | Cosmos | Complete | [Open report](cosmos_Bench/) |
-| General Transformers | Partial; more candidates remain | [Open report](general_transformers_Bench/) |
+| General Transformers | Complete for the current supported candidate set | [Open report](general_transformers_Bench/) |
+| Local foundation and GGUF | Complete for the current cached and runnable candidates | [Open report](local_foundation_Bench/) |
 | Phi vision | Complete | [Open report](phi_Bench/) |
 | Video VLMs | Complete | [Open report](video_Bench/) |
 | Grounding specialists | In progress; local data preparation remains | [Open report](grounding_Bench/) |
@@ -20,7 +21,7 @@ The report pages use fixed local samples and support model selection on this sys
 
 Runs require prepared datasets and model checkpoints in the local Hugging Face cache. Start from the README in the relevant benchmark folder. Model inference runs serially on the host GPU; benchmark commands do not download model weights.
 
-The image suites reuse task definitions and scoring implemented in [Qwen-VL](qwenVL_Bench/README.md). The [implementation plan index](implementation_plans/README.md) tracks groups that remain planned or in progress.
+The image suites reuse task definitions and scoring implemented in [Qwen-VL](qwenVL_Bench/README.md). The [implementation plan index](implementation_plans/README.md) tracks active work; completed suite reports retain their model inventories and results.
 
 ## Report hosting
 
