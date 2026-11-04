@@ -2,7 +2,7 @@
 
 **Evaluation status:** partial
 
-**Generated:** 2026-11-04T11:02:23.066494+00:00
+**Generated:** 2026-11-04T12:02:22.830358+00:00
 
 ## Scope
 
@@ -21,7 +21,7 @@ Sample targets: 100 per grounding task, 25 per VQAv2 panel, 100 TextVQA question
 
 | Model | Revision | Backend | Precision | Mode | Status | Complete tasks |
 |---|---|---|---|---|---|---:|
-| `nvidia/LocateAnything-3B` | `c32291ca5e996f5a7a485845b4f57a233936bba0` | Transformers | bfloat16 | hybrid | complete | 0/400 |
+| `nvidia/LocateAnything-3B` | `c32291ca5e996f5a7a485845b4f57a233936bba0` | Transformers | bfloat16 | hybrid | complete | 100/400 |
 | `GroundingPI/GroundAnything-VLM` | `not run` | not run | — | — | not run | 0/400 |
 
 Runner/library versions by model:
@@ -46,7 +46,7 @@ Dataset: COCO val2017; target sample: 100 examples. Measures: COCOeval AP on sam
 
 | Model | Status | Coverage | Scores | Mean latency | Output rate | Peak whole-device VRAM | Parse issues |
 |---|---|---:|---|---:|---:|---:|---:|
-| `nvidia/LocateAnything-3B` | not run | 0/100 | local F1@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
+| `nvidia/LocateAnything-3B` | complete | 100/100 | AP 13.2%; AP50 15.2% | 12.218 s | 292.430 tok/s | 11.439 GiB | 0 malformed, 56 invalid, 88 truncated, 10 empty, 0 duplicate |
 | `GroundingPI/GroundAnything-VLM` | not run | 0/100 | local F1@0.5 — | — s | — tok/s | — GiB | 0 malformed, 0 invalid, 0 truncated, 0 empty, 0 duplicate |
 
 ### GUI grounding
@@ -90,11 +90,11 @@ This COCO val2017 scorecard uses open-vocabulary YOLOE-26-L as the primary detec
 
 | Model | Status | Images | Box AP / AP50 | Mask AP / AP50 | Label accuracy / joint / class F1 | RefCOCOg Acc@0.5 / latency | Mean latency | Images/s | Peak VRAM |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| `yoloe26l-seg` | not run | 0 | — / — | — / — | — / — / — | — / — s | — s | — | — GiB |
-| `yolo26l` | not run | 0 | — / — | — / — | — / — / — | — / — s | — s | — | — GiB |
-| `yolo26l-seg` | not run | 0 | — / — | — / — | — / — / — | — / — s | — s | — | — GiB |
-| `sam3.1` | not run | 0 | — / — | — / — | — / — / — | — / — s | — s | — | — GiB |
-| `nvidia/LocateAnything-3B` | not run | 0 | — / — | — / — | — / — / — | — / — s | — s | — | — GiB |
+| `yoloe26l-seg` | complete | 100 | 55.2% / 71.3% | 34.1% / 58.4% | 93.5% / 86.8% / 10.2% | — / — s | 0.023 s | 43.643 | 3.095 GiB |
+| `yolo26l` | complete | 100 | 66.4% / 81.4% | — / — | 95.6% / 91.2% / 11.8% | — / — s | 0.010 s | 96.856 | 2.022 GiB |
+| `yolo26l-seg` | complete | 100 | 66.8% / 81.8% | 43.8% / 71.6% | 95.3% / 91.3% / 13.0% | — / — s | 0.012 s | 84.075 | 2.920 GiB |
+| `sam3.1` | complete | 100 | 60.9% / 75.4% | 52.8% / 73.7% | 97.9% / 78.2% / 62.9% | — / — s | 1.827 s | 0.547 | 7.171 GiB |
+| `nvidia/LocateAnything-3B` | complete | 100 | 13.2% / 15.2% | — / — | — / — / 24.1% | — / — s | 12.218 s | 0.082 | 11.439 GiB |
 | `GroundingPI/GroundAnything-VLM` | not run | 0 | — / — | — / — | — / — / — | — / — s | — s | — | — GiB |
 
 YOLOE-26 and SAM 3.1 receive the same full COCO category-name list per image. SAM latency includes one text-prompt query per category; YOLOE latency includes prompt setup and one image pass. YOLO26 uses its fixed COCO vocabulary. COCO detection and instance-segmentation AP use the official evaluator. Optional RefCOCOg text grounding reports mean IoU and Acc@IoU 0.5 for YOLOE and SAM. Throughput is single-image serial inference; model load time is excluded. The grounding specialists do not provide confidence scores, so their COCO AP uses uniform scores and is less informative than class-aware F1 for direct comparison. No overall rank combines these metrics.
@@ -107,7 +107,7 @@ The local task macro weights the four task scores equally. RefCOCOg uses Acc@IoU
 | Task | Best complete model | Primary score |
 |---|---|---:|
 | Referring expression | No complete result | — |
-| Open-vocabulary detection | No complete result | — |
+| Open-vocabulary detection | `nvidia/LocateAnything-3B` | COCO AP: 13.2% |
 | GUI grounding | No complete result | — |
 | Text-region detection | No complete result | — |
 
@@ -117,10 +117,11 @@ COCO remains the shared natural-image anchor. These tracks add different evaluat
 
 | Dataset | Status | Task | Fit and limitation |
 |---|---|---|---|
-| DOTA v1.0 validation | 100-image shared HBB manifest prepared; GPU run pending | Shared aerial detection plus native OBB for YOLO26-L | 100 of 458 validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and both grounding specialists. YOLO26-L-OBB uses the full validation split for the separate native OBB reference. DOTA terms restrict use to academic purposes and prohibit commercial use. |
-| BOP-H3 HOPE v2 validation | 50-image shared manifest; SAM 3.1 and LocateAnything runs complete; other baselines pending | Object-centric 2D detection; instance masks where supported | All 50 local validation images are shared by YOLOE, SAM 3.1, and both grounding specialists. Box AP is common; mask AP is reported only for models that return masks. This is the 2D HOPE v2 subset, not the full BOP-H3 pose/onboarding protocol. |
+| COCO val2017 | 100-image shared manifest; YOLOE, YOLO26, SAM 3.1, and LocateAnything runs complete; GroundAnything runtime unavailable | Shared detection, classification, instance segmentation, and speed | Every available vision baseline uses the same 100 annotated images and all 80 COCO classes. Grounding specialists are scored on boxes; models without confidence scores use uniform scores for COCO AP. |
+| DOTA v1.0 validation | 100-image shared HBB runs complete for YOLOE, YOLO26-L, and SAM 3.1; LocateAnything rerun pending GPU release; full-split YOLO26-L-OBB AP complete, speed rerun pending | Shared aerial detection plus native OBB for YOLO26-L | 100 of 456 labeled validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and available grounding specialists. LocateAnything's first attempt overlapped another GPU job and is excluded; a clean rerun awaits the required GPU release check. YOLO26-L-OBB uses the full 458-file validation split, including two background-only images, for the separate native OBB reference. DOTA terms restrict use to academic purposes and prohibit commercial use. |
+| BOP-H3 HOPE v2 validation | 50-image shared manifest; LocateAnything, SAM 3.1, and YOLOE complete; closed-vocabulary YOLO26 omitted because its COCO label set does not cover HOPE classes | Object-centric 2D detection; instance masks where supported | All 50 local validation images are shared by YOLOE, SAM 3.1, and both grounding specialists. Box AP is common; mask AP is reported only for models that return masks. This is the 2D HOPE v2 subset, not the full BOP-H3 pose/onboarding protocol. |
 | KITTI object detection | download image_2 training archive | Automotive 2D detection | Labels and calibration are local, but camera images are missing. Download the KITTI image_2 archive before using a fixed train/validation split. |
-| LVIS v1 validation | candidate | Long-tail detection and instance segmentation | Useful for rare-category metrics, but it reuses COCO imagery. Download only validation annotations first; equal full-vocabulary SAM and VLM runs across 1,203 labels would be costly and need a fixed prompt protocol. |
+| LVIS v1 validation | 100-image panel prepared; GPU runs pending | Long-tail detection and instance segmentation | This exploratory panel uses 10 rare, 10 common, and 10 frequent categories across 100 fixed LVIS val images sourced from COCO 2017 train/val. It uses official LVIS AP and frequency-group metrics, not the full 1,203-category leaderboard; COCO-trained baselines may have seen some train images. |
 | RF100-VL | candidate; Roboflow API key not present | Multi-domain open-vocabulary detection | Highest-value new download for domain shift. Start with aerial, document, laboratory, flora/fauna, and industrial subsets, not all 100 datasets. The downloader requires a Roboflow API key. |
 | BOP-H3 HOT3D/HANDAL | separate follow-up | Unseen-object detection, onboarding, and 6D pose | Keep separate from class-name box AP. Use the official BOP protocol for pose tasks and review each dataset's terms before expanding beyond local HOPE v2. |
 
@@ -128,16 +129,20 @@ COCO remains the shared natural-image anchor. These tracks add different evaluat
 
 Every row uses the prepared image IDs and category list for its domain. Box AP and class-aware F1 are shared across vision models and grounding specialists; mask AP is shown when available.
 
-| Dataset | Model | Status | Images | Input size | Box AP / AP50 | Class-aware F1 | Mask AP | Mean latency | Images/s |
-|---|---|---|---:|---|---:|---:|---:|---:|---:|
-| BOP-H3 HOPE v2 | LocateAnything-3B | complete | 50/50 | native model processor | 13.0% / 17.0% | 30.5% | — | 5.572 s | 0.179 |
-| BOP-H3 HOPE v2 | SAM 3.1 | complete | 50/50 | native image dimensions; YOLO imgsz=640; batch=1 | 3.8% / 4.6% | 14.3% | 4.4% | 0.709 s | 1.411 |
-| BOP-H3 HOPE v2 | YOLOE-26-L | complete | 50/50 | native image dimensions; YOLO imgsz=640; batch=1 | 2.6% / 3.6% | 3.3% | 2.1% | 0.033 s | 30.463 |
+| Dataset | Model | Status | Images | Input size | Box AP / AP50 | Class-aware F1 | Mask AP | AP rare / common / frequent | Mean latency | Images/s |
+|---|---|---|---:|---|---:|---:|---:|---|---:|---:|
+| COCO val2017 | LocateAnything-3B | complete | 100/100 | native model processor | 13.2% / 15.2% | 24.1% | — | — / — / — | 12.218 s | 0.082 |
+| DOTA v1.0 | SAM 3.1 | complete | 100/100 | native image dimensions; YOLO imgsz=1024; batch=1 | 0.6% / 1.6% | 2.7% | — | — / — / — | 0.488 s | 2.049 |
+| DOTA v1.0 | YOLO26-L | complete | 100/100 | native image dimensions; YOLO imgsz=1024; batch=1 | 0.1% / 0.3% | 0.4% | — | — / — / — | 0.075 s | 13.388 |
+| DOTA v1.0 | YOLOE-26-L | complete | 100/100 | native image dimensions; YOLO imgsz=1024; batch=1 | 0.1% / 0.5% | 0.9% | — | — / — / — | 0.126 s | 7.935 |
+| BOP-H3 HOPE v2 | LocateAnything-3B | complete | 50/50 | native model processor | 13.0% / 17.0% | 30.5% | — | — / — / — | 5.572 s | 0.179 |
+| BOP-H3 HOPE v2 | SAM 3.1 | complete | 50/50 | native image dimensions; YOLO imgsz=640; batch=1 | 3.8% / 4.6% | 14.3% | 4.4% | — / — / — | 0.709 s | 1.411 |
+| BOP-H3 HOPE v2 | YOLOE-26-L | complete | 50/50 | native image dimensions; YOLO imgsz=640; batch=1 | 2.6% / 3.6% | 3.3% | 2.1% | — / — / — | 0.033 s | 30.463 |
 
 ### DOTA v1.0 result
 
-Status: not run. YOLO26-L-OBB validation AP: —; AP50: —; inference latency: — ms/image; whole-device peak VRAM: — GiB.
-This is an in-domain OBB reference, not a zero-shot YOLOE comparison. Validation speed excludes model load; peak whole-device VRAM sampling includes model load.
+Status: complete. YOLO26-L-OBB validation AP: 33.8%; AP50: 61.8%; inference latency: pending clean serial rerun; whole-device peak VRAM: — GiB.
+This is an in-domain OBB reference, not a zero-shot YOLOE comparison. Validation speed excludes model load; the displayed speed and peak VRAM await a clean serial rerun.
 
 ## Method
 
@@ -175,6 +180,7 @@ Per-item results preserve the prompt, raw output, canonical predictions, parser 
 - [DOTA v1.0 dataset](https://captain-whu.github.io/DOTA/dataset)
 - [Ultralytics YOLO26 OBB and DOTA](https://docs.ultralytics.com/tasks/obb)
 - [LVIS dataset](https://www.lvisdataset.org/)
+- [LVIS official API](https://github.com/lvis-dataset/lvis-api)
 - [Roboflow 100-VL benchmark](https://github.com/roboflow/rf100-vl)
 - [KITTI object benchmark](https://www.cvlibs.net/datasets/kitti/eval_object.php)
 - [BOP datasets and BOP-H3](https://bop.felk.cvut.cz/datasets/)

@@ -124,7 +124,7 @@ def prepare_dota(root: Path, output: Path, sample_count: int, seed: int) -> dict
     })
     names_yaml = "\n".join(f"  {index}: {name}" for index, name in enumerate(DOTA_NAMES))
     (base / "DOTAv1.yaml").write_text(
-        f"path: {root.resolve()}\nval: val/images\nnames:\n{names_yaml}\n",
+        f"path: {root.resolve()}\ntrain: train/images\nval: val/images\nnames:\n{names_yaml}\n",
         encoding="utf-8",
     )
     return {"dataset": "DOTA v1.0", "images": len(images), "annotations": len(annotations),

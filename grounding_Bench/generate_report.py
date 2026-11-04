@@ -57,6 +57,7 @@ REFERENCES = {
     "DOTA v1.0 dataset": "https://captain-whu.github.io/DOTA/dataset",
     "Ultralytics YOLO26 OBB and DOTA": "https://docs.ultralytics.com/tasks/obb",
     "LVIS dataset": "https://www.lvisdataset.org/",
+    "LVIS official API": "https://github.com/lvis-dataset/lvis-api",
     "Roboflow 100-VL benchmark": "https://github.com/roboflow/rf100-vl",
     "KITTI object benchmark": "https://www.cvlibs.net/datasets/kitti/eval_object.php",
     "BOP datasets and BOP-H3": "https://bop.felk.cvut.cz/datasets/",
@@ -70,6 +71,12 @@ def load_runs() -> dict[str, dict[str, Any]]:
         path = RUNS / (model_id.replace("/", "--") + ".json")
         if path.is_file():
             result[model_id] = json.loads(path.read_text(encoding="utf-8"))
+        coco_path = (HERE / "results" / "domain_runs" / "coco_val2017" /
+                     "locateany_tf457" / (model_id.replace("/", "--") + ".json"))
+        if coco_path.is_file():
+            coco_run = json.loads(coco_path.read_text(encoding="utf-8"))
+            result.setdefault(model_id, {"model_id": model_id, "tasks": {}})
+            result[model_id].setdefault("tasks", {}).update(coco_run.get("tasks", {}))
     return result
 
 
@@ -112,8 +119,9 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[st
         "GroundingPI/GroundAnything-VLM": "GroundAnything-VLM",
     }
     summaries = []
-    for domain in ("dota_v1", "bop_h3_hope_v2"):
-        manifest_path = HERE / "data" / "domain_manifests" / domain / "coco.json"
+    for domain in ("coco_val2017", "dota_v1", "bop_h3_hope_v2", "lvis_v1"):
+        manifest_name = "manifest.json" if domain == "lvis_v1" else "coco.json"
+        manifest_path = HERE / "data" / "domain_manifests" / domain / manifest_name
         manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
         domain_label = manifest.get("dataset", domain)
         expected = int(manifest.get("sample_count", 0))
@@ -122,17 +130,29 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]]) -> list[dict[st
             if "object_detection" in tasks:
                 detection = tasks.get("object_detection", {})
                 segmentation = tasks.get("instance_segmentation", {})
+                official_lvis = run.get("lvis_official_evaluation", {})
+                if official_lvis:
+                    detection = official_lvis.get("object_detection", detection)
+                    segmentation = official_lvis.get("instance_segmentation", segmentation)
                 runtime = run.get("runtime", {})
                 sample_count = int(run.get("sample_count", 0))
+                official_status = official_lvis.get("object_detection", {}).get("status")
+                if domain == "lvis_v1":
+                    status = ("complete" if sample_count >= expected and official_status == "complete"
+                              else "partial" if sample_count else "not run")
+                else:
+                    status = "complete" if sample_count >= expected and expected else "partial" if sample_count else "not run"
                 summaries.append({
                     "dataset": domain_label, "model_id": model_id, "model": labels.get(model_id, model_id),
-                    "status": "complete" if sample_count >= expected and expected else "partial" if sample_count else "not run",
+                    "status": status,
                     "sample_count": sample_count, "expected_count": expected,
                     "input_size": run.get("input_size"),
                     "AP": detection.get("AP"), "AP50": detection.get("AP50"),
                     "class_aware_F1_IoU50": detection.get("class_aware_F1_IoU50"),
                     "mask_AP": segmentation.get("AP"), "latency_s": runtime.get("latency_mean_s"),
                     "images_per_s": runtime.get("images_per_s"),
+                    "AP_rare": detection.get("AP_rare"), "AP_common": detection.get("AP_common"),
+                    "AP_frequent": detection.get("AP_frequent"),
                 })
             else:
                 task = tasks.get("coco", {})
@@ -282,18 +302,21 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
                                  for task in (*TASKS, *AUX_TASKS))
     dota_summary = dota_track_summary(dota_run or {})
     dataset_tracks = [
-        {"dataset": "DOTA v1.0 validation", "status": "100-image shared HBB manifest prepared; GPU run pending",
+        {"dataset": "COCO val2017", "status": "100-image shared manifest; YOLOE, YOLO26, SAM 3.1, and LocateAnything runs complete; GroundAnything runtime unavailable",
+         "task": "Shared detection, classification, instance segmentation, and speed",
+         "note": "Every available vision baseline uses the same 100 annotated images and all 80 COCO classes. Grounding specialists are scored on boxes; models without confidence scores use uniform scores for COCO AP."},
+        {"dataset": "DOTA v1.0 validation", "status": "100-image shared HBB runs complete for YOLOE, YOLO26-L, and SAM 3.1; LocateAnything rerun pending GPU release; full-split YOLO26-L-OBB AP complete, speed rerun pending",
          "task": "Shared aerial detection plus native OBB for YOLO26-L",
-         "note": "100 of 458 validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and both grounding specialists. YOLO26-L-OBB uses the full validation split for the separate native OBB reference. DOTA terms restrict use to academic purposes and prohibit commercial use."},
-        {"dataset": "BOP-H3 HOPE v2 validation", "status": "50-image shared manifest; SAM 3.1 and LocateAnything runs complete; other baselines pending",
+         "note": "100 of 456 labeled validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and available grounding specialists. LocateAnything's first attempt overlapped another GPU job and is excluded; a clean rerun awaits the required GPU release check. YOLO26-L-OBB uses the full 458-file validation split, including two background-only images, for the separate native OBB reference. DOTA terms restrict use to academic purposes and prohibit commercial use."},
+        {"dataset": "BOP-H3 HOPE v2 validation", "status": "50-image shared manifest; LocateAnything, SAM 3.1, and YOLOE complete; closed-vocabulary YOLO26 omitted because its COCO label set does not cover HOPE classes",
          "task": "Object-centric 2D detection; instance masks where supported",
          "note": "All 50 local validation images are shared by YOLOE, SAM 3.1, and both grounding specialists. Box AP is common; mask AP is reported only for models that return masks. This is the 2D HOPE v2 subset, not the full BOP-H3 pose/onboarding protocol."},
         {"dataset": "KITTI object detection", "status": "download image_2 training archive",
          "task": "Automotive 2D detection",
          "note": "Labels and calibration are local, but camera images are missing. Download the KITTI image_2 archive before using a fixed train/validation split."},
-        {"dataset": "LVIS v1 validation", "status": "candidate",
+        {"dataset": "LVIS v1 validation", "status": "100-image panel prepared; GPU runs pending",
          "task": "Long-tail detection and instance segmentation",
-         "note": "Useful for rare-category metrics, but it reuses COCO imagery. Download only validation annotations first; equal full-vocabulary SAM and VLM runs across 1,203 labels would be costly and need a fixed prompt protocol."},
+         "note": "This exploratory panel uses 10 rare, 10 common, and 10 frequent categories across 100 fixed LVIS val images sourced from COCO 2017 train/val. It uses official LVIS AP and frequency-group metrics, not the full 1,203-category leaderboard; COCO-trained baselines may have seen some train images."},
         {"dataset": "RF100-VL", "status": "candidate; Roboflow API key not present",
          "task": "Multi-domain open-vocabulary detection",
          "note": "Highest-value new download for domain shift. Start with aerial, document, laboratory, flora/fauna, and industrial subsets, not all 100 datasets. The downloader requires a Roboflow API key."},
@@ -487,8 +510,8 @@ def write_report(data: dict[str, Any]) -> None:
     lines.extend([
         "", "### Shared non-COCO domain runs", "",
         "Every row uses the prepared image IDs and category list for its domain. Box AP and class-aware F1 are shared across vision models and grounding specialists; mask AP is shown when available.",
-        "", "| Dataset | Model | Status | Images | Input size | Box AP / AP50 | Class-aware F1 | Mask AP | Mean latency | Images/s |",
-        "|---|---|---|---:|---|---:|---:|---:|---:|---:|",
+        "", "| Dataset | Model | Status | Images | Input size | Box AP / AP50 | Class-aware F1 | Mask AP | AP rare / common / frequent | Mean latency | Images/s |",
+        "|---|---|---|---:|---|---:|---:|---:|---|---:|---:|",
     ])
     for result in data["domain_benchmarks"]:
         lines.append(
@@ -496,6 +519,8 @@ def write_report(data: dict[str, Any]) -> None:
             f"{result['sample_count']}/{result['expected_count']} | {result.get('input_size') or '—'} | "
             f"{fmt(result.get('AP'), True)} / {fmt(result.get('AP50'), True)} | "
             f"{fmt(result.get('class_aware_F1_IoU50'), True)} | {fmt(result.get('mask_AP'), True)} | "
+            f"{fmt(result.get('AP_rare'), True)} / {fmt(result.get('AP_common'), True)} / "
+            f"{fmt(result.get('AP_frequent'), True)} | "
             f"{fmt(result.get('latency_s'))} s | {fmt(result.get('images_per_s'))} |"
         )
     if not data["domain_benchmarks"]:
@@ -503,13 +528,15 @@ def write_report(data: dict[str, Any]) -> None:
     dota = data["dota_track"]
     dota_metrics = dota.get("metrics", {})
     dota_runtime = dota.get("runtime", {})
+    dota_latency = ("pending clean serial rerun" if not dota_runtime.get("inference_ms_per_image")
+                    else f"{fmt(dota_runtime.get('inference_ms_per_image'))} ms/image")
     lines.extend([
         "", "### DOTA v1.0 result", "",
         f"Status: {dota.get('status', 'not run')}. YOLO26-L-OBB validation AP: "
         f"{fmt(dota_metrics.get('AP'), True)}; AP50: {fmt(dota_metrics.get('AP50'), True)}; "
-        f"inference latency: {fmt(dota_runtime.get('inference_ms_per_image'))} ms/image; "
+        f"inference latency: {dota_latency}; "
         f"whole-device peak VRAM: {fmt(dota_runtime.get('peak_whole_device_vram_gib'))} GiB.",
-        "This is an in-domain OBB reference, not a zero-shot YOLOE comparison. Validation speed excludes model load; peak whole-device VRAM sampling includes model load.",
+        "This is an in-domain OBB reference, not a zero-shot YOLOE comparison. Validation speed excludes model load; the displayed speed and peak VRAM await a clean serial rerun.",
     ])
     lines.extend([
         "", "## Method", "",

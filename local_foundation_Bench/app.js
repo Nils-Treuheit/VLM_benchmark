@@ -106,7 +106,10 @@ function renderPicks(models) {
     const title = document.createElement("h3"); title.textContent = model.model_id;
     const why = document.createElement("p"); why.textContent = reason;
     const details = document.createElement("div"); details.className = "pick-metrics";
-    details.textContent = `${metricLabel}: ${metric} · Peak: ${fmt(model.whole_device_peak_gib)} GiB · Context: ${model.configured_context ?? "—"} tokens`;
+    const context = model.advertised_context
+      ? `${model.configured_context ?? "—"} configured / ${model.advertised_context} advertised tokens`
+      : `${model.configured_context ?? "—"} configured tokens`;
+    details.textContent = `${metricLabel}: ${metric} · Peak: ${fmt(model.whole_device_peak_gib)} GiB · Context: ${context}`;
     article.append(eyebrow, title, why, details); target.append(article);
   };
   const best = [...complete].sort((a,b) => b.full_benchmark_macro - a.full_benchmark_macro)[0];
@@ -129,7 +132,7 @@ function render(data) {
   renderPicks(models);
 
   const scoreRows = models.map(model => {
-    const cells = [model.model_id, model.status, model.full_benchmark_complete ? fmtPct(model.full_benchmark_macro) : "—", model.vqa_panel_macro == null ? "—" : fmtPct(model.vqa_panel_macro), ...TASKS.map(([key]) => taskScoreText(model.tasks?.[key]))];
+    const cells = [model.model_card ? {text:model.model_id,href:model.model_card} : model.model_id, model.status, model.full_benchmark_complete ? fmtPct(model.full_benchmark_macro) : "—", model.vqa_panel_macro == null ? "—" : fmtPct(model.vqa_panel_macro), ...TASKS.map(([key]) => taskScoreText(model.tasks?.[key]))];
     const sort = [model.model_id, model.status, model.full_benchmark_complete ? model.full_benchmark_macro : null, model.vqa_panel_macro, ...TASKS.map(([key]) => taskDone(model.tasks?.[key]) ? model.tasks[key].score : null)];
     return {cells, sort};
   });

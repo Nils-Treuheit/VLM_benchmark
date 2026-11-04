@@ -56,7 +56,7 @@ def main():
         "Execution: serial, one image per request, fixed examples, no batching.",
         "",
         "## Summary", "",
-        "Two eligible routes were measured: Qwen3.8 through the configured Ollama MTP4 UD Q4_K_XL 128K profile, and LFM2.5-VL through the robotics adapter's llama.cpp MTMD route.",
+        "Measured candidates include the configured Qwen3.8 Ollama route and four Liquid VLM GGUF variants. The corrected LFM2.5-VL 1.6B run is the current result for that model ID; its earlier run remains in the attempt history.",
         "The full-suite macro is the unweighted mean of eight task scores. It is reported only for models that completed every requested example.",
         "",
         "## Quality results", "",
@@ -129,7 +129,7 @@ def main():
         lines.append(f"| `{candidate['checkpoint']}`{source} | {candidate.get('license', 'See linked model card')} | {candidate['status']} | {candidate['detail']} |")
     lines += [
         "", "## Methodology", "",
-        "All measured models use the shared fixed task definitions, examples, prompts, and scorers in the [Qwen-VL benchmark README](../qwenVL_Bench/README.md). The sample seed is 3407. Each request carries one image and runs serially.",
+        "All measured models use the shared fixed task definitions, examples, prompts, and scorers in the [Qwen-VL benchmark README](../qwenVL_Bench/README.md). The sample seed is 3407. Each request carries one image and runs serially. Liquid GGUF variants use a host-native llama.cpp b12097 CUDA 13.2 build.",
         "Primary task sources: [AI2D](https://huggingface.co/datasets/lmms-lab/ai2d), [TextVQA](https://huggingface.co/datasets/facebook/textvqa), [VQAv2](https://visualqa.org/download.html), [PercepTaxBench](https://huggingface.co/datasets/RyanWW/PercepTaxBench), [NegVQA](https://arxiv.org/abs/2505.22946), and [GRAB-Lite](https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite).",
         "AI2D uses exact four-choice letter accuracy. TextVQA and the truth, count, description, and OCR categories use the shared normalized human-answer consensus. Affordance uses normalized reference matching. Negation uses exact A/B accuracy. GRAB-Lite uses exact match, including its five task-group scores in the JSON artifacts.",
         "The six-category VQA panel macro weights truth, counting, description, OCR, affordance, and negation equally. The full-suite macro weights all eight task scores equally and is local comparison evidence, not an official benchmark score.",
@@ -141,10 +141,16 @@ def main():
         lines.append(f"### `{m['model_id']}`")
         lines.append("")
         lines.append(f"Backend: {m.get('backend')}; context: {m.get('configured_context', '—')} tokens; status: {m.get('status')}.")
+        if m.get("model_card"):
+            lines.append(f"Base model card: [{m['model_card']}]({m['model_card']}).")
         if m.get("revision"):
             lines.append(f"Cached revision: `{m['revision']}`.")
+        if m.get("advertised_context"):
+            lines.append(f"Advertised context: {m['advertised_context']} tokens; configured run context: {m.get('configured_context', '—')} tokens.")
         if m.get("quantization"):
             lines.append(f"Quantization: {m['quantization']}.")
+        if m.get("image_processing"):
+            lines.append(f"Image processing: `{json.dumps(m['image_processing'], sort_keys=True)}`.")
         if m.get("generation"):
             lines.append(f"Generation settings: `{json.dumps(m['generation'], sort_keys=True)}`.")
         if m.get("runtime_versions"):
@@ -153,13 +159,15 @@ def main():
             lines.append(f"Runtime route: `{m['runtime']}`; runtime version was unavailable through the benchmark API.")
         if m.get("weight_bytes"):
             lines.append(f"Cached model and projector size: {m['weight_bytes'] / (1024**3):.2f} GiB.")
+        if result.get("repair_attempts"):
+            lines.append(f"Recovery: {len(result['repair_attempts'])} failed request(s) were retried and scored; the original error remains recorded in `repair_attempts` in the results JSON.")
         lines.append(f"Raw outputs, scores, errors, latency, token counts, and memory samples: [results JSON](results/runs/{path.parent.parent.name}/{path.parent.name}/results.json).")
         lines.append("")
     lines += [
         "## Limitations", "",
-        "These fixed samples are selection evidence, not leaderboard scores. The backends use model-specific image preprocessing. Whole-device memory samples include the desktop baseline; they are not process-local estimates. Advertised maximum context is distinct from the configured context.",
+        "These fixed samples are selection evidence, not leaderboard scores. The Liquid GGUF runner sends JPEG quality 92. LFM2.5-VL 1.6B uses a 64 image-token cap; the other Liquid variants leave image-token limits at the llama.cpp default. The original model-card processor settings are not fully enforced by the GGUF routes. Whole-device memory samples include the desktop baseline; they are not process-local estimates. Advertised maximum context is distinct from the configured context.",
         "License labels are taken from the linked model cards at their cached revisions where available. This report records model provenance and does not grant redistribution or use rights.",
-        "The Qwen MTP4 route uses a 128K configured context with thinking disabled. LFM2.5-VL uses its documented BF16 GGUF plus F16 projector at an 8K configured context. Unsupported and incomplete artifacts were not ranked.",
+        "The Qwen MTP4 route uses a 128K configured context with thinking disabled. Liquid GGUF variants use an 8K configured context. The current LFM2.5-VL 1.6B result uses temperature 0.1, min-p 0.15, repetition penalty 1.05, top-k 50, a fixed seed, and the Unsloth tutorial's 64 image-token cap. LFM2.5 3B and both LFM3 quantizations use their model-card sampling settings. LFM3 uses a 4,096-token output allowance because 512 tokens ended before its first final answer. The NVFP4 checkpoint uses an upstream-supported llama.cpp build on the RTX 5090. Unsupported and incomplete artifacts were not ranked.",
         "The runner records whole-device peak VRAM for each model run. Its sampling does not reset at task boundaries, so per-task peak VRAM is not reported.",
         "",
         "## Attempts", "",

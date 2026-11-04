@@ -16,7 +16,7 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from vision_benchmark import DeviceMemory, release_local  # noqa: E402
+from vision_benchmark import DeviceMemory, checkpoint_identity, release_local  # noqa: E402
 
 
 def main() -> int:
@@ -76,7 +76,7 @@ def main() -> int:
     output: dict[str, Any] = {
         "model_id": "yolo26l-obb",
         "label": "YOLO26-L OBB (yolo26l-obb.pt; DOTA-pretrained)",
-        "checkpoint": str(args.weights.resolve()),
+        "checkpoint": checkpoint_identity(args.weights.resolve()),
         "dataset": "DOTA v1.0 validation",
         "dataset_root": str(dataset_root),
         "data_yaml": str(args.data.resolve()),

@@ -41,11 +41,14 @@ def main():
         }
         models.append({
             "model_id": m.get("model_id"),
+            "model_card": m.get("model_card"),
             "backend": m.get("backend"),
             "runtime": m.get("runtime"),
             "revision": m.get("revision"),
             "quantization": m.get("quantization"),
             "configured_context": m.get("configured_context"),
+            "advertised_context": m.get("advertised_context"),
+            "image_processing": m.get("image_processing"),
             "status": m.get("status"),
             "full_benchmark_complete": m.get("full_benchmark_complete", False),
             "full_benchmark_macro": m.get("full_benchmark_macro"),

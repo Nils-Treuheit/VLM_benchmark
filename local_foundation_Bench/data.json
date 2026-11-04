@@ -1,154 +1,19 @@
 {
-  "generated_at": "2026-11-03 18:08:32 +0100",
-  "updated_at": "2026-11-03 18:40 CET",
+  "generated_at": "2026-11-04 14:55:50 +0100",
+  "updated_at": "2026-11-04 15:02 CET",
   "report_title": "Local foundation and GGUF VLM benchmark",
-  "report_updated_at": "2026-11-03 18:39 CET",
+  "report_updated_at": "2026-11-04 15:02 CET",
   "models": [
     {
-      "model_id": "unsloth/LFM2.5-VL-1.6B-GGUF",
-      "backend": "llama-cpp-python 0.3.31 MTMDChatHandler CUDA",
-      "runtime": null,
-      "revision": "6d323fde0c0a094eeeb2a2452c590fa17a3ff76b",
-      "quantization": "BF16 GGUF; F16 multimodal projector",
-      "configured_context": 8192,
-      "status": "complete",
-      "full_benchmark_complete": true,
-      "full_benchmark_macro": 0.132625,
-      "vqa_panel_macro": 0.08183333333333333,
-      "whole_device_peak_gib": 5.632,
-      "whole_device_memory_method": "nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline",
-      "runtime_versions": {
-        "llama-cpp-python": "0.3.31",
-        "torch": "2.13.0",
-        "numpy": "2.2.6",
-        "datasets": "5.0.1"
-      },
-      "generation": {
-        "max_new_tokens": 512,
-        "temperature": 0.1,
-        "top_p": 0.95,
-        "min_p": 0.05,
-        "repeat_penalty": 1.05,
-        "seed": null
-      },
-      "weight_bytes": 3197321312,
-      "tasks": {
-        "ai2d": {
-          "requested_n": 100,
-          "completed_n": 100,
-          "failed_n": 0,
-          "score": 0.53,
-          "parse_errors": 9,
-          "mean_generation_s": 0.377198,
-          "generated_tokens_per_s": 84.5709680327043,
-          "group_scores": null
-        },
-        "textvqa": {
-          "requested_n": 100,
-          "completed_n": 100,
-          "failed_n": 0,
-          "score": 0.079,
-          "parse_errors": 0,
-          "mean_generation_s": 0.093841,
-          "generated_tokens_per_s": 225.38122995279252,
-          "group_scores": null
-        },
-        "vqa_truth": {
-          "requested_n": 25,
-          "completed_n": 25,
-          "failed_n": 0,
-          "score": 0.0,
-          "parse_errors": 0,
-          "mean_generation_s": 0.069904,
-          "generated_tokens_per_s": 183.1082627603571,
-          "group_scores": null
-        },
-        "vqa_count": {
-          "requested_n": 25,
-          "completed_n": 25,
-          "failed_n": 0,
-          "score": 0.0,
-          "parse_errors": 0,
-          "mean_generation_s": 0.101164,
-          "generated_tokens_per_s": 268.87034913605635,
-          "group_scores": null
-        },
-        "vqa_description": {
-          "requested_n": 25,
-          "completed_n": 25,
-          "failed_n": 0,
-          "score": 0.052,
-          "parse_errors": 0,
-          "mean_generation_s": 0.069216,
-          "generated_tokens_per_s": 173.370319001387,
-          "group_scores": null
-        },
-        "vqa_affordance": {
-          "requested_n": 25,
-          "completed_n": 25,
-          "failed_n": 0,
-          "score": 0.0,
-          "parse_errors": 0,
-          "mean_generation_s": 0.107072,
-          "generated_tokens_per_s": 255.5289898386134,
-          "group_scores": null
-        },
-        "vqa_negation": {
-          "requested_n": 25,
-          "completed_n": 25,
-          "failed_n": 0,
-          "score": 0.36,
-          "parse_errors": 0,
-          "mean_generation_s": 0.19194,
-          "generated_tokens_per_s": 272.37678441179537,
-          "group_scores": null
-        },
-        "graph_grab_lite": {
-          "requested_n": 500,
-          "completed_n": 500,
-          "failed_n": 0,
-          "score": 0.04,
-          "parse_errors": 3,
-          "mean_generation_s": 1.007684,
-          "generated_tokens_per_s": 280.93330845781014,
-          "group_scores": {
-            "function": 0.03,
-            "properties": 0.05,
-            "real": 0.06,
-            "series": 0.04,
-            "transform": 0.02
-          }
-        }
-      },
-      "preflight": {
-        "passed": true,
-        "required": [
-          "ai2d",
-          "textvqa"
-        ],
-        "checks": {
-          "ai2d": {
-            "passed": true,
-            "nonempty_answer": true,
-            "answer_format_ok": true
-          },
-          "textvqa": {
-            "passed": true,
-            "nonempty_answer": true,
-            "answer_format_ok": true
-          }
-        }
-      },
-      "run_path": "results/runs/20261103-175015/lfm25_vl_1_6b_bf16_gguf/results.json",
-      "generated_at": "2026-11-03 17:50:15 +0100"
-    },
-    {
       "model_id": "qwen3.8:27b-mtp4-ud_q4_K_XL-128k",
+      "model_card": null,
       "backend": "Ollama OpenAI-compatible multimodal chat API",
       "runtime": "qwen3.8:27b-mtp4-ud_q4_K_XL-128k; MTP4; UD Q4_K_XL",
       "revision": null,
       "quantization": "UD Q4_K_XL; MTP4",
       "configured_context": 131072,
+      "advertised_context": null,
+      "image_processing": null,
       "status": "complete",
       "full_benchmark_complete": true,
       "full_benchmark_macro": 0.635375,
@@ -275,6 +140,582 @@
       },
       "run_path": "results/runs/20261103-180832/qwen3_8_mtp4_ud_q4_k_xl_128k/results.json",
       "generated_at": "2026-11-03 18:08:32 +0100"
+    },
+    {
+      "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+      "model_card": "https://huggingface.co/LiquidAI/LFM2.5-VL-3B",
+      "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+      "runtime": null,
+      "revision": "22f063714556bd4daa81c40dc1ff15ca37ae92ea",
+      "quantization": "UD-Q4_K_XL + F16 mmproj",
+      "configured_context": 8192,
+      "advertised_context": 32768,
+      "image_processing": {
+        "image_format": "JPEG quality 92",
+        "image_max_tokens": "llama.cpp default; not explicitly capped",
+        "images_per_request": 1
+      },
+      "status": "complete",
+      "full_benchmark_complete": true,
+      "full_benchmark_macro": 0.584375,
+      "vqa_panel_macro": 0.6351666666666668,
+      "whole_device_peak_gib": 4.155,
+      "whole_device_memory_method": "nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline",
+      "runtime_versions": {
+        "llama.cpp": "b12097",
+        "CUDA": "13.2"
+      },
+      "generation": {
+        "temperature": 0.2,
+        "top_p": 1.0,
+        "top_k": 50,
+        "min_p": 0.0,
+        "repeat_penalty": 1.0,
+        "max_new_tokens": 512,
+        "seed": 3407
+      },
+      "weight_bytes": 2567107552,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.73,
+          "parse_errors": 4,
+          "mean_generation_s": 0.078774,
+          "generated_tokens_per_s": 25.38908777007642,
+          "group_scores": null
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.843,
+          "parse_errors": 0,
+          "mean_generation_s": 0.236432,
+          "generated_tokens_per_s": 17.55261555119442,
+          "group_scores": null
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.932,
+          "parse_errors": 0,
+          "mean_generation_s": 0.045324,
+          "generated_tokens_per_s": 44.12673197422998,
+          "group_scores": null
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.64,
+          "parse_errors": 0,
+          "mean_generation_s": 0.043508,
+          "generated_tokens_per_s": 45.968557506665434,
+          "group_scores": null
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.676,
+          "parse_errors": 0,
+          "mean_generation_s": 0.044944,
+          "generated_tokens_per_s": 65.85973656105377,
+          "group_scores": null
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.08,
+          "parse_errors": 0,
+          "mean_generation_s": 0.236768,
+          "generated_tokens_per_s": 13.346398161913772,
+          "group_scores": null
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.64,
+          "parse_errors": 0,
+          "mean_generation_s": 0.096124,
+          "generated_tokens_per_s": 20.80645832466398,
+          "group_scores": null
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": 0,
+          "score": 0.134,
+          "parse_errors": 0,
+          "mean_generation_s": 0.393565,
+          "generated_tokens_per_s": 7.617547292061034,
+          "group_scores": {
+            "function": 0.1,
+            "properties": 0.17,
+            "real": 0.15,
+            "series": 0.2,
+            "transform": 0.05
+          }
+        }
+      },
+      "preflight": {
+        "passed": true,
+        "required": [
+          "ai2d",
+          "textvqa"
+        ],
+        "checks": {
+          "ai2d": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          },
+          "textvqa": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          }
+        }
+      },
+      "run_path": "results/runs/20261104-124950/lfm25_3b/results.json",
+      "generated_at": "2026-11-04 12:49:50 +0100"
+    },
+    {
+      "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
+      "model_card": "https://huggingface.co/LiquidAI/LFM3-VL-2B",
+      "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+      "runtime": null,
+      "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+      "quantization": "Q4_K_M + F16 mmproj",
+      "configured_context": 8192,
+      "advertised_context": 131072,
+      "image_processing": {
+        "image_format": "JPEG quality 92",
+        "image_max_tokens": "llama.cpp default; not explicitly capped",
+        "images_per_request": 1
+      },
+      "status": "complete",
+      "full_benchmark_complete": true,
+      "full_benchmark_macro": 0.55725,
+      "vqa_panel_macro": 0.5536666666666666,
+      "whole_device_peak_gib": 4.374,
+      "whole_device_memory_method": "nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline",
+      "runtime_versions": {
+        "llama.cpp": "b12097",
+        "CUDA": "13.2"
+      },
+      "generation": {
+        "temperature": 0.1,
+        "top_p": 1.0,
+        "top_k": 50,
+        "min_p": 0.0,
+        "repeat_penalty": 1.1,
+        "max_new_tokens": 4096,
+        "seed": 3407
+      },
+      "weight_bytes": 1478623840,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.86,
+          "parse_errors": 0,
+          "mean_generation_s": 1.331381,
+          "generated_tokens_per_s": 521.2482377320989,
+          "group_scores": null
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.742,
+          "parse_errors": 8,
+          "mean_generation_s": 1.481654,
+          "generated_tokens_per_s": 514.5195841944205,
+          "group_scores": null
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.612,
+          "parse_errors": 0,
+          "mean_generation_s": 0.76296,
+          "generated_tokens_per_s": 509.8039215686275,
+          "group_scores": null
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.724,
+          "parse_errors": 4,
+          "mean_generation_s": 2.8533720000000002,
+          "generated_tokens_per_s": 532.7451170054238,
+          "group_scores": null
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.604,
+          "parse_errors": 0,
+          "mean_generation_s": 0.787028,
+          "generated_tokens_per_s": 516.0172192094817,
+          "group_scores": null
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.08,
+          "parse_errors": 1,
+          "mean_generation_s": 2.228468,
+          "generated_tokens_per_s": 518.0599407305826,
+          "group_scores": null
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.56,
+          "parse_errors": 4,
+          "mean_generation_s": 2.969432,
+          "generated_tokens_per_s": 527.4139970203056,
+          "group_scores": null
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": 0,
+          "score": 0.276,
+          "parse_errors": 116,
+          "mean_generation_s": 5.1869528,
+          "generated_tokens_per_s": 490.33220429536203,
+          "group_scores": {
+            "function": 0.26,
+            "properties": 0.47,
+            "real": 0.26,
+            "series": 0.22,
+            "transform": 0.17
+          }
+        }
+      },
+      "preflight": {
+        "passed": true,
+        "required": [
+          "ai2d",
+          "textvqa"
+        ],
+        "checks": {
+          "ai2d": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          },
+          "textvqa": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          }
+        }
+      },
+      "run_path": "results/runs/20261104-125616/lfm3_2b/results.json",
+      "generated_at": "2026-11-04 12:56:16 +0100"
+    },
+    {
+      "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+      "model_card": "https://huggingface.co/LiquidAI/LFM3-VL-2B",
+      "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+      "runtime": null,
+      "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+      "quantization": "NVFP4 feed-forward weights, Q8_0 other weights + F16 mmproj",
+      "configured_context": 8192,
+      "advertised_context": 131072,
+      "image_processing": {
+        "image_format": "JPEG quality 92",
+        "image_max_tokens": "llama.cpp default; not explicitly capped",
+        "images_per_request": 1
+      },
+      "status": "complete",
+      "full_benchmark_complete": true,
+      "full_benchmark_macro": 0.585375,
+      "vqa_panel_macro": 0.5708333333333334,
+      "whole_device_peak_gib": 4.899,
+      "whole_device_memory_method": "nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline",
+      "runtime_versions": {
+        "llama.cpp": "b12097",
+        "CUDA": "13.2"
+      },
+      "generation": {
+        "temperature": 0.1,
+        "top_p": 1.0,
+        "top_k": 50,
+        "min_p": 0.0,
+        "repeat_penalty": 1.1,
+        "max_new_tokens": 4096,
+        "seed": 3407
+      },
+      "weight_bytes": 1659016096,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.92,
+          "parse_errors": 0,
+          "mean_generation_s": 1.543372,
+          "generated_tokens_per_s": 470.6123993437745,
+          "group_scores": null
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.785,
+          "parse_errors": 4,
+          "mean_generation_s": 1.388521,
+          "generated_tokens_per_s": 441.93065859284815,
+          "group_scores": null
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.544,
+          "parse_errors": 0,
+          "mean_generation_s": 1.145556,
+          "generated_tokens_per_s": 327.4567109770277,
+          "group_scores": null
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.756,
+          "parse_errors": 4,
+          "mean_generation_s": 3.487572,
+          "generated_tokens_per_s": 414.0875084442701,
+          "group_scores": null
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.66,
+          "parse_errors": 0,
+          "mean_generation_s": 0.9434680000000001,
+          "generated_tokens_per_s": 258.5779273912841,
+          "group_scores": null
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.04,
+          "parse_errors": 0,
+          "mean_generation_s": 2.62552,
+          "generated_tokens_per_s": 365.3828574910875,
+          "group_scores": null
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.64,
+          "parse_errors": 2,
+          "mean_generation_s": 4.799216,
+          "generated_tokens_per_s": 370.69388000040004,
+          "group_scores": null
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": 0,
+          "score": 0.338,
+          "parse_errors": 101,
+          "mean_generation_s": 5.4687316,
+          "generated_tokens_per_s": 419.2109190365091,
+          "group_scores": {
+            "function": 0.41,
+            "properties": 0.49,
+            "real": 0.27,
+            "series": 0.29,
+            "transform": 0.23
+          }
+        }
+      },
+      "preflight": {
+        "passed": true,
+        "required": [
+          "ai2d",
+          "textvqa"
+        ],
+        "checks": {
+          "ai2d": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          },
+          "textvqa": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          }
+        }
+      },
+      "run_path": "results/runs/20261104-135212/lfm3_2b_nvfp4/results.json",
+      "generated_at": "2026-11-04 13:52:12 +0100"
+    },
+    {
+      "model_id": "unsloth/LFM2.5-VL-1.6B-GGUF",
+      "model_card": "https://huggingface.co/LiquidAI/LFM2.5-VL-1.6B",
+      "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+      "runtime": null,
+      "revision": "6d323fde0c0a094eeeb2a2452c590fa17a3ff76b",
+      "quantization": "BF16 GGUF + F16 mmproj",
+      "configured_context": 8192,
+      "advertised_context": 32768,
+      "image_processing": {
+        "image_format": "JPEG quality 92",
+        "image_max_tokens": 64,
+        "images_per_request": 1
+      },
+      "status": "complete",
+      "full_benchmark_complete": true,
+      "full_benchmark_macro": 0.3745,
+      "vqa_panel_macro": 0.39799999999999996,
+      "whole_device_peak_gib": 5.134,
+      "whole_device_memory_method": "nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline",
+      "runtime_versions": {
+        "llama.cpp": "b12097",
+        "CUDA": "13.2"
+      },
+      "generation": {
+        "temperature": 0.1,
+        "top_p": 1.0,
+        "top_k": 50,
+        "min_p": 0.15,
+        "repeat_penalty": 1.05,
+        "max_new_tokens": 512,
+        "seed": 3407
+      },
+      "weight_bytes": 3197321312,
+      "tasks": {
+        "ai2d": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.56,
+          "parse_errors": 11,
+          "mean_generation_s": 0.146215,
+          "generated_tokens_per_s": 33.85425571931744,
+          "group_scores": null
+        },
+        "textvqa": {
+          "requested_n": 100,
+          "completed_n": 100,
+          "failed_n": 0,
+          "score": 0.62,
+          "parse_errors": 0,
+          "mean_generation_s": 0.186113,
+          "generated_tokens_per_s": 30.465362441097625,
+          "group_scores": null
+        },
+        "vqa_truth": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.688,
+          "parse_errors": 0,
+          "mean_generation_s": 0.17419199999999999,
+          "generated_tokens_per_s": 15.844585285202538,
+          "group_scores": null
+        },
+        "vqa_count": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.132,
+          "parse_errors": 0,
+          "mean_generation_s": 0.163928,
+          "generated_tokens_per_s": 16.836659997071887,
+          "group_scores": null
+        },
+        "vqa_description": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.588,
+          "parse_errors": 0,
+          "mean_generation_s": 0.169476,
+          "generated_tokens_per_s": 21.47796738181217,
+          "group_scores": null
+        },
+        "vqa_affordance": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.04,
+          "parse_errors": 0,
+          "mean_generation_s": 0.191592,
+          "generated_tokens_per_s": 25.262015115453675,
+          "group_scores": null
+        },
+        "vqa_negation": {
+          "requested_n": 25,
+          "completed_n": 25,
+          "failed_n": 0,
+          "score": 0.32,
+          "parse_errors": 3,
+          "mean_generation_s": 0.182308,
+          "generated_tokens_per_s": 58.8015885205257,
+          "group_scores": null
+        },
+        "graph_grab_lite": {
+          "requested_n": 500,
+          "completed_n": 500,
+          "failed_n": 0,
+          "score": 0.048,
+          "parse_errors": 5,
+          "mean_generation_s": 0.3613386,
+          "generated_tokens_per_s": 42.23185676813944,
+          "group_scores": {
+            "function": 0.03,
+            "properties": 0.05,
+            "real": 0.07,
+            "series": 0.07,
+            "transform": 0.02
+          }
+        }
+      },
+      "preflight": {
+        "passed": true,
+        "required": [
+          "ai2d",
+          "textvqa"
+        ],
+        "checks": {
+          "ai2d": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          },
+          "textvqa": {
+            "passed": true,
+            "nonempty_answer": true,
+            "answer_format_ok": true
+          }
+        }
+      },
+      "run_path": "results/runs/20261104-145550/lfm25_1_6b/results.json",
+      "generated_at": "2026-11-04 14:55:50 +0100"
     }
   ],
   "candidates": [
@@ -292,7 +733,35 @@
       "source": "https://huggingface.co/unsloth/LFM2.5-VL-1.6B-GGUF/blob/6d323fde0c0a094eeeb2a2452c590fa17a3ff76b/README.md",
       "license": "LFM 1.0",
       "status": "scored",
-      "detail": "BF16 GGUF with the matching F16 projector; complete shared-suite run uses the robotics MTMD adapter."
+      "detail": "BF16 GGUF with matching F16 projector; current full-suite result uses model-card sampling and the Unsloth tutorial image cap of 64 tokens through llama.cpp b12097.",
+      "model_card": "https://huggingface.co/LiquidAI/LFM2.5-VL-1.6B"
+    },
+    {
+      "name": "LFM2.5-VL 3B UD-Q4_K_XL GGUF",
+      "checkpoint": "unsloth/LFM2.5-VL-3B-GGUF:UD-Q4_K_XL",
+      "source": "https://huggingface.co/unsloth/LFM2.5-VL-3B-GGUF",
+      "license": "LFM Open License v1.0",
+      "status": "scored",
+      "detail": "UD-Q4_K_XL with matching F16 projector; full 825-example run uses temperature 0.2, top-k 50, repetition penalty 1.0, and llama.cpp b12097.",
+      "model_card": "https://huggingface.co/LiquidAI/LFM2.5-VL-3B"
+    },
+    {
+      "name": "LFM3-VL 2B Q4_K_M GGUF",
+      "checkpoint": "LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M",
+      "source": "https://huggingface.co/LiquidAI/LFM3-VL-2B-GGUF",
+      "license": "LFM Open License v1.0",
+      "status": "scored",
+      "detail": "Q4_K_M with matching F16 projector; full 825-example run uses model-card sampling, no reasoning preservation, and a 4,096-token output allowance.",
+      "model_card": "https://huggingface.co/LiquidAI/LFM3-VL-2B"
+    },
+    {
+      "name": "LFM3-VL 2B NVFP4 GGUF (Blackwell)",
+      "checkpoint": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+      "source": "https://huggingface.co/LiquidAI/LFM3-VL-2B-GGUF",
+      "license": "LFM Open License v1.0",
+      "status": "scored",
+      "detail": "Full 825-example run on RTX 5090 with NVFP4 feed-forward weights, Q8_0 remaining weights, matching F16 projector, and llama.cpp b12097.",
+      "model_card": "https://huggingface.co/LiquidAI/LFM3-VL-2B"
     },
     {
       "name": "Qwen3.8 27B, official BF16",

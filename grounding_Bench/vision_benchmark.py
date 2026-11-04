@@ -8,6 +8,7 @@ must never fetch model files implicitly during a benchmark run.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import statistics
 import subprocess
@@ -84,6 +85,14 @@ def parse_weights(values: list[str]) -> dict[str, Path]:
             raise FileNotFoundError(f"local model weights are missing: {weight}")
         result[key] = weight
     return result
+
+
+def checkpoint_identity(path: Path) -> dict[str, Any]:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return {"path": str(path), "bytes": path.stat().st_size, "sha256": digest.hexdigest()}
 
 
 def read_manifest(path: Path, task: str = "coco") -> list[dict[str, Any]]:
@@ -412,7 +421,7 @@ def main() -> int:
         detection_result = evaluate(bbox_results, "bbox")
         detection_result.update({"class_aware_F1_IoU50": class_f1, **class_counts})
         output = {
-            "model_id": args.model, "checkpoint": str(weights[args.model]), "backend": backend,
+            "model_id": args.model, "checkpoint": checkpoint_identity(weights[args.model]), "backend": backend,
             "dataset": manifest_payload.get("dataset"),
             "split": manifest_payload.get("split"),
             "prediction_aliases": manifest_payload.get("examples", [{}])[0].get("prediction_aliases", {}),
