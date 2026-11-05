@@ -1,0 +1,65 @@
+{
+  "generated_at": "2026-11-04 22:45:30 +0100",
+  "seed": 3407,
+  "samples_per_task": {
+    "ai2d": 100,
+    "textvqa": 100,
+    "vqa_truth": 25,
+    "vqa_count": 25,
+    "vqa_description": 25,
+    "vqa_affordance": 25,
+    "vqa_negation": 25,
+    "graph_grab_lite": 500
+  },
+  "task_sizes": {
+    "ai2d": 100,
+    "textvqa": 100,
+    "vqa_truth": 25,
+    "vqa_count": 25,
+    "vqa_description": 25,
+    "vqa_affordance": 25,
+    "vqa_negation": 25,
+    "graph_grab_lite": 500
+  },
+  "task_names": [
+    "ai2d",
+    "textvqa",
+    "vqa_truth",
+    "vqa_count",
+    "vqa_description",
+    "vqa_affordance",
+    "vqa_negation",
+    "graph_grab_lite"
+  ],
+  "whole_device_cap_gib": 10.0,
+  "memory_cap_gib": 10.0,
+  "gpu_baseline_gib": 0.811,
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 5090",
+    "driver_version": "595.99.02"
+  },
+  "runtime_versions": {
+    "python": "3.10.12",
+    "torch": "2.11.0+cu130",
+    "cuda": "13.0",
+    "transformers": "5.19.0"
+  },
+  "cap_enforcement_method": "torch per-process CUDA memory fraction capped to the whole-device limit minus measured baseline and 0.5 GiB reserve; cap qualification uses sampled whole-device nvidia-smi peaks",
+  "process_allocator_budget_gib": 8.689,
+  "context_probe_limit_tokens": 262144,
+  "edge_suite": true,
+  "execution_mode": "offline cached Transformers, one Cosmos model at a time, serial requests",
+  "models": [
+    {
+      "model_id": "nvidia/Cosmos3-Edge",
+      "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
+      "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--nvidia--Cosmos3-Edge/snapshots/344d602b128d1bbdacb43b08d0a3626f46343e29",
+      "revision": "344d602b128d1bbdacb43b08d0a3626f46343e29",
+      "tasks": {},
+      "status": "failed",
+      "max_new_tokens": 256,
+      "reasoning_mode": "disabled with the model's enable_thinking chat-template option to follow the shared answer-only contract",
+      "error": "ModuleNotFoundError: No module named 'qwen_vl_utils'"
+    }
+  ]
+}

@@ -1,0 +1,2175 @@
+{
+  "generated_at": "2026-11-04 21:25:01 +0100",
+  "seed": 3407,
+  "memory_cap_gib": 8.0,
+  "task_sizes": {
+    "ai2d": 100,
+    "textvqa": 100,
+    "vqa_truth": 25,
+    "vqa_count": 25,
+    "vqa_description": 25,
+    "vqa_affordance": 25,
+    "vqa_negation": 25,
+    "graph_grab_lite": 500
+  },
+  "task_names": [
+    "ai2d",
+    "textvqa",
+    "vqa_truth",
+    "vqa_count",
+    "vqa_description",
+    "vqa_affordance",
+    "vqa_negation",
+    "graph_grab_lite"
+  ],
+  "model": {
+    "model_id": "google/paligemma2-3b-mix-224",
+    "backend": "Transformers (local cached checkpoint)",
+    "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--google--paligemma2-3b-mix-224/snapshots/8e40ab4cc5df93dfb7fd2fff754bcdff8b62ee78",
+    "revision": null,
+    "cache_status": "ready",
+    "cache_error": null,
+    "weight_bytes": 6064583376,
+    "model_weight_bytes": 6064583376,
+    "auxiliary_weight_bytes": 0,
+    "weight_gib": 5.648083403706551,
+    "estimated_loaded_weight_gib": 5.648083403706551,
+    "loaded_weight_estimate_method": "cached checkpoint file size",
+    "runtime_versions": {
+      "python": "3.13.13",
+      "transformers": "5.22.1",
+      "torch": "2.14.1+cu130",
+      "torch_cuda": "13.0"
+    },
+    "runtime_packages": {
+      "transformers": "5.22.1",
+      "bitsandbytes": "0.50.2",
+      "flash-attn": "2.8.4",
+      "torchvision": "0.29.1",
+      "timm": "1.0.30"
+    },
+    "prompt_route": "PaliGemma answer en",
+    "precision": "bfloat16",
+    "attention_backend": "eager",
+    "tasks": {},
+    "status": "context_probe_failed",
+    "whole_device_cap_gib": 8.0,
+    "gpu_baseline_gib": 0.831,
+    "process_allocator_allowance_gib": 6.669,
+    "load_peak_whole_device_gib": 7.082,
+    "checkpoint_context": 8192,
+    "configured_context": 8192,
+    "image_resolution_px": 224,
+    "context_probe": {
+      "passed": false,
+      "image_dataset": "AI2D test",
+      "image_index": 2426,
+      "image_size_px": [
+        415,
+        376
+      ],
+      "image_selection_method": "maximum measured total input-token proxy across fixed AI2D examples; visual-token counts unavailable for the full sample",
+      "image_selection_sample_count": 100,
+      "image_selection_complete": true,
+      "image_selection_verified_sample_count": 100,
+      "image_selection_attempts": [
+        {
+          "image_index": 10,
+          "sample_count": 24,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 13,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 22,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 30,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 56,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 99,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 111,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 115,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 135,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 164,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 232,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 287,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 316,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 317,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 336,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 337,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 401,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 444,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 452,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 456,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 460,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 484,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 490,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 495,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 543,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 559,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 594,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 652,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 663,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 677,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 712,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 732,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 788,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 823,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 874,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 880,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 911,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 913,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 960,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 970,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 995,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1000,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1027,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1071,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1089,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1117,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1137,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1205,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1228,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1243,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1248,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1302,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1355,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1365,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1376,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1398,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1458,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1460,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1568,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1610,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1651,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1667,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1672,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1700,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1717,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1910,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1929,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1941,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 1949,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2002,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2011,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2038,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2082,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2108,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2189,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2268,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2293,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2313,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2320,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2322,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2346,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2379,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2405,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2411,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2423,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2426,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2448,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2513,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2638,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2668,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2705,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2747,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2754,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2898,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2978,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 2996,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 3010,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 3015,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 3047,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        },
+        {
+          "image_index": 3071,
+          "sample_count": 1,
+          "sampler_error": null,
+          "measurement_error": null,
+          "peak_whole_device_gib": 7.2109375,
+          "sampler_verified": true
+        }
+      ],
+      "image_visual_token_count": null,
+      "image_selection_total_input_token_proxy": 339,
+      "image_selection_token_measure": "total_input_token_proxy",
+      "configured_context_tokens": 8192,
+      "probe_search_limit_tokens": 8192,
+      "measured_context_tokens": 2291,
+      "actual_input_tokens": 2290,
+      "output_tokens": 1,
+      "configured_limit_reached": false,
+      "token_count_reliable": true,
+      "whole_device_cap_gib": 8.0,
+      "peak_whole_device_gib": 8.0390625,
+      "image_selection_peak_whole_device_gib": 7.2109375,
+      "all_probe_attempts_measured": true,
+      "all_probe_attempts_within_cap": false,
+      "search_method": "binary search on deterministic filler repetitions using adapter-reported token counts",
+      "attempts": [
+        {
+          "filler_repetitions": 8192,
+          "input_tokens": null,
+          "output_tokens": null,
+          "peak_whole_device_gib": 7.67578125,
+          "passed": false,
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 1.09 GiB. GPU 0 has a total capacity of 31.35 GiB of which 23.67 GiB is free. Including non-PyTorch memory, this process has 6.84 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.17 GiB is allocated by PyTorch, and 60.34 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+          "token_count_reliable": false,
+          "whole_device_sample_count": 2,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 4095,
+          "input_tokens": null,
+          "output_tokens": null,
+          "peak_whole_device_gib": 7.685546875,
+          "passed": false,
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 600.00 MiB. GPU 0 has a total capacity of 31.35 GiB of which 23.67 GiB is free. Including non-PyTorch memory, this process has 6.85 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.16 GiB is allocated by PyTorch, and 76.74 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+          "token_count_reliable": false,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 2047,
+          "input_tokens": null,
+          "output_tokens": null,
+          "peak_whole_device_gib": 7.73046875,
+          "passed": false,
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 174.00 MiB. GPU 0 has a total capacity of 31.35 GiB of which 23.33 GiB is free. Including non-PyTorch memory, this process has 7.19 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.16 GiB is allocated by PyTorch, and 418.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+          "token_count_reliable": false,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1023,
+          "input_tokens": 1362,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 7.734375,
+          "passed": true,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1535,
+          "input_tokens": 1874,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 7.83984375,
+          "passed": true,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1791,
+          "input_tokens": 2130,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 7.9765625,
+          "passed": true,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1919,
+          "input_tokens": 2258,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 7.9765625,
+          "passed": true,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1983,
+          "input_tokens": null,
+          "output_tokens": null,
+          "peak_whole_device_gib": 7.9765625,
+          "passed": false,
+          "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 166.00 MiB. GPU 0 has a total capacity of 31.35 GiB of which 23.38 GiB is free. Including non-PyTorch memory, this process has 7.14 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.23 GiB is allocated by PyTorch, and 293.37 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+          "token_count_reliable": false,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1951,
+          "input_tokens": 2290,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 7.96484375,
+          "passed": true,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1967,
+          "input_tokens": 2306,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 8.037109375,
+          "passed": false,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1959,
+          "input_tokens": 2298,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 8.0390625,
+          "passed": false,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1955,
+          "input_tokens": 2294,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 8.0390625,
+          "passed": false,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1953,
+          "input_tokens": 2292,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 8.0390625,
+          "passed": false,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        },
+        {
+          "filler_repetitions": 1952,
+          "input_tokens": 2291,
+          "output_tokens": 1,
+          "peak_whole_device_gib": 8.0390625,
+          "passed": false,
+          "error": null,
+          "token_count_reliable": true,
+          "whole_device_sample_count": 1,
+          "whole_device_sampler_error": null,
+          "whole_device_sampler_verified": true
+        }
+      ]
+    },
+    "context_probe_max_context_tokens": 2291,
+    "scored_context_limit_tokens": 2291,
+    "scored_context_enforcement": "per-generation max_new_tokens bounded by measured input tokens and probed context; actual totals checked",
+    "error": "real-image context probe did not pass cap and reliable token-count gates",
+    "whole_device_peak_gib": 8.039,
+    "whole_device_sample_count": 269,
+    "whole_device_sample_error": null,
+    "peak_gpu_used_gib": null,
+    "scoring_peak_gpu_used_gib": null,
+    "cap_verified": false,
+    "cap_verification": {
+      "whole_device_cap_gib": 8.0,
+      "load_peak_whole_device_gib": 7.082,
+      "load_peak_within_cap": true,
+      "context_probe_passed": false,
+      "complete_shared_task_suite": false,
+      "scored_items_within_probed_context": true,
+      "scoring_peak_within_cap": false,
+      "whole_device_sampling_verified": true,
+      "whole_device_sampler_error": null,
+      "task_sampling_verified": false,
+      "whole_device_peak_within_cap": false
+    }
+  },
+  "preflight": {
+    "passed": false,
+    "required": [
+      "ai2d",
+      "textvqa"
+    ],
+    "checks": {},
+    "error": "context probe did not pass the cap and token-count gates"
+  },
+  "whole_device_cap_gib": 8.0,
+  "gpu_baseline_gib": 0.831,
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 5090",
+    "driver_version": "595.99.02"
+  },
+  "runtime_versions": {
+    "python": "3.13.13",
+    "transformers": "5.22.1",
+    "torch": "2.14.1+cu130",
+    "torch_cuda": "13.0"
+  },
+  "cap_enforcement_method": "torch per-process CUDA memory fraction for Transformers; llama.cpp fit-target margin for GGUF; nvidia-smi whole-device peak sampled throughout load, probe, and scoring",
+  "models": [
+    {
+      "model_id": "google/paligemma2-3b-mix-224",
+      "backend": "Transformers (local cached checkpoint)",
+      "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--google--paligemma2-3b-mix-224/snapshots/8e40ab4cc5df93dfb7fd2fff754bcdff8b62ee78",
+      "revision": null,
+      "cache_status": "ready",
+      "cache_error": null,
+      "weight_bytes": 6064583376,
+      "model_weight_bytes": 6064583376,
+      "auxiliary_weight_bytes": 0,
+      "weight_gib": 5.648083403706551,
+      "estimated_loaded_weight_gib": 5.648083403706551,
+      "loaded_weight_estimate_method": "cached checkpoint file size",
+      "runtime_versions": {
+        "python": "3.13.13",
+        "transformers": "5.22.1",
+        "torch": "2.14.1+cu130",
+        "torch_cuda": "13.0"
+      },
+      "runtime_packages": {
+        "transformers": "5.22.1",
+        "bitsandbytes": "0.50.2",
+        "flash-attn": "2.8.4",
+        "torchvision": "0.29.1",
+        "timm": "1.0.30"
+      },
+      "prompt_route": "PaliGemma answer en",
+      "precision": "bfloat16",
+      "attention_backend": "eager",
+      "tasks": {},
+      "status": "context_probe_failed",
+      "whole_device_cap_gib": 8.0,
+      "gpu_baseline_gib": 0.831,
+      "process_allocator_allowance_gib": 6.669,
+      "load_peak_whole_device_gib": 7.082,
+      "checkpoint_context": 8192,
+      "configured_context": 8192,
+      "image_resolution_px": 224,
+      "context_probe": {
+        "passed": false,
+        "image_dataset": "AI2D test",
+        "image_index": 2426,
+        "image_size_px": [
+          415,
+          376
+        ],
+        "image_selection_method": "maximum measured total input-token proxy across fixed AI2D examples; visual-token counts unavailable for the full sample",
+        "image_selection_sample_count": 100,
+        "image_selection_complete": true,
+        "image_selection_verified_sample_count": 100,
+        "image_selection_attempts": [
+          {
+            "image_index": 10,
+            "sample_count": 24,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 13,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 22,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 30,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 56,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 99,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 111,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 115,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 135,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 164,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 232,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 287,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 316,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 317,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 336,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 337,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 401,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 444,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 452,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 456,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 460,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 484,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 490,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 495,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 543,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 559,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 594,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 652,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 663,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 677,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 712,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 732,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 788,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 823,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 874,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 880,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 911,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 913,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 960,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 970,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 995,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1000,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1027,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1071,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1089,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1117,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1137,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1205,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1228,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1243,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1248,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1302,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1355,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1365,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1376,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1398,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1458,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1460,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1568,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1610,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1651,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1667,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1672,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1700,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1717,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1910,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1929,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1941,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 1949,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2002,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2011,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2038,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2082,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2108,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2189,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2268,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2293,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2313,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2320,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2322,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2346,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2379,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2405,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2411,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2423,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2426,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2448,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2513,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2638,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2668,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2705,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2747,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2754,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2898,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2978,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 2996,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 3010,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 3015,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 3047,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          },
+          {
+            "image_index": 3071,
+            "sample_count": 1,
+            "sampler_error": null,
+            "measurement_error": null,
+            "peak_whole_device_gib": 7.2109375,
+            "sampler_verified": true
+          }
+        ],
+        "image_visual_token_count": null,
+        "image_selection_total_input_token_proxy": 339,
+        "image_selection_token_measure": "total_input_token_proxy",
+        "configured_context_tokens": 8192,
+        "probe_search_limit_tokens": 8192,
+        "measured_context_tokens": 2291,
+        "actual_input_tokens": 2290,
+        "output_tokens": 1,
+        "configured_limit_reached": false,
+        "token_count_reliable": true,
+        "whole_device_cap_gib": 8.0,
+        "peak_whole_device_gib": 8.0390625,
+        "image_selection_peak_whole_device_gib": 7.2109375,
+        "all_probe_attempts_measured": true,
+        "all_probe_attempts_within_cap": false,
+        "search_method": "binary search on deterministic filler repetitions using adapter-reported token counts",
+        "attempts": [
+          {
+            "filler_repetitions": 8192,
+            "input_tokens": null,
+            "output_tokens": null,
+            "peak_whole_device_gib": 7.67578125,
+            "passed": false,
+            "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 1.09 GiB. GPU 0 has a total capacity of 31.35 GiB of which 23.67 GiB is free. Including non-PyTorch memory, this process has 6.84 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.17 GiB is allocated by PyTorch, and 60.34 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+            "token_count_reliable": false,
+            "whole_device_sample_count": 2,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 4095,
+            "input_tokens": null,
+            "output_tokens": null,
+            "peak_whole_device_gib": 7.685546875,
+            "passed": false,
+            "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 600.00 MiB. GPU 0 has a total capacity of 31.35 GiB of which 23.67 GiB is free. Including non-PyTorch memory, this process has 6.85 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.16 GiB is allocated by PyTorch, and 76.74 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+            "token_count_reliable": false,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 2047,
+            "input_tokens": null,
+            "output_tokens": null,
+            "peak_whole_device_gib": 7.73046875,
+            "passed": false,
+            "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 174.00 MiB. GPU 0 has a total capacity of 31.35 GiB of which 23.33 GiB is free. Including non-PyTorch memory, this process has 7.19 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.16 GiB is allocated by PyTorch, and 418.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+            "token_count_reliable": false,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1023,
+            "input_tokens": 1362,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 7.734375,
+            "passed": true,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1535,
+            "input_tokens": 1874,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 7.83984375,
+            "passed": true,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1791,
+            "input_tokens": 2130,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 7.9765625,
+            "passed": true,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1919,
+            "input_tokens": 2258,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 7.9765625,
+            "passed": true,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1983,
+            "input_tokens": null,
+            "output_tokens": null,
+            "peak_whole_device_gib": 7.9765625,
+            "passed": false,
+            "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 166.00 MiB. GPU 0 has a total capacity of 31.35 GiB of which 23.38 GiB is free. Including non-PyTorch memory, this process has 7.14 GiB memory in use. 6.67 GiB allowed; Of the allocated memory 6.23 GiB is allocated by PyTorch, and 293.37 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+            "token_count_reliable": false,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1951,
+            "input_tokens": 2290,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 7.96484375,
+            "passed": true,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1967,
+            "input_tokens": 2306,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 8.037109375,
+            "passed": false,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1959,
+            "input_tokens": 2298,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 8.0390625,
+            "passed": false,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1955,
+            "input_tokens": 2294,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 8.0390625,
+            "passed": false,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1953,
+            "input_tokens": 2292,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 8.0390625,
+            "passed": false,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          },
+          {
+            "filler_repetitions": 1952,
+            "input_tokens": 2291,
+            "output_tokens": 1,
+            "peak_whole_device_gib": 8.0390625,
+            "passed": false,
+            "error": null,
+            "token_count_reliable": true,
+            "whole_device_sample_count": 1,
+            "whole_device_sampler_error": null,
+            "whole_device_sampler_verified": true
+          }
+        ]
+      },
+      "context_probe_max_context_tokens": 2291,
+      "scored_context_limit_tokens": 2291,
+      "scored_context_enforcement": "per-generation max_new_tokens bounded by measured input tokens and probed context; actual totals checked",
+      "error": "real-image context probe did not pass cap and reliable token-count gates",
+      "whole_device_peak_gib": 8.039,
+      "whole_device_sample_count": 269,
+      "whole_device_sample_error": null,
+      "peak_gpu_used_gib": null,
+      "scoring_peak_gpu_used_gib": null,
+      "cap_verified": false,
+      "cap_verification": {
+        "whole_device_cap_gib": 8.0,
+        "load_peak_whole_device_gib": 7.082,
+        "load_peak_within_cap": true,
+        "context_probe_passed": false,
+        "complete_shared_task_suite": false,
+        "scored_items_within_probed_context": true,
+        "scoring_peak_within_cap": false,
+        "whole_device_sampling_verified": true,
+        "whole_device_sampler_error": null,
+        "task_sampling_verified": false,
+        "whole_device_peak_within_cap": false
+      }
+    }
+  ]
+}

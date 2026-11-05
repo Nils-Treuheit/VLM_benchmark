@@ -11,6 +11,15 @@
 
 The overall score is the unweighted macro average of AI2D, TextVQA, the five additional VQA panel categories, and GRAB-Lite. It is a local comparison score, not an official leaderboard metric. Among complete models, `nvidia/Cosmos-Reason1-7B` has the highest overall macro score. Models with incomplete coverage are excluded from comparisons.
 
+## Edge refinement
+
+| Whole-device cap | Model | Status | Full-suite macro | Measured context | Probe peak | Scoring peak | Whole-run peak |
+|---:|---|---|---:|---:|---:|---:|---:|
+| 10 GiB | nvidia/Cosmos3-Edge | verified | 52.59% | 23,552 tokens | 9.82 GiB | 9.82 GiB | 9.82 GiB |
+| 12 GiB | nvidia/Cosmos3-Edge | verified | 52.59% | 37,888 tokens | 11.89 GiB | 11.61 GiB | 11.89 GiB |
+
+The 10 and 12 GiB verified runs each completed all 825 shared examples. See the [10 GiB report](results/edge_refinement/10gib/context23552_retry_20261104/report.md), [10 GiB raw artifact](results/edge_refinement/10gib/context23552_retry_20261104/results.json), [12 GiB report](results/edge_refinement/12gib/context37888_retry_20261105/report.md), and [12 GiB raw artifact](results/edge_refinement/12gib/context37888_retry_20261105/results.json). Failed over-cap attempts remain preserved and excluded: the 10 GiB attempt in `results/edge_refinement/10gib/uv_retry_20261104/`, and the 12 GiB probes in `results/edge_refinement/12gib/contextsearch_20261105/` and `results/edge_refinement/12gib/context44032_retry_20261105/`.
+
 | Model | Overall macro | VQA panel macro | Completed examples | Peak whole-GPU memory | Status |
 |---|---:|---:|---:|---:|---|
 | `nvidia/Cosmos-Reason1-7B` | 59.6% | 64.5% | 825/825 | 22.89 GiB | Complete |

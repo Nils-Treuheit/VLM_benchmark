@@ -260,7 +260,7 @@
 
     <section class="edge-limited" aria-labelledby="edge-limited-title">
       <h2 id="edge-limited-title">Edge Limited</h2>
-      <p class="intro">Choose a VRAM ceiling to view complete benchmark runs measured and verified under that whole-device limit.</p>
+      <p class="intro">Choose a VRAM ceiling to view measured full-suite and category results verified under that whole-device limit. Leader labels rank currently verified runs while refinement continues.</p>
       <div class="edge-controls">
         <label for="edge-vram-limit">VRAM restriction</label>
         <select id="edge-vram-limit" name="vram-limit">
@@ -274,14 +274,14 @@
       <p id="edge-status" class="edge-status" role="status" aria-live="polite">Loading benchmark memory and score records…</p>
       <div id="edge-stage-summary" class="edge-table-wrap" role="region" aria-label="Cap-specific validation status" tabindex="0"></div>
       <div id="edge-overall" class="edge-overall" aria-live="polite"></div>
-      <h3>Best per category under this cap</h3>
+      <h3>Best currently verified result per category under this cap</h3>
       <div id="edge-categories" class="edge-table-wrap" role="region" aria-label="Best model scores by category under the selected VRAM cap" tabindex="0"></div>
-      <p class="edge-method">A model appears here only after its real-image context probe and complete eight-task run pass under the selected whole-device cap. The page reports measured context, probe peak VRAM, scoring-run peak VRAM, and complete task scores. Video and grounding results use separate metrics and do not enter these shared image-task rankings.</p>
+      <p class="edge-method">Overall leaders require a passing real-image context probe and a complete eight-task run under the selected cap. Category leaders require verified cap measurements and complete coverage for that task. The page reports measured context, probe peak VRAM, scoring-run peak VRAM, and task coverage. Video and grounding results use separate metrics and do not enter these shared image-task rankings.</p>
     </section>
 
     <aside class="edge-disclaimer" aria-labelledby="edge-disclaimer-title">
       <h2 id="edge-disclaimer-title">Edge Limited measurement disclaimer</h2>
-      <p>Cap-specific refinement is in progress. No model is eligible until a complete shared-task run and its real-image context probe both pass under the same measured whole-device limit.</p>
+      <p>Cap-specific refinement is in progress. Results are ranked among the candidates verified so far, so leaders can change as selected candidates finish. A model qualifies for the overall ranking only after a complete shared-task run and its real-image context probe both pass under the same measured whole-device limit. Category rows require complete coverage for their listed task.</p>
       <ul>
         <li>Existing suite scores and memory records screen candidates only; they do not establish that a run fits any selected cap.</li>
         <li>Candidate context must be measured with the model's real image path. Checkpoint metadata and estimated KV-cache profiles do not qualify.</li>

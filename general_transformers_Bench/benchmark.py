@@ -30,6 +30,8 @@ from model_adapters import (
     LLAMA_VISION_ROOT, LLAMA_VISION_SNAPSHOT, MOLMO2_ID, PALIGEMMA_ID,
     generate, load_florence, load_internvl, load_internvl35_hf,
     load_llama_cpp_server, load_llama_vision, load_molmo2, load_paligemma,
+    prompt_for as adapter_prompt_for, generate_paligemma, generate_llama_vision,
+    generate_internvl,
 )
 
 HF_HOME = Path(os.environ.get("HF_HOME", "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface"))
@@ -57,6 +59,44 @@ MODEL_IDS = (
     LLAMA_VISION_ID,
 )
 ACTIVE_GPU_MONITOR = None
+ACTIVE_WHOLE_GPU_MONITOR = None
+
+
+class WholeDeviceMemorySampler:
+    """Sample nvidia-smi whole-device memory, including desktop and other processes."""
+
+    def __init__(self, *, interval_s: float = 0.15):
+        self.interval_s = interval_s
+        self.peak_mib = 0
+        self.sample_count = 0
+        self.error: str | None = None
+        self._stop = threading.Event()
+        self._thread = threading.Thread(target=self._sample, name="whole-device-memory", daemon=True)
+
+    def start(self) -> None:
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        self._thread.join(timeout=3)
+
+    def _sample(self) -> None:
+        while not self._stop.is_set():
+            try:
+                output = subprocess.check_output(
+                    ["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits"],
+                    text=True, stderr=subprocess.DEVNULL, timeout=3,
+                ).strip().splitlines()[0]
+                value = int(output)
+                self.peak_mib = max(self.peak_mib, value)
+                self.sample_count += 1
+            except (OSError, subprocess.SubprocessError, ValueError, IndexError) as exc:
+                self.error = f"{type(exc).__name__}: {exc}"
+            self._stop.wait(self.interval_s)
+
+    @property
+    def peak_gib(self) -> float | None:
+        return round(self.peak_mib / 1024, 3) if self.sample_count else None
 
 
 class SampledProcessMemory:
@@ -252,21 +292,101 @@ def cache_entry(model_id: str) -> dict[str, Any]:
     }
 
 
+def adapter_input_tokens(model_id: str, model, processor, row: dict[str, Any], task: str, prompt: str) -> int:
+    """Measure input length through the same adapter/model image path before bounded generation."""
+    spec = adapter_prompt_for(model_id, task, prompt)
+    if model_id in INTERNVL35_GGUF_CANDIDATES:
+        _, input_tokens, _, _ = model.generate(row["image"], spec.text, max_new_tokens=1)
+        return int(input_tokens)
+    if model_id == PALIGEMMA_ID:
+        inputs = processor(images=row["image"].convert("RGB"), text=spec.text, return_tensors="pt")
+    elif model_id == LLAMA_VISION_ID:
+        messages = [{"role": "user", "content": [
+            {"type": "image"}, {"type": "text", "text": spec.text},
+        ]}]
+        rendered = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        inputs = processor(text=rendered, images=row["image"].convert("RGB"), return_tensors="pt")
+    elif model_id in INTERNVL_GPU_IDS:
+        raise ResourceLimitError("InternVL HF adapter cannot measure multimodal input tokens reliably")
+    else:
+        raise ResourceLimitError(f"no Edge context enforcement adapter for {model_id}")
+    return int(inputs.input_ids.shape[-1])
+
+
+def generate_with_output_limit(model_id: str, model, processor, row: dict[str, Any], task: str,
+                               prompt: str, max_new_tokens: int) -> dict[str, Any]:
+    """Run the existing model adapter with an Edge-derived output-token ceiling."""
+    spec = adapter_prompt_for(model_id, task, prompt)
+    if model_id in INTERNVL35_GGUF_CANDIDATES:
+        answer, input_tokens, output_tokens, details = model.generate(
+            row["image"], spec.text, max_new_tokens=max_new_tokens
+        )
+    elif model_id == PALIGEMMA_ID:
+        answer, input_tokens, output_tokens, details = generate_paligemma(
+            model, processor, row["image"], spec, max_new_tokens=max_new_tokens
+        )
+    elif model_id == LLAMA_VISION_ID:
+        answer, input_tokens, output_tokens, details = generate_llama_vision(
+            model, processor, row["image"], spec, max_new_tokens=max_new_tokens
+        )
+    elif model_id in INTERNVL_GPU_IDS:
+        answer, input_tokens, output_tokens, details = generate_internvl(
+            model, processor, row["image"], spec, max_new_tokens=max_new_tokens
+        )
+    else:
+        raise ResourceLimitError(f"no Edge context enforcement adapter for {model_id}")
+    return {
+        "prompt": spec.text, "prompt_prefix": spec.prefix, "answer": answer,
+        "input_tokens": int(input_tokens), "output_tokens": int(output_tokens),
+        "postprocess": details, "scoring_eligible": spec.scoring_eligible,
+        "route_note": spec.route_note,
+    }
+
+
 def generation(model_id: str, model, processor, row: dict[str, Any], task: str, prompt: str,
-               *, route_validated: bool = False):
+               *, route_validated: bool = False, context_limit_tokens: int | None = None):
     import torch
 
     is_gguf = model_id in INTERNVL35_GGUF_CANDIDATES
     if not is_gguf:
         torch.cuda.synchronize()
         torch.cuda.reset_peak_memory_stats()
+    max_new_tokens = None
+    measured_input_tokens = None
+    if context_limit_tokens is not None:
+        measured_input_tokens = adapter_input_tokens(model_id, model, processor, row, task, prompt)
+        remaining = context_limit_tokens - measured_input_tokens
+        if remaining <= 0:
+            raise ResourceLimitError(
+                f"input length {measured_input_tokens} reaches the probed {context_limit_tokens}-token context"
+            )
+        max_new_tokens = min(256, remaining)
     started = time.perf_counter()
     with torch.inference_mode():
-        record = generate(model_id, model, processor, row["image"], task, prompt)
+        if max_new_tokens is None:
+            record = generate(model_id, model, processor, row["image"], task, prompt)
+        else:
+            record = generate_with_output_limit(
+                model_id, model, processor, row, task, prompt, max_new_tokens
+            )
     if model_id == FLORENCE_ID and route_validated:
         record["scoring_eligible"] = True
         record["route_note"] = "experimental <VQA> route passed AI2D and TextVQA real-image preflight"
     record["generation_s"] = round(time.perf_counter() - started, 4)
+    if context_limit_tokens is not None:
+        actual_context_tokens = record["input_tokens"] + record["output_tokens"]
+        if actual_context_tokens > context_limit_tokens:
+            raise ResourceLimitError(
+                f"adapter generated {actual_context_tokens} tokens beyond the probed "
+                f"{context_limit_tokens}-token context"
+            )
+        record.update(
+            context_limit_tokens=context_limit_tokens,
+            generation_max_new_tokens=max_new_tokens,
+            measured_input_tokens=measured_input_tokens,
+            actual_context_tokens=actual_context_tokens,
+            context_limit_enforced=True,
+        )
     if is_gguf:
         record["peak_allocated_gib"] = ACTIVE_GPU_MONITOR.peak_gib if ACTIVE_GPU_MONITOR else None
         record["peak_reserved_gib"] = None
@@ -291,7 +411,8 @@ def generation(model_id: str, model, processor, row: dict[str, Any], task: str, 
     return record
 
 
-def preflight(model_id: str, model, processor, seed: int) -> tuple[dict[str, Any], dict[str, dict[int, dict[str, Any]]]]:
+def preflight(model_id: str, model, processor, seed: int,
+              context_limit_tokens: int | None = None) -> tuple[dict[str, Any], dict[str, dict[int, dict[str, Any]]]]:
     """Prove real-image handling and both answer formats before any full task runs."""
     checks: dict[str, Any] = {}
     cached: dict[str, dict[int, dict[str, Any]]] = {task: {} for task in TASKS}
@@ -301,7 +422,8 @@ def preflight(model_id: str, model, processor, seed: int) -> tuple[dict[str, Any
         index = indices[0]
         row = dataset[index]
         prompt, expected = shared.prompt_for(task, row)
-        output = generation(model_id, model, processor, row, task, prompt)
+        output = generation(model_id, model, processor, row, task, prompt,
+                             context_limit_tokens=context_limit_tokens)
         prediction, score, parse_error = shared.score_for(task, output["answer"], expected)
         nonempty = bool(output["answer"].strip())
         format_ok = not parse_error if task == "ai2d" else nonempty
@@ -335,7 +457,8 @@ def preflight(model_id: str, model, processor, seed: int) -> tuple[dict[str, Any
 
 
 def run_task(model_id: str, model, processor, task: str, count: int, seed: int,
-             cached: dict[int, dict[str, Any]]) -> dict[str, Any]:
+             cached: dict[int, dict[str, Any]],
+             context_limit_tokens: int | None = None) -> dict[str, Any]:
     import torch
 
     dataset = shared.dataset_for(task)
@@ -351,7 +474,8 @@ def run_task(model_id: str, model, processor, task: str, count: int, seed: int,
         try:
             reused = cached.get(index)
             output = reused["generation"] if reused else generation(
-                model_id, model, processor, row, task, prompt, route_validated=True
+                model_id, model, processor, row, task, prompt, route_validated=True,
+                context_limit_tokens=context_limit_tokens,
             )
             if not output["scoring_eligible"]:
                 raise RuntimeError("model prompt route has not passed the required preflight")
@@ -367,6 +491,10 @@ def run_task(model_id: str, model, processor, task: str, count: int, seed: int,
                 "scoring_eligible": output["scoring_eligible"],
                 "input_tokens": output["input_tokens"],
                 "output_tokens": output["output_tokens"],
+                "context_limit_tokens": output.get("context_limit_tokens"),
+                "generation_max_new_tokens": output.get("generation_max_new_tokens"),
+                "actual_context_tokens": output.get("actual_context_tokens"),
+                "context_limit_enforced": output.get("context_limit_enforced", False),
                 "parse_error": parse_error,
                 "generation_s": output["generation_s"],
                 "peak_allocated_gib": output["peak_allocated_gib"],
@@ -436,6 +564,225 @@ def run_task(model_id: str, model, processor, task: str, count: int, seed: int,
         ),
         "resource_limit_exceeded": resource_limit_exceeded,
         "items": items,
+    }
+
+
+def gpu_memory_used_mib() -> int | None:
+    try:
+        value = subprocess.check_output(
+            ["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader,nounits"],
+            text=True, stderr=subprocess.DEVNULL, timeout=3,
+        ).strip().splitlines()[0]
+        return int(value)
+    except (OSError, subprocess.SubprocessError, ValueError, IndexError):
+        return None
+
+
+def probe_context(model_id: str, model, processor, task: str, seed: int,
+                  context_limit: int, cap_gib: float,
+                  configured_context_tokens: int | None = None) -> dict[str, Any]:
+    """Measure actual real-image input length and whole-device peak via the model adapter."""
+    import torch
+
+    dataset = shared.dataset_for(task)
+    indices = common.pick_indices(len(dataset), min(100, len(dataset)), seed)
+    rows = []
+
+    def generate_probe(row, prompt: str, max_new_tokens: int) -> dict[str, Any]:
+        spec = adapter_prompt_for(model_id, task, prompt)
+        if model_id in INTERNVL35_GGUF_CANDIDATES:
+            answer, input_tokens, output_tokens, details = model.generate(
+                row["image"], spec.text, max_new_tokens=max_new_tokens
+            )
+        elif model_id == PALIGEMMA_ID:
+            answer, input_tokens, output_tokens, details = generate_paligemma(
+                model, processor, row["image"], spec, max_new_tokens=max_new_tokens
+            )
+        elif model_id == LLAMA_VISION_ID:
+            answer, input_tokens, output_tokens, details = generate_llama_vision(
+                model, processor, row["image"], spec, max_new_tokens=max_new_tokens
+            )
+        elif model_id in INTERNVL_GPU_IDS:
+            answer, input_tokens, output_tokens, details = generate_internvl(
+                model, processor, row["image"], spec, max_new_tokens=max_new_tokens
+            )
+        else:
+            return {"error": f"no measured Edge context-probe adapter for {model_id}"}
+        reliable_tokens = not (
+            model_id in INTERNVL_GPU_IDS and model_id not in INTERNVL35_GGUF_CANDIDATES
+        )
+        return {
+            "answer": answer, "input_tokens": int(input_tokens),
+            "output_tokens": int(output_tokens), "details": details,
+            "visual_token_count": next((
+                int(details[key]) for key in (
+                    "visual_token_count", "image_visual_token_count", "image_token_count",
+                ) if isinstance(details, dict) and isinstance(details.get(key), (int, float))
+            ), None),
+            "token_count_reliable": reliable_tokens,
+        }
+
+    selection_peak_gib = None
+    selection_attempts = []
+    for index in indices:
+        row = dataset[index]
+        prompt, _ = shared.prompt_for(task, row)
+        attempt_memory = WholeDeviceMemorySampler()
+        attempt_memory.start()
+        before = gpu_memory_used_mib()
+        try:
+            measured = generate_probe(row, prompt, 1)
+        except Exception as exc:
+            measured = {"error": f"{type(exc).__name__}: {exc}"}
+        after = gpu_memory_used_mib()
+        attempt_memory.stop()
+        measured_peak = max(
+            (value for value in (before, after, attempt_memory.peak_mib if attempt_memory.sample_count else None)
+             if value is not None), default=None
+        )
+        peak_gib = measured_peak / 1024 if measured_peak is not None else None
+        if peak_gib is not None:
+            selection_peak_gib = max(selection_peak_gib or 0, peak_gib)
+        sampler_valid = attempt_memory.sample_count > 0 and attempt_memory.error is None
+        selection_attempts.append({
+            "image_index": index,
+            "sample_count": attempt_memory.sample_count,
+            "sampler_error": attempt_memory.error,
+            "measurement_error": measured.get("error"),
+            "peak_whole_device_gib": peak_gib,
+            "sampler_verified": sampler_valid,
+        })
+        if "input_tokens" in measured:
+            rows.append({"index": index, "row": row, "prompt": prompt,
+                         "input_tokens": measured["input_tokens"], "peak_gib": peak_gib,
+                         "sampler_sample_count": attempt_memory.sample_count,
+                         "sampler_error": attempt_memory.error,
+                         "sampler_verified": sampler_valid,
+                         "visual_token_count": measured.get("visual_token_count"),
+                         "token_count_reliable": measured["token_count_reliable"]})
+    selection_complete = (
+        len(indices) == min(100, len(dataset))
+        and len(rows) == len(indices)
+        and all(item["sampler_verified"] for item in rows)
+        and all(item["token_count_reliable"] for item in rows)
+    )
+    if not rows:
+        return {"passed": False, "error": "no sampled AI2D image produced measurable input tokens",
+                "image_sample_count": len(indices), "image_selection_complete": False,
+                "image_selection_attempts": selection_attempts,
+                "image_selection_peak_whole_device_gib": selection_peak_gib}
+    visual_rows = [item for item in rows if item.get("visual_token_count") is not None]
+    use_visual_counts = selection_complete and len(visual_rows) == len(indices)
+    selected = max(visual_rows if use_visual_counts else rows, key=lambda item: (
+        item["visual_token_count"] if use_visual_counts else item["input_tokens"]
+    ))
+    row, prompt = selected["row"], selected["prompt"]
+    context_limit = min(context_limit, int(getattr(
+        getattr(model.config, "text_config", model.config), "max_position_embeddings", context_limit
+    ) or context_limit))
+    low, high = 0, max(1, context_limit * 2)
+    best = None
+    attempts = []
+    while low <= high:
+        repeats = (low + high) // 2
+        full_prompt = prompt + (" context" * repeats)
+        attempt_memory = WholeDeviceMemorySampler()
+        attempt_memory.start()
+        before = gpu_memory_used_mib()
+        try:
+            measured = generate_probe(row, full_prompt, 8)
+        except Exception as exc:
+            measured = {"error": f"{type(exc).__name__}: {exc}"}
+            try:
+                import torch
+                torch.cuda.empty_cache()
+            except Exception:
+                pass
+        after = gpu_memory_used_mib()
+        attempt_memory.stop()
+        measured_peak = max(
+            (value for value in (before, after, attempt_memory.peak_mib if attempt_memory.sample_count else None)
+             if value is not None), default=None
+        )
+        peak_gib = measured_peak / 1024 if measured_peak is not None else None
+        sampler_valid = attempt_memory.sample_count > 0 and attempt_memory.error is None
+        input_tokens = measured.get("input_tokens")
+        output_tokens = measured.get("output_tokens")
+        within_context = (input_tokens is not None and output_tokens is not None
+                          and input_tokens + output_tokens <= context_limit)
+        passed = bool(
+            input_tokens is not None and measured.get("token_count_reliable")
+            and within_context and sampler_valid and peak_gib is not None and peak_gib <= cap_gib
+        )
+        attempt = {
+            "filler_repetitions": repeats, "input_tokens": input_tokens,
+            "output_tokens": output_tokens, "peak_whole_device_gib": peak_gib,
+            "passed": passed, "error": measured.get("error"),
+            "token_count_reliable": measured.get("token_count_reliable", False),
+            "whole_device_sample_count": attempt_memory.sample_count,
+            "whole_device_sampler_error": attempt_memory.error,
+            "whole_device_sampler_verified": sampler_valid,
+        }
+        attempts.append(attempt)
+        if passed:
+            best = attempt
+            low = repeats + 1
+        else:
+            high = repeats - 1
+    image = row["image"]
+    attempt_peaks = [item.get("peak_whole_device_gib") for item in attempts
+                     if isinstance(item.get("peak_whole_device_gib"), (int, float))]
+    measured_probe_peak = max(
+        ([selection_peak_gib] if selection_peak_gib is not None else []) + attempt_peaks,
+        default=None,
+    )
+    all_probe_attempts_measured = all(
+        isinstance(item.get("peak_whole_device_gib"), (int, float))
+        and item.get("whole_device_sample_count", 0) > 0
+        and item.get("whole_device_sampler_error") is None
+        and item.get("whole_device_sampler_verified") is True
+        for item in attempts
+    )
+    all_probe_attempts_within_cap = all(
+        item["peak_whole_device_gib"] <= cap_gib
+        for item in attempts
+        if isinstance(item.get("peak_whole_device_gib"), (int, float))
+    )
+    probe_passed = bool(
+        best and selection_complete and selected["token_count_reliable"] and measured_probe_peak is not None
+        and measured_probe_peak <= cap_gib
+        and all_probe_attempts_measured and all_probe_attempts_within_cap
+    )
+    return {
+        "passed": probe_passed,
+        "image_dataset": "AI2D test", "image_index": selected["index"],
+        "image_size_px": list(image.size),
+        "image_selection_method": (
+            "maximum adapter-reported visual-token count across fixed AI2D examples"
+            if use_visual_counts else
+            "maximum measured total input-token proxy across fixed AI2D examples; visual-token counts unavailable for the full sample"
+        ),
+        "image_selection_sample_count": len(indices),
+        "image_selection_complete": selection_complete,
+        "image_selection_verified_sample_count": len(rows),
+        "image_selection_attempts": selection_attempts,
+        "image_visual_token_count": selected.get("visual_token_count") if use_visual_counts else None,
+        "image_selection_total_input_token_proxy": selected["input_tokens"],
+        "image_selection_token_measure": "visual_token_count" if use_visual_counts else "total_input_token_proxy",
+        "configured_context_tokens": configured_context_tokens,
+        "probe_search_limit_tokens": context_limit,
+        "measured_context_tokens": (best["input_tokens"] + best["output_tokens"]) if best else None,
+        "actual_input_tokens": best["input_tokens"] if best else None,
+        "output_tokens": best["output_tokens"] if best else None,
+        "configured_limit_reached": bool(best and best["input_tokens"] + best["output_tokens"] >= context_limit - 32),
+        "token_count_reliable": selected["token_count_reliable"],
+        "whole_device_cap_gib": cap_gib,
+        "peak_whole_device_gib": measured_probe_peak,
+        "image_selection_peak_whole_device_gib": selection_peak_gib,
+        "all_probe_attempts_measured": all_probe_attempts_measured,
+        "all_probe_attempts_within_cap": all_probe_attempts_within_cap,
+        "search_method": "binary search on deterministic filler repetitions using adapter-reported token counts",
+        "attempts": attempts,
     }
 
 
@@ -511,7 +858,12 @@ def write_report(path: Path, result: dict[str, Any]) -> None:
         )
         lines.insert(
             lines.index("", lines.index("## Runtime and resources")) + 1,
-            "The 26 GiB target applies to torch.cuda.max_memory_allocated. The 30 GiB hard cap uses sampled per-process nvidia-smi memory.",
+            (
+                f"The {INTERNVL_ALLOCATED_TARGET_GIB:.2f} GiB process allowance applies to CUDA allocation. "
+                f"The {MEMORY_CAP_GIB:.1f} GiB Edge cap uses whole-device nvidia-smi sampling."
+                if result.get("whole_device_cap_gib") is not None else
+                "The 26 GiB target applies to torch.cuda.max_memory_allocated. The 30 GiB hard cap uses sampled per-process nvidia-smi memory."
+            ),
         )
     if model.get("model_id") == FLORENCE_ID:
         lines.insert(
@@ -523,15 +875,43 @@ def write_report(path: Path, result: dict[str, Any]) -> None:
             -2,
             "Molmo2 uses its processor chat template with the unchanged shared question and decodes only the generated completion. The cached weights are loaded in bfloat16.",
         )
+    if result.get("whole_device_cap_gib") is not None:
+        probe = model.get("context_probe") or {}
+        lines += [
+            "## Edge cap verification", "",
+            f"Whole-device cap: {result['whole_device_cap_gib']:.1f} GiB; idle baseline: {result.get('gpu_baseline_gib')} GiB.",
+            f"Whole-device peak immediately after model load: {model.get('load_peak_whole_device_gib')} GiB.",
+            f"Whole-device peak from model load through scoring: {model.get('whole_device_peak_gib')} GiB.",
+            f"Scoring peak across completed tasks: {model.get('scoring_peak_gpu_used_gib')} GiB.",
+            f"Cap verified: `{model.get('cap_verified', False)}`; verification: `{model.get('cap_verification', {})}`.",
+            "", "### Real-image context probe", "",
+            f"Passed: `{probe.get('passed', False)}`; AI2D index: {probe.get('image_index', 'unknown')}; "
+            f"image: {probe.get('image_size_px', 'unknown')} px; measured context: "
+            f"{probe.get('measured_context_tokens', 'unknown')} tokens; input/output: "
+            f"{probe.get('actual_input_tokens', 'unknown')}/{probe.get('output_tokens', 'unknown')} tokens; "
+            f"probe peak: {probe.get('peak_whole_device_gib', 'unknown')} GiB.",
+            f"Image selection: {probe.get('image_selection_method', 'unknown')}; "
+            f"configured limit reached: `{probe.get('configured_limit_reached', False)}`.",
+            "",
+        ]
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def main() -> int:
-    global ACTIVE_GPU_MONITOR
+    global ACTIVE_GPU_MONITOR, ACTIVE_WHOLE_GPU_MONITOR, MEMORY_CAP_GIB, INTERNVL_ALLOCATED_TARGET_GIB
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", required=True, choices=MODEL_IDS)
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--whole-device-cap-gib", type=float, choices=(8, 10, 12, 14, 16),
+                        help="enable Edge mode at this whole-device VRAM ceiling")
+    parser.add_argument("--context-probe-limit", type=int, default=32768,
+                        help="largest context tested by the real-image Edge context probe")
     args = parser.parse_args()
+    if args.context_probe_limit < 1024:
+        parser.error("--context-probe-limit must be at least 1024 tokens")
+    edge_mode = args.whole_device_cap_gib is not None
+    if edge_mode:
+        MEMORY_CAP_GIB = float(args.whole_device_cap_gib)
     model_id = args.model
     output_dir = args.output_dir or HERE / "results" / model_id.split("/")[-1].lower()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -572,7 +952,7 @@ def main() -> int:
     }
     attention_routes = {
         MOLMO2_ID: "model default",
-        PALIGEMMA_ID: "SDPA",
+        PALIGEMMA_ID: "eager",
         FLORENCE_ID: "eager",
         INTERNVL_ID: "custom InternVL implementation default",
         LLAMA_VISION_ID: "Transformers SDPA (Mllama vision compatibility)",
@@ -622,6 +1002,19 @@ def main() -> int:
         },
         "preflight": {"passed": False, "required": ["ai2d", "textvqa"], "checks": {}},
     }
+    if edge_mode:
+        result.update(
+            whole_device_cap_gib=MEMORY_CAP_GIB,
+            gpu_baseline_gib=None,
+            hardware={},
+            runtime_versions={"python": sys.version.split()[0], **result["model"]["runtime_versions"]},
+            cap_enforcement_method=(
+                "torch per-process CUDA memory fraction for Transformers; llama.cpp fit-target margin for GGUF; "
+                "nvidia-smi whole-device peak sampled throughout load, probe, and scoring"
+            ),
+            models=[result["model"]],
+        )
+        result["model"]["whole_device_cap_gib"] = MEMORY_CAP_GIB
     if entry["cache_status"] != "ready":
         result["model"].update(status="failed", error=entry["cache_error"])
         result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
@@ -641,14 +1034,70 @@ def main() -> int:
         return 2
     device = torch.cuda.current_device()
     total_memory = torch.cuda.get_device_properties(device).total_memory
+    baseline_mib = gpu_memory_used_mib() if edge_mode else None
+    gpu_name = torch.cuda.get_device_name(device)
+    driver_version = None
+    total_mib = int(total_memory / (1024**2))
+    if edge_mode:
+        if baseline_mib is None:
+            result["model"].update(status="failed", error="could not measure whole-device GPU baseline")
+            result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+            write_report(output_dir / "report.md", result)
+            return 2
+        if baseline_mib / 1024 >= MEMORY_CAP_GIB:
+            result["model"].update(status="unavailable_baseline", error="idle whole-device GPU baseline reaches the selected cap")
+            result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+            write_report(output_dir / "report.md", result)
+            return 2
+        try:
+            gpu_name, driver_version = subprocess.check_output(
+                ["nvidia-smi", "--query-gpu=name,driver_version", "--format=csv,noheader"],
+                text=True, stderr=subprocess.DEVNULL, timeout=3,
+            ).strip().splitlines()[0].split(", ", 1)
+        except (OSError, subprocess.SubprocessError, ValueError, IndexError):
+            result["model"].update(status="failed", error="could not record GPU model and driver version")
+            result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+            write_report(output_dir / "report.md", result)
+            return 2
+        process_allowance_gib = max(0.0, MEMORY_CAP_GIB - baseline_mib / 1024 - 0.5)
+        if process_allowance_gib <= 0:
+            result["model"].update(status="unavailable_baseline", error="baseline leaves no safe model memory allowance")
+            result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+            write_report(output_dir / "report.md", result)
+            return 2
+        INTERNVL_ALLOCATED_TARGET_GIB = min(INTERNVL_ALLOCATED_TARGET_GIB, process_allowance_gib)
+        result.update(
+            gpu_baseline_gib=round(baseline_mib / 1024, 3),
+            hardware={"gpu_name": gpu_name, "driver_version": driver_version},
+        )
+        result["model"].update(
+            whole_device_cap_gib=MEMORY_CAP_GIB,
+            gpu_baseline_gib=round(baseline_mib / 1024, 3),
+            process_allocator_allowance_gib=round(process_allowance_gib, 3),
+        )
+        result["memory_cap_gib"] = MEMORY_CAP_GIB
     if total_memory < MEMORY_CAP_GIB * 1024**3:
         result["model"].update(status="failed", error="the configured 30 GiB ceiling exceeds installed GPU memory")
         result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
         write_report(output_dir / "report.md", result)
         return 2
     free_memory, _ = torch.cuda.mem_get_info(device)
+    process_allowance_gib = (
+        max(0.0, MEMORY_CAP_GIB - baseline_mib / 1024 - 0.5) if edge_mode else MEMORY_CAP_GIB
+    )
+    if edge_mode and model_id != INTERNVL_ID and loaded_weight_estimate_gib >= process_allowance_gib:
+        result["model"].update(
+            status="unavailable_cap",
+            error=(f"cached weights {loaded_weight_estimate_gib:.2f} GiB reach the conservative "
+                   f"{process_allowance_gib:.2f} GiB process allowance"),
+        )
+        result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+        write_report(output_dir / "report.md", result)
+        return 2
     required_internvl_free_gib = (
-        24.0 if model_id in INTERNVL35_GGUF_CANDIDATES else INTERNVL_ALLOCATED_TARGET_GIB
+        process_allowance_gib if edge_mode else (
+            24.0 if model_id in INTERNVL35_GGUF_CANDIDATES else INTERNVL_ALLOCATED_TARGET_GIB
+        )
     )
     if (model_id in INTERNVL_GPU_IDS or model_id == LLAMA_VISION_ID) \
             and free_memory < required_internvl_free_gib * 1024**3:
@@ -660,12 +1109,22 @@ def main() -> int:
         result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
         write_report(output_dir / "report.md", result)
         return 2
-    torch.cuda.set_per_process_memory_fraction(MEMORY_CAP_GIB * 1024**3 / total_memory, device)
+    allocator_limit_gib = process_allowance_gib if edge_mode else MEMORY_CAP_GIB
+    torch.cuda.set_per_process_memory_fraction(allocator_limit_gib * 1024**3 / total_memory, device)
 
     model = processor = None
     load_monitor = None
+    whole_device_monitor = WholeDeviceMemorySampler() if edge_mode else None
+    if whole_device_monitor is not None:
+        whole_device_monitor.start()
+        ACTIVE_WHOLE_GPU_MONITOR = whole_device_monitor
     try:
-        max_memory = {device: int(MEMORY_CAP_GIB * 1024**3)}
+        max_memory = {device: int(allocator_limit_gib * 1024**3)}
+        if edge_mode and model_id in INTERNVL35_GGUF_CANDIDATES:
+            # llama.cpp reads these before CUDA allocation; fit-target is the free-memory margin.
+            margin_mib = max(512, total_mib - int(allocator_limit_gib * 1024))
+            os.environ["LLAMA_ARG_FIT"] = "on"
+            os.environ["LLAMA_ARG_FIT_TARGET"] = str(margin_mib)
         print(f"LOAD {model_id} snapshot={entry['snapshot']}", flush=True)
         if model_id in INTERNVL35_GGUF_CANDIDATES:
             gguf_spec = INTERNVL35_GGUF_CANDIDATES[model_id]
@@ -676,7 +1135,7 @@ def main() -> int:
                 candidate_dir / gguf_spec["mmproj"],
                 output_dir / "llama-server.log",
                 port=18135 + gguf_index,
-                context_size=8192,
+                context_size=max(8192, args.context_probe_limit) if edge_mode else 8192,
             )
             load_monitor = SampledProcessMemory(model.process.pid)
             ACTIVE_GPU_MONITOR = load_monitor
@@ -783,17 +1242,66 @@ def main() -> int:
             model, processor = load_molmo2(entry["snapshot"], max_memory=max_memory)
         else:
             model, processor = load_florence(entry["snapshot"])
+        if whole_device_monitor is not None:
+            # Capture the measured sampler peak at the model-load boundary, before
+            # context probing begins, so cap verification can audit load residency.
+            result["model"]["load_peak_whole_device_gib"] = whole_device_monitor.peak_gib
         result["model"]["checkpoint_context"] = getattr(
             getattr(model.config, "text_config", model.config), "max_position_embeddings", None
         )
+        result["model"]["configured_context"] = int(getattr(
+            getattr(model.config, "text_config", model.config),
+            "max_position_embeddings", getattr(model, "context_size", 0),
+        ) or getattr(model, "context_size", 0) or 0)
         if model_id == PALIGEMMA_ID:
             result["model"]["image_resolution_px"] = 224
         if (model_id in INTERNVL_GPU_IDS and model_id not in INTERNVL35_GGUF_CANDIDATES) \
                 or model_id == LLAMA_VISION_ID:
             torch.cuda.reset_peak_memory_stats(device)
-        preflight_result, cached = preflight(model_id, model, processor, SEED)
+        context_probe_ok = True
+        if edge_mode:
+            if whole_device_monitor is None or whole_device_monitor.sample_count == 0:
+                raise RuntimeError("nvidia-smi did not produce a whole-device sample during model load")
+            if whole_device_monitor.error is not None:
+                raise RuntimeError(f"whole-device sampler failed during model load: {whole_device_monitor.error}")
+            if whole_device_monitor.peak_gib is None or whole_device_monitor.peak_gib > MEMORY_CAP_GIB:
+                raise ResourceLimitError("whole-device model-load peak exceeded the selected Edge cap")
+            context_limit = args.context_probe_limit
+            if model_id in INTERNVL35_GGUF_CANDIDATES:
+                context_limit = min(context_limit, int(model.context_size))
+            configured = int(getattr(model, "context_size", 0) or getattr(
+                getattr(model.config, "text_config", model.config),
+                "max_position_embeddings", context_limit,
+            ) or context_limit)
+            context_limit = min(context_limit, configured)
+            result["model"]["context_probe"] = probe_context(
+                model_id, model, processor, "ai2d", SEED, context_limit, MEMORY_CAP_GIB,
+                configured_context_tokens=result["model"]["configured_context"],
+            )
+            probe = result["model"]["context_probe"]
+            result["model"]["context_probe_max_context_tokens"] = probe.get("measured_context_tokens")
+            result["model"]["scored_context_limit_tokens"] = probe.get("measured_context_tokens")
+            result["model"]["scored_context_enforcement"] = (
+                "per-generation max_new_tokens bounded by measured input tokens and probed context; actual totals checked"
+            )
+            result["model"]["whole_device_cap_gib"] = MEMORY_CAP_GIB
+            context_probe_ok = bool(probe.get("passed"))
+        if context_probe_ok:
+            preflight_result, cached = preflight(
+                model_id, model, processor, SEED,
+                context_limit_tokens=(result["model"].get("scored_context_limit_tokens") if edge_mode else None),
+            )
+        else:
+            preflight_result = {"passed": False, "required": ["ai2d", "textvqa"],
+                                "checks": {}, "error": "context probe did not pass the cap and token-count gates"}
+            cached = {task: {} for task in TASKS}
         result["preflight"] = preflight_result
-        if not preflight_result["passed"]:
+        if not context_probe_ok:
+            result["model"].update(
+                status="context_probe_failed",
+                error="real-image context probe did not pass cap and reliable token-count gates",
+            )
+        elif not preflight_result["passed"]:
             result["model"].update(
                 status="preflight_failed",
                 error="real-image AI2D and TextVQA checks did not both pass; full suite not started",
@@ -816,16 +1324,40 @@ def main() -> int:
             result["model"]["status"] = "in_progress"
             for task in TASKS:
                 print(f"RUN {model_id} {task} n={TASK_SIZES[task]}", flush=True)
+                task_memory = WholeDeviceMemorySampler() if edge_mode else None
+                if task_memory is not None:
+                    task_memory.start()
                 try:
-                    result["model"]["tasks"][task] = run_task(
-                        model_id, model, processor, task, TASK_SIZES[task], SEED, cached[task]
+                    task_result = run_task(
+                        model_id, model, processor, task, TASK_SIZES[task], SEED, cached[task],
+                        context_limit_tokens=(result["model"].get("scored_context_limit_tokens") if edge_mode else None),
                     )
+                    result["model"]["tasks"][task] = task_result
                 except Exception as exc:
-                    result["model"]["tasks"][task] = {
+                    task_result = {
                         "requested_n": TASK_SIZES[task], "completed_n": 0,
                         "failed_n": TASK_SIZES[task], "score": None,
                         "error": f"{type(exc).__name__}: {exc}", "items": [],
                     }
+                    result["model"]["tasks"][task] = task_result
+                finally:
+                    if task_memory is not None:
+                        task_memory.stop()
+                        task_result["peak_gpu_used_gib"] = task_memory.peak_gib
+                        task_result["whole_device_sample_count"] = task_memory.sample_count
+                        task_result["whole_device_sample_error"] = task_memory.error
+                if edge_mode and (
+                    task_memory is None or task_memory.sample_count == 0
+                    or task_memory.error is not None
+                    or task_memory.peak_gib is None or task_memory.peak_gib > MEMORY_CAP_GIB
+                ):
+                    result["model"].update(
+                        status="partial",
+                        error=(f"whole-device peak could not be verified under the {MEMORY_CAP_GIB:.0f} GiB cap "
+                               f"during {task}; sampler_error={task_memory.error if task_memory else 'missing sampler'}"),
+                    )
+                    result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+                    break
                 if result["model"]["tasks"][task].get("resource_limit_exceeded"):
                     result["model"].update(
                         status="partial",
@@ -859,10 +1391,78 @@ def main() -> int:
             del processor
         torch.cuda.empty_cache()
         torch.cuda.synchronize()
+        if whole_device_monitor is not None:
+            whole_device_monitor.stop()
+            ACTIVE_WHOLE_GPU_MONITOR = None
+            result["model"]["whole_device_peak_gib"] = whole_device_monitor.peak_gib
+            result["model"]["whole_device_sample_count"] = whole_device_monitor.sample_count
+            result["model"]["whole_device_sample_error"] = whole_device_monitor.error
+            scoring_peaks = [
+                task.get("peak_gpu_used_gib") for task in result["model"].get("tasks", {}).values()
+                if isinstance(task.get("peak_gpu_used_gib"), (int, float))
+            ]
+            scoring_peak = max(scoring_peaks) if scoring_peaks else None
+            complete_suite = all(
+                result["model"].get("tasks", {}).get(task, {}).get("completed_n") == TASK_SIZES[task]
+                for task in TASKS
+            )
+            probe = result["model"].get("context_probe") or {}
+            measured_context = probe.get("measured_context_tokens")
+            suite_context_passed = bool(measured_context) and all(
+                item.get("context_limit_enforced") is True
+                and item.get("context_limit_tokens") == measured_context
+                and (item.get("input_tokens", 0) + item.get("output_tokens", 0)) <= measured_context
+                for task in result["model"].get("tasks", {}).values()
+                for item in task.get("items", []) if "score" in item
+            )
+            sampled = (whole_device_monitor.sample_count > 0
+                       and whole_device_monitor.peak_gib is not None
+                       and whole_device_monitor.error is None)
+            load_peak = result["model"].get("load_peak_whole_device_gib")
+            task_sampling_verified = all(
+                task.get("whole_device_sample_count", 0) > 0
+                and task.get("whole_device_sample_error") is None
+                and task.get("peak_gpu_used_gib") is not None
+                for task in result["model"].get("tasks", {}).values()
+            ) and complete_suite
+            load_peak_within_cap = (isinstance(load_peak, (int, float))
+                                    and 0 < load_peak <= MEMORY_CAP_GIB)
+            result["model"].update(
+                peak_gpu_used_gib=scoring_peak,
+                scoring_peak_gpu_used_gib=scoring_peak,
+                cap_verified=bool(
+                    sampled and task_sampling_verified and load_peak_within_cap
+                    and complete_suite and probe.get("passed")
+                    and suite_context_passed
+                    and scoring_peak is not None and 0 < scoring_peak <= MEMORY_CAP_GIB
+                    and whole_device_monitor.peak_gib is not None
+                    and whole_device_monitor.peak_gib <= MEMORY_CAP_GIB
+                ),
+                cap_verification={
+                    "whole_device_cap_gib": MEMORY_CAP_GIB,
+                    "load_peak_whole_device_gib": load_peak,
+                    "load_peak_within_cap": load_peak_within_cap,
+                    "context_probe_passed": bool(probe.get("passed")),
+                    "complete_shared_task_suite": complete_suite,
+                    "scored_items_within_probed_context": suite_context_passed,
+                    "scoring_peak_within_cap": scoring_peak is not None and 0 < scoring_peak <= MEMORY_CAP_GIB,
+                    "whole_device_sampling_verified": sampled,
+                    "whole_device_sampler_error": whole_device_monitor.error,
+                    "task_sampling_verified": task_sampling_verified,
+                    "whole_device_peak_within_cap": (
+                        sampled and whole_device_monitor.peak_gib is not None
+                        and whole_device_monitor.peak_gib <= MEMORY_CAP_GIB
+                    ),
+                },
+            )
+            result["model"]["status"] = (
+                "complete" if result["model"].get("cap_verified") else
+                ("unverified_cap" if result["model"].get("status") == "complete" else result["model"].get("status"))
+            )
     result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     write_report(output_dir / "report.md", result)
     print(f"Wrote {result_path} and {output_dir / 'report.md'}", flush=True)
-    return 0 if result["model"]["status"] in {"complete", "partial"} else 2
+    return 0 if result["model"]["status"] in {"complete", "partial", "unverified_cap"} else 2
 
 
 if __name__ == "__main__":

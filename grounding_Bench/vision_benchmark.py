@@ -8,7 +8,9 @@ must never fetch model files implicitly during a benchmark run.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
+import io
 import json
 import statistics
 import subprocess
@@ -140,15 +142,22 @@ def load_yolo(model_id: str, weight: Path) -> tuple[Any, str]:
     return YOLO(str(weight)), "Ultralytics YOLO"
 
 
-def load_sam31(weight: Path) -> tuple[Any, Any, str]:
+def load_sam31(weight: Path) -> tuple[Any, Any, str, list[str]]:
     import torch
     from sam3.model_builder import build_sam3_image_model
     from sam3.model.sam3_image_processor import Sam3Processor
 
-    model = build_sam3_image_model(
-        checkpoint_path=str(weight), load_from_HF=False, device="cuda", eval_mode=True,
-    )
-    return model, Sam3Processor(model), f"SAM 3.1 BF16 autocast / PyTorch {torch.__version__}"
+    loader_output = io.StringIO()
+    with contextlib.redirect_stdout(loader_output):
+        model = build_sam3_image_model(
+            checkpoint_path=str(weight), load_from_HF=False, device="cuda", eval_mode=True,
+        )
+    loader_text = loader_output.getvalue().strip()
+    if loader_text:
+        print(loader_text)
+    warnings = ([f"SAM 3.1 model builder reported: {loader_text.replace(chr(10), ' ')}"]
+                if "missing and/or unexpected keys" in loader_text else [])
+    return model, Sam3Processor(model), f"SAM 3.1 BF16 autocast / PyTorch {torch.__version__}", warnings
 
 
 def yolo_predictions(model: Any, model_id: str, row: dict[str, Any], names: list[str],
@@ -305,8 +314,9 @@ def main() -> int:
         device_memory = DeviceMemory()
         device_memory.start()
         model_load_started = time.perf_counter()
+        model_load_warnings: list[str] = []
         if args.model == "sam3.1":
-            model, processor, backend = load_sam31(weights[args.model])
+            model, processor, backend, model_load_warnings = load_sam31(weights[args.model])
         else:
             model, backend = load_yolo(args.model, weights[args.model])
             processor = None
@@ -430,6 +440,7 @@ def main() -> int:
             "sample_count": len(rows), "image_ids": image_ids,
             "input_size": f"native image dimensions; YOLO imgsz={imgsz}; batch=1",
             "warmup_images_excluded_from_timing": warmup_count,
+            "model_load_warnings": model_load_warnings,
             "category_prompt_set": category_names,
             "tasks": {"object_detection": detection_result,
                       "instance_segmentation": evaluate(segm_results, "segm"),
@@ -459,7 +470,8 @@ def main() -> int:
                 output["tasks"]["text_grounding"] = {"status": "not run", "reason": "no grounding examples were evaluated"}
             else:
                 output["tasks"]["text_grounding"] = {
-                    "status": "complete", "dataset": "RefCOCOg test", "sample_count": len(grounding_items),
+                    "status": "complete", "dataset": "RefCOCOg lmms-lab test derivative",
+                    "sample_count": len(grounding_items),
                     "mean_iou": statistics.mean(item["best_iou"] for item in grounding_items),
                     "acc_iou_05": statistics.mean(item["acc_iou_05"] for item in grounding_items),
                     "mean_latency_s": statistics.mean(item["latency_s"] for item in grounding_items),

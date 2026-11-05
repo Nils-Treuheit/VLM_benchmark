@@ -36,13 +36,19 @@
     return (data.caps || []).find(stage => stage.cap_gib === cap) || null;
   }
 
-  function validRecord(record, cap) {
-    return record && record.status === 'verified' && record.complete === true
+  function validRecord(record, cap, requireFullSuite = true) {
+    return record && record.status === 'verified' && (!requireFullSuite || record.complete === true)
+      && (requireFullSuite || record.task_complete === true)
       && record.context_probe_passed === true && record.whole_device_cap_gib === cap
       && Number.isFinite(record.score) && Number.isFinite(record.context_tokens)
       && Number.isFinite(record.context_probe_peak_gib)
       && record.context_probe_peak_gib <= cap
-      && Number.isFinite(record.scoring_peak_gib) && record.scoring_peak_gib <= cap;
+      && Number.isFinite(record.load_peak_gib) && record.load_peak_gib > 0
+      && record.load_peak_gib <= cap
+      && Number.isFinite(record.scoring_peak_gib) && record.scoring_peak_gib > 0
+      && record.scoring_peak_gib <= cap
+      && Number.isFinite(record.whole_device_peak_gib) && record.whole_device_peak_gib > 0
+      && record.whole_device_peak_gib <= cap;
   }
 
   function renderStageSummary(data) {
@@ -80,10 +86,11 @@
 
   function renderOverall(stage, cap) {
     const header = document.createElement('h3');
-    header.textContent = `Best overall · complete on all eight shared tasks · ${cap} GiB cap`;
+    header.textContent = `Best overall among currently verified runs · complete on all eight tasks · ${cap} GiB cap`;
     overall.replaceChildren(header);
-    const record = stage?.overall;
-    if (!validRecord(record, cap)) {
+    const records = (Array.isArray(stage?.overall) ? stage.overall : stage?.overall ? [stage.overall] : [])
+      .filter(record => validRecord(record, cap));
+    if (!records.length) {
       const empty = document.createElement('p');
       empty.textContent = stage?.status === 'unavailable_baseline'
         ? 'This stage is unavailable because the measured idle whole-device baseline reached the cap.'
@@ -91,27 +98,29 @@
       overall.append(empty);
       return;
     }
-    const score = document.createElement('p');
-    score.className = 'edge-score';
-    score.textContent = `${(record.score * 100).toFixed(1)}%`;
-    const model = document.createElement('p');
-    model.className = 'edge-model';
-    const link = document.createElement('a');
-    link.href = record.suite_href;
-    link.textContent = record.model_id;
-    model.append(link);
-    const suite = document.createElement('p');
-    suite.className = 'subtle';
-    suite.textContent = record.suite_name;
-    overall.append(score, model, suite);
-    appendRunEvidence(overall, record);
+    for (const record of records) {
+      const score = document.createElement('p');
+      score.className = 'edge-score';
+      score.textContent = `${(record.score * 100).toFixed(1)}%`;
+      const model = document.createElement('p');
+      model.className = 'edge-model';
+      const link = document.createElement('a');
+      link.href = record.suite_href;
+      link.textContent = record.model_id;
+      model.append(link);
+      const suite = document.createElement('p');
+      suite.className = 'subtle';
+      suite.textContent = record.suite_name;
+      overall.append(score, model, suite);
+      appendRunEvidence(overall, record);
+    }
   }
 
   function renderCategories(stage, cap) {
     const table = document.createElement('table');
     table.className = 'edge-table';
     const caption = document.createElement('caption');
-    caption.textContent = 'Leaders use only complete, verified cap-specific runs; ties are shown.';
+    caption.textContent = 'Best scores among currently verified cap-specific runs. Selected candidates may remain unmeasured; ties are shown.';
     table.append(caption);
     const thead = document.createElement('thead');
     const heading = document.createElement('tr');
@@ -121,7 +130,7 @@
     for (const [task, label] of tasks) {
       const row = document.createElement('tr');
       textCell(row, label);
-      const records = (stage?.category_leaders?.[task] || []).filter(record => validRecord(record, cap));
+      const records = (stage?.category_leaders?.[task] || []).filter(record => validRecord(record, cap, false));
       if (!records.length) {
         const empty = document.createElement('td');
         empty.colSpan = 4;
@@ -173,9 +182,13 @@
     const cap = Number(limitSelect.value);
     const stage = capRecord(data, cap);
     const records = (stage?.records || []).filter(record => validRecord(record, cap));
+    const categoryCount = tasks.reduce((count, [task]) => count +
+      (stage?.category_leaders?.[task] || []).filter(record => validRecord(record, cap, false)).length, 0);
     status.textContent = records.length
-      ? `${records.length} complete model-cap runs passed both the controlled context probe and full suite at ${cap} GiB.`
-      : `No verified cap-specific run is available at ${cap} GiB. Provisional estimates are not shown as results.`;
+      ? `${records.length} complete model-cap runs passed both the controlled context probe and full suite at ${cap} GiB. Leaders below rank the currently verified runs; refinement may add selected candidates.`
+      : categoryCount
+        ? `No complete eight-task run is verified at ${cap} GiB; ${categoryCount} category result(s) have a passing cap probe and complete task coverage.`
+        : `No verified cap-specific run is available at ${cap} GiB. Provisional estimates are not shown as results.`;
     renderOverall(stage, cap);
     renderCategories(stage, cap);
   }

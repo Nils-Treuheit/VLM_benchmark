@@ -78,7 +78,7 @@ def prompt_for(model_id: str, task: str, row: dict[str, Any]) -> str:
 
 
 class LocateAnythingAdapter:
-    def __init__(self, snapshot: Path):
+    def __init__(self, snapshot: Path, image_token_limit: int | None = None):
         import torch
         from transformers import AutoConfig, AutoModel, AutoProcessor, AutoTokenizer
         from transformers.dynamic_module_utils import get_class_from_dynamic_module
@@ -86,6 +86,11 @@ class LocateAnythingAdapter:
 
         self.torch = torch
         self.processor = AutoProcessor.from_pretrained(str(snapshot), trust_remote_code=True, local_files_only=True)
+        if image_token_limit is not None:
+            if image_token_limit < 1:
+                raise ValueError("image_token_limit must be positive")
+            self.processor.image_processor.in_token_limit = image_token_limit
+        self.image_token_limit = self.processor.image_processor.in_token_limit
         self.tokenizer = AutoTokenizer.from_pretrained(str(snapshot), trust_remote_code=True, local_files_only=True)
         # LocateAnything's pinned remote code predates Transformers 5's
         # allow_all_kernels argument. Adapt its cached override in memory while

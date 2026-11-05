@@ -1,12 +1,26 @@
 # General Transformers VLM benchmark
 
-Updated: 2026-11-03 16:39:42 +0100
+Updated: 2026-11-04 21:28:00 +0100
 Run ID: 20261103-133909-internvl35-candidates
 Run state: complete; scored model variants: 10; complete full-suite runs: 10; planned candidates not run: 0.
 Runtime versions: Transformers 4.44.2 / PyTorch 2.15.0 / CUDA 13.2, Transformers 4.57.1 / PyTorch 2.14.1 / CUDA 13.0, Transformers 4.57.1 / PyTorch 2.14.1+cu130 / CUDA 13.0.
 Execution: Local CUDA inference, one model at a time on NVIDIA GeForce RTX 5090 (compute capability 12.0); configured process cap 30.0 GiB.
 Sampling seed: 3407; memory ceiling: 30.0 GiB.
 The full-suite macro is the unweighted mean of eight local task scores and requires complete coverage on all requested examples.
+
+## Edge refinement results
+
+| Whole-device cap | Model | Status | Full-suite macro | Measured context | Probe peak | Scoring peak | Whole-run peak |
+|---:|---|---|---:|---:|---:|---:|---:|
+| 8 GiB | google/paligemma2-3b-mix-224 | verified | 54.53% | 1,800 tokens | 7.951 GiB | 7.271 GiB | 7.955 GiB |
+| 10 GiB | google/paligemma2-3b-mix-224 | verified | 54.53% | 4,418 tokens | 9.961 GiB | 7.244 GiB | 9.961 GiB |
+| 12 GiB | google/paligemma2-3b-mix-224 | verified | 54.53% | 6,065 tokens | 11.883 GiB | 7.252 GiB | 11.883 GiB |
+
+The eager-attention run completed all eight shared tasks. The [detailed report](../edge_refinement/8gib/paligemma2-3b-mix-224/retry_eager_1800_20261104/report.md) and [raw artifact](../edge_refinement/8gib/paligemma2-3b-mix-224/retry_eager_1800_20261104/results.json) contain the measured context and sampling evidence. The earlier SDPA failure and first eager probe that exceeded the cap remain in their separate attempt directories.
+
+The 10 GiB run also completed all eight tasks and passed cap verification. See its [detailed report](../edge_refinement/10gib/paligemma2-3b-mix-224/report.md) and [raw artifact](../edge_refinement/10gib/paligemma2-3b-mix-224/results.json). The 4,418-token measured context reflects the largest observed input-plus-output length that remained under the 10 GiB cap; larger probe attempts are preserved in the artifact.
+
+The 12 GiB run completed all eight tasks and passed cap verification at 6,065 tokens. Its 11.883 GiB whole-run peak remained below the cap. See the [detailed report](../edge_refinement/12gib/google--paligemma2-3b-mix-224/report.md) and [raw artifact](../edge_refinement/12gib/google--paligemma2-3b-mix-224/results.json).
 
 ## Selection guide
 

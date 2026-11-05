@@ -20,6 +20,15 @@ Acquire each dataset under its own terms, then convert the selected split into o
 
 `import_datasets.py` converts already available official exports into this schema. It reads the LocateAnything/Rex-Omni `RefCOCOg_test.jsonl` and `COCO.jsonl`, raw ScreenSpot-Pro annotations, the official HierText validation file, and the corresponding local images. It performs no downloads. The standard source layout is documented in the [LocateAnything evaluation guide](https://github.com/NVlabs/Eagle/blob/main/Embodied/evaluation/README.md), and ScreenSpot-Pro publishes its annotation files beside its screenshots.
 
+For the local lmms-lab parquet copy, prepare the fixed RefCOCOg panel directly from the embedded test images:
+
+```bash
+python3 grounding_Bench/prepare_refcocog_lmms.py \
+  --dataset-dir /mnt/HDD1/Project_Data/public_datasets/refcocog_dataset
+```
+
+This reads the full 5,023-row test split, samples 100 rows deterministically, and extracts only those images under `/mnt/HDD1/Project_Data/public_datasets/derived/`. It uses the first of two caption answers as the query phrase, preserves both references, and converts the pixel `xywh` box to normalized `xyxy`. This is the lmms-lab formatted RefCOCOg test derivative, not the canonical direct referring-expression export. Report its scores as an adapted caption-to-region protocol, not as directly comparable to standard RefCOCOg results. The local dataset README provides the RefCOCOg citation but does not specify a separate license; the original RefCOCOg and COCO terms still apply.
+
 For only the direct OCR task, acquire the [official HierText validation annotations and images](https://github.com/google-research-datasets/hiertext#dataset-downloading--processing) under the repository and image-source terms. The image archive extracts to `data/hiertext/validation/validation/`; place the official `validation.jsonl.gz` at `data/hiertext/gt/validation.jsonl.gz`. Then create the word-level sample:
 
 ```bash
@@ -80,7 +89,7 @@ The script writes image paths and annotation records only. It does not copy imag
 
 ## Run
 
-Run one model at a time. The default task list includes the four localization tasks and the prepared VQA/counting panels. If only the answer tasks are ready, specify `--tasks vqa_count vqa_truth vqa_description textvqa`. For LocateAnything, the runner releases managed local engines before loading the pinned snapshot directly with Transformers.
+Run one model at a time. The default task list includes the four localization tasks and the prepared VQA/counting panels. If only the answer tasks are ready, specify `--tasks vqa_count vqa_truth vqa_description textvqa`. For LocateAnything, the runner releases managed local engines before loading the pinned snapshot directly with Transformers. Its local image processor defaults to 25,600 patches; pass `--max-image-tokens 4096` to cap high-resolution inputs when GPU memory is insufficient. The selected cap is saved with the run because it changes image detail and inference time.
 
 ```bash
 python3 benchmark.py --models nvidia/LocateAnything-3B --tasks vqa_count vqa_truth vqa_description textvqa --seed 3407 --output-dir results/runs
@@ -94,7 +103,7 @@ python3 run.py serve --config configs/release/vlm_sglang.yaml
 python3 benchmark.py --models GroundingPI/GroundAnything-VLM --tasks vqa_count vqa_truth vqa_description textvqa --seed 3407 --output-dir results/runs
 ```
 
-Add `--resume` to continue a partial run. Run the models in separate invocations and stop the first model before starting the second. Every example is sent serially with one image per request. The runner writes local per-item raw outputs, parse states, scores, errors, latency, token counts, image dimensions, and whole-device peak VRAM.
+Add `--resume` to continue a partial run. It preserves completed items and retries saved failures. Run the models in separate invocations and stop the first model before starting the second. Every example is sent serially with one image per request. The runner writes local per-item raw outputs, parse states, scores, errors, latency, token counts, image dimensions, and whole-device peak VRAM.
 
 Refresh the report and its aggregate-only page after a run:
 
@@ -134,7 +143,7 @@ When the optional RefCOCOg manifest is supplied, YOLOE and SAM 3.1 also receive 
 
 The classification score is label accuracy among predictions matched to any ground-truth object at box IoU 0.5. The report also shows joint detection-and-classification accuracy over all ground-truth objects, so missed detections count as errors. This is an object-label metric, not ImageNet top-1 image classification. Models without masks show segmentation as unsupported. Keep all these metrics separate; the report does not merge them into a single score.
 
-The SAM 3.1 checkpoint is present locally, but its package still needs validation. Datasets are under `/mnt/HDD1/Project_Data/`. Large YOLO weights are not present in the standard Ultralytics cache.
+The SAM 3.1 package and checkpoint have been used for local runs. Its loader reports four missing backbone convolution parameters; see the run artifacts and report. YOLO checkpoints are stored in `results/checkpoints/`, not the standard Ultralytics cache.
 
 ## Shared domain benchmarks
 
@@ -167,9 +176,34 @@ Repeat both shared runners for `bop_h3_hope_v2` and each additional model. DOTA 
 
 HOPE v2 has 50 local validation images with object boxes and masks. Box AP and class-aware F1 are shared across YOLOE-26-L, SAM 3.1, and both grounding specialists. Mask AP is reported for models that return masks. This does not claim to reproduce the full BOP-H3 onboarding or 6D pose protocol.
 
-KITTI labels and calibration are present, but the `image_2` camera images are missing. Download the KITTI object-detection image archive before running a fixed validation split. COCO and its annotations are already local.
+Prepare the fixed KITTI image-only 2D panel from its labeled training split:
 
-RF100-VL is the recommended new domain-shift download. Start with a fixed subset spanning aerial, document, laboratory, flora/fauna, and industrial imagery instead of all 100 datasets. Its official downloader requires a Roboflow API key, which is not present in the current environment. LVIS is optional: it adds rare-category evaluation over 1,203 classes, but reuses COCO imagery and full-vocabulary prompts would make equal SAM/VLM comparisons expensive. Download validation annotations only if that secondary track is needed.
+```bash
+python3 grounding_Bench/prepare_kitti_benchmark.py --samples 100 --seed 3407
+```
+
+The local files now pair across all 7,481 image, label, calibration, and Velodyne entries. The manifest creates a deterministic 80/20 partition of labeled training images, then samples 100 validation images containing Car, Pedestrian, or Cyclist objects. It hashes the selected labels and records the full split. It excludes Van, Person_sitting, Truck, Tram, Misc, and DontCare. Run a local COCOeval comparison with:
+
+```bash
+python3 grounding_Bench/vision_benchmark.py \
+  --manifest grounding_Bench/data/domain_manifests/kitti_training_2d/coco.json \
+  --coco-annotations grounding_Bench/data/domain_manifests/kitti_training_2d/coco_annotations.json \
+  --model yoloe26l-seg \
+  --weights yoloe26l-seg=grounding_Bench/results/checkpoints/yoloe-26l-seg.pt \
+  --output-dir grounding_Bench/results/domain_runs/kitti_training_2d/vision
+```
+
+This local COCOeval comparison is not official KITTI AP_R40. The official KITTI object devkit or a verified equivalent is still required for AP_R40. Public test labels are unavailable.
+
+Prepare the five fixed 20-image RF100-VL test panels from local, MIT-licensed dataset exports:
+
+```bash
+python3 grounding_Bench/prepare_rf100_benchmark.py --samples 20 --seed 3407
+```
+
+This uses `aerial-airport`, `activity-diagrams`, `cable-damage`, `marine-sharks`, and `taco-trash-annotations-in-context`. It writes selected COCO annotations and shared image manifests under `data/domain_manifests/rf100_vl/`; image files stay in the public data tree. Run `vision_benchmark.py` and `benchmark.py` once per panel and model, using each panel's `coco.json` and `coco_annotations.json`. YOLOE-26-L and SAM 3.1 have complete results; LocateAnything has repeated high-resolution OOMs on two panels. RF100 exports contain no usable instance masks, so report mask AP as unsupported. The static report shows per-domain results and a macro over complete panels only.
+
+LVIS has a completed exploratory 30-category panel; it reuses COCO imagery and does not represent the full 1,203-category leaderboard.
 
 ## OCR, VQA, and counting
 

@@ -1,7 +1,7 @@
 # Local foundation and GGUF VLM benchmark
 
-Updated: 2026-11-04 15:02 CET
-Run timestamps: 2026-11-03 18:08:32 +0100, 2026-11-04 12:49:50 +0100, 2026-11-04 12:56:16 +0100, 2026-11-04 13:52:12 +0100, 2026-11-04 14:55:50 +0100.
+Updated: 2026-11-05 04:17 CET
+Run timestamps: 2026-11-03 18:08:32 +0100, 2026-11-04 12:49:50 +0100, 2026-11-04 12:56:16 +0100, 2026-11-04 13:52:12 +0100, 2026-11-04 14:55:50 +0100, 2026-11-04 19:17:55 +0100, 20:17:47 +0100, 20:24:26 +0100 (8 GiB Edge refinement), 21:41:32 and 22:36:16 +0100 (10 GiB Edge refinement), and 04:09:40 and 04:17:15 +0100 (12 GiB Edge refinement).
 Completion: 5 of 5 latest model runs completed all 825 requests.
 Execution: serial, one image per request, fixed examples, no batching.
 
@@ -9,6 +9,20 @@ Execution: serial, one image per request, fixed examples, no batching.
 
 Measured candidates include the configured Qwen3.8 Ollama route and four Liquid VLM GGUF variants. The corrected LFM2.5-VL 1.6B run is the current result for that model ID; its earlier run remains in the attempt history.
 The full-suite macro is the unweighted mean of eight task scores. It is reported only for models that completed every requested example.
+
+## Edge refinement
+
+| Whole-device cap | Model | Status | Full-suite macro | Measured context | Probe peak | Scoring peak | Whole-run peak |
+|---:|---|---|---:|---:|---:|---:|---:|
+| 8 GiB | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | verified | 58.54% | 128,000 tokens | 5.258 GiB | 6.793 GiB | 6.793 GiB |
+| 8 GiB | unsloth/LFM2.5-VL-3B-GGUF | verified | 58.44% | 32,768 tokens | 4.566 GiB | 4.573 GiB | 4.573 GiB |
+| 8 GiB | LiquidAI/LFM3-VL-2B-GGUF | verified | 55.73% | 128,000 tokens | 5.020 GiB | 5.430 GiB | 5.430 GiB |
+| 10 GiB | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | verified | 58.54% | 128,000 tokens | 5.204 GiB | 5.607 GiB | 5.693 GiB |
+| 10 GiB | unsloth/LFM2.5-VL-3B-GGUF | verified | 58.44% | 32,768 tokens | 4.547 GiB | 4.554 GiB | 4.554 GiB |
+| 12 GiB | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | verified | 58.54% | 128,000 tokens | 5.164 GiB | 5.554 GiB | 5.554 GiB |
+| 12 GiB | unsloth/LFM2.5-VL-3B-GGUF | verified | 58.44% | 32,768 tokens | 4.547 GiB | 4.554 GiB | 4.554 GiB |
+
+All seven listed runs completed all eight shared tasks under their measured whole-device limits. The 10 GiB [LFM3 NVFP4 report](results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/report.md) and [raw results](results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/results.json), and [LFM2.5 3B report](results/runs/20261104-223616/edge_10gib/lfm25_3b/report.md) and [raw results](results/runs/20261104-223616/edge_10gib/lfm25_3b/results.json) were independently reviewed. The [8 GiB LFM3 NVFP4 report](results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/report.md) and [raw results](results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/results.json), the [LFM2.5 3B report](results/runs/20261104-201747/edge_8gib/lfm25_3b/report.md) and [raw results](results/runs/20261104-201747/edge_8gib/lfm25_3b/results.json), and the [LFM3 Q4 report](results/runs/20261104-202426/edge_8gib/lfm3_2b/report.md) and [raw results](results/runs/20261104-202426/edge_8gib/lfm3_2b/results.json) preserve the 8 GiB evidence. The [12 GiB LFM3 NVFP4 report](results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/report.md) and [raw results](results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/results.json) were independently reviewed. Two earlier LFM3 12 GiB attempts remain preserved under `results/runs/results/runs/edge_refinement/12gib/` and `results/runs/edge_refinement/12gib/lfm3_2b_nvfp4/`; their evidence gaps are resolved by the verified retry. The [12 GiB LFM2.5 3B report](results/runs/edge_refinement/12gib/lfm25_3b/report.md) and [raw results](results/runs/edge_refinement/12gib/lfm25_3b/results.json) were also independently reviewed. Other selected candidates and 14/16 GiB cap stages remain pending.
 
 ## Quality results
 

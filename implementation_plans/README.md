@@ -20,6 +20,8 @@ The shared task prompts and score definitions are in [qwenVL_Bench/README.md](..
 | Group | Plan |
 |---|---|
 | Grounding specialists | [grounding-specialists.md](grounding-specialists.md) |
+| Image Scene Graph Generation | [image-sgg-benchmark.md](image-sgg-benchmark.md) |
+| Video Scene Graph Generation | [video-sgg-benchmark.md](video-sgg-benchmark.md) |
 | Selective Edge Limited refinement | [selective-edge-refinement.md](selective-edge-refinement.md) |
 
 The completed General Transformers, local-foundation, Qwen-VL reference, and video comparisons are documented in their benchmark reports. Candidates excluded by cache, compatibility, or hardware gates remain listed in the relevant report inventory; they are not pending runs.

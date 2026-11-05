@@ -1,0 +1,134 @@
+{
+  "generated_at": "2026-11-04 19:15:17 +0100",
+  "seed": 3407,
+  "memory_cap_gib": 8,
+  "task_sizes": {
+    "ai2d": 100,
+    "textvqa": 100,
+    "vqa_truth": 25,
+    "vqa_count": 25,
+    "vqa_description": 25,
+    "vqa_affordance": 25,
+    "vqa_negation": 25,
+    "graph_grab_lite": 500
+  },
+  "model": {
+    "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+    "setup_id": "lfm3_2b_nvfp4",
+    "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+    "model_card": "https://huggingface.co/LiquidAI/LFM3-VL-2B",
+    "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--LiquidAI--LFM3-VL-2B-GGUF/snapshots/1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+    "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+    "quantization": "NVFP4 feed-forward weights, Q8_0 other weights + F16 mmproj",
+    "advertised_context": 131072,
+    "configured_context": 131072,
+    "requested_context": 131072,
+    "configured_context_tokens": null,
+    "fit_adjusted": null,
+    "context_fit_adjusted": null,
+    "context_probe": null,
+    "peak_gpu_used_gib": null,
+    "whole_device_cap_gib": 8,
+    "gpu_baseline_gib": null,
+    "cap_fit_target_mib": null,
+    "image_processing": {
+      "image_format": "JPEG quality 92",
+      "image_max_tokens": "llama.cpp default; not explicitly capped",
+      "images_per_request": 1
+    },
+    "generation": {
+      "temperature": 0.1,
+      "top_p": 1.0,
+      "top_k": 50,
+      "min_p": 0.0,
+      "repeat_penalty": 1.1,
+      "max_new_tokens": 4096,
+      "seed": 3407
+    },
+    "weight_bytes": 1659016096,
+    "tasks": {},
+    "status": "cap_precheck_failed",
+    "runtime_versions": {
+      "llama.cpp": "b12097",
+      "CUDA": "13.2"
+    },
+    "cap_verified": false,
+    "cap_verification": {
+      "whole_device_cap_gib": 8,
+      "context_probe_passed": false,
+      "complete_shared_task_suite": false,
+      "scoring_peak_within_cap": false,
+      "whole_run_peak_within_cap": false
+    },
+    "error": "RuntimeError: could not measure GPU field memory.used"
+  },
+  "preflight": {
+    "passed": false,
+    "required": [
+      "ai2d",
+      "textvqa"
+    ],
+    "checks": {}
+  },
+  "whole_device_cap_gib": 8,
+  "gpu_baseline_gib": null,
+  "hardware": null,
+  "runtime_versions": {
+    "python": "3.13.13",
+    "llama.cpp": "b12097",
+    "CUDA": "13.2"
+  },
+  "cap_enforcement_method": "llama.cpp --fit on --fit-target None MiB; whole-device nvidia-smi sampling",
+  "models": [
+    {
+      "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+      "setup_id": "lfm3_2b_nvfp4",
+      "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+      "model_card": "https://huggingface.co/LiquidAI/LFM3-VL-2B",
+      "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--LiquidAI--LFM3-VL-2B-GGUF/snapshots/1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+      "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+      "quantization": "NVFP4 feed-forward weights, Q8_0 other weights + F16 mmproj",
+      "advertised_context": 131072,
+      "configured_context": 131072,
+      "requested_context": 131072,
+      "configured_context_tokens": null,
+      "fit_adjusted": null,
+      "context_fit_adjusted": null,
+      "context_probe": null,
+      "peak_gpu_used_gib": null,
+      "whole_device_cap_gib": 8,
+      "gpu_baseline_gib": null,
+      "cap_fit_target_mib": null,
+      "image_processing": {
+        "image_format": "JPEG quality 92",
+        "image_max_tokens": "llama.cpp default; not explicitly capped",
+        "images_per_request": 1
+      },
+      "generation": {
+        "temperature": 0.1,
+        "top_p": 1.0,
+        "top_k": 50,
+        "min_p": 0.0,
+        "repeat_penalty": 1.1,
+        "max_new_tokens": 4096,
+        "seed": 3407
+      },
+      "weight_bytes": 1659016096,
+      "tasks": {},
+      "status": "cap_precheck_failed",
+      "runtime_versions": {
+        "llama.cpp": "b12097",
+        "CUDA": "13.2"
+      },
+      "cap_verified": false,
+      "cap_verification": {
+        "whole_device_cap_gib": 8,
+        "context_probe_passed": false,
+        "complete_shared_task_suite": false,
+        "scoring_peak_within_cap": false,
+        "whole_run_peak_within_cap": false
+      },
+      "error": "RuntimeError: could not measure GPU field memory.used"
+    }
+  ]
+}

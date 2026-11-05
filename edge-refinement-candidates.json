@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-11-04",
+  "generated_at": "2026-11-05T08:12:00+01:00",
   "selection_source": "Current completed suite results and the pre-refinement eligibility rules. This file is a screening roster, not measured edge results.",
-  "selection_rule": "All ties for overall eight-task macro and each category at each preliminary tier. Full task coverage is required for overall; each task winner must have complete coverage for that task.",
+  "selection_rule": "Run every complete screening candidate that leads the eight-task macro or any shared category at its cap, including ties. Keep unavailable leaders visible and mark nonleaders not selected.",
   "caps": [
     {
       "cap_gib": 8,
@@ -21,7 +21,13 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": 0.276
           },
-          "screening_peak_gib": 4.374
+          "screening_peak_gib": 4.374,
+          "execution_status": "verified",
+          "result_artifact": "local_foundation_Bench/results/runs/20261104-202426/edge_8gib/lfm3_2b/results.json",
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_artifact": "local_foundation_Bench/results/runs/20261104-202426/edge_8gib/lfm3_2b/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
@@ -37,7 +43,17 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.338
           },
-          "screening_peak_gib": 4.899
+          "screening_peak_gib": 4.899,
+          "execution_status": "verified",
+          "result_artifact": "local_foundation_Bench/results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/results.json",
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "overall",
+            "ai2d",
+            "graph_grab_lite"
+          ],
+          "execution_artifact": "local_foundation_Bench/results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
@@ -53,7 +69,15 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.134
           },
-          "screening_peak_gib": 4.155
+          "screening_peak_gib": 4.155,
+          "execution_status": "verified",
+          "result_artifact": "local_foundation_Bench/results/runs/20261104-201747/edge_8gib/lfm25_3b/results.json",
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "textvqa"
+          ],
+          "execution_artifact": "local_foundation_Bench/results/runs/20261104-201747/edge_8gib/lfm25_3b/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "google/paligemma2-3b-mix-224",
@@ -69,7 +93,20 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": 0.026
           },
-          "screening_peak_gib": 5.761
+          "screening_peak_gib": 5.761,
+          "execution_status": "verified",
+          "runner": "general_transformers_Bench/benchmark.py",
+          "result_artifact": "general_transformers_Bench/results/edge_refinement/8gib/paligemma2-3b-mix-224/retry_eager_1800_20261104/results.json",
+          "run_context_tokens": 1800,
+          "attention_backend": "eager",
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth",
+            "vqa_count",
+            "vqa_description"
+          ],
+          "execution_artifact": "general_transformers_Bench/results/edge_refinement/8gib/paligemma2-3b-mix-224/retry_eager_1800_20261104/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "Qwen/Qwen2-VL-2B-Instruct",
@@ -85,7 +122,14 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 6.988
+          "screening_peak_gib": 6.988,
+          "execution_status": "unavailable_cached_weights",
+          "execution_note": "Exact checkpoint snapshot is absent from the configured HF cache and active Qwen runner inventory. Baseline GRAB-Lite score is also missing, so this candidate cannot enter the full-suite macro.",
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "Qwen/Qwen3-VL-2B-Thinking",
@@ -101,7 +145,14 @@
             "vqa_negation": 0.68,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 6.284
+          "screening_peak_gib": 6.284,
+          "execution_status": "unavailable_cached_weights",
+          "execution_note": "Exact checkpoint snapshot is absent from the configured HF cache and active Qwen runner inventory. Baseline GRAB-Lite score is also missing, so this candidate cannot enter the full-suite macro.",
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_negation"
+          ],
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
@@ -117,7 +168,14 @@
             "vqa_negation": 0.4,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 24.676
+          "screening_peak_gib": 24.676,
+          "execution_status": "unavailable_cached_weights",
+          "execution_note": "Exact checkpoint snapshot is absent from the configured HF cache and active Qwen runner inventory. Baseline GRAB-Lite score is also missing, so this candidate cannot enter the full-suite macro.",
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_affordance"
+          ],
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
@@ -133,9 +191,15 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 23.707
+          "screening_peak_gib": 23.707,
+          "execution_status": "unavailable_cached_weights",
+          "execution_note": "Exact checkpoint snapshot is absent from the configured HF cache and active Qwen runner inventory. Baseline GRAB-Lite score is also missing, so this candidate cannot enter the full-suite macro.",
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "note": "Not selected because it leads no overall or category score."
         }
-      ]
+      ],
+      "candidate_count_note": "Preliminary score-screening entries, not confirmed runnable models."
     },
     {
       "cap_gib": 10,
@@ -155,7 +219,14 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.064
           },
-          "screening_peak_gib": 9.4
+          "screening_peak_gib": 9.4,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_affordance"
+          ],
+          "execution_status": "verified",
+          "execution_artifact": "cosmos_Bench/results/edge_refinement/10gib/context23552_retry_20261104/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "xtuner/llava-phi-3-mini-hf",
@@ -171,7 +242,14 @@
             "vqa_negation": 0.32,
             "graph_grab_lite": 0.082
           },
-          "screening_peak_gib": 8.159
+          "screening_peak_gib": 8.159,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_description"
+          ],
+          "execution_status": "verified",
+          "note": "Complete 10 GiB run verified at 1,258 context tokens; 43.65% macro, 9.865 GiB whole-run peak. Nine under-cap OOM upper bounds were recorded and recovered during probe search.",
+          "artifact": "llava_Bench/results/edge_refinement/10gib/contextsearch_retry_20261105/results.json"
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
@@ -187,7 +265,11 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": 0.276
           },
-          "screening_peak_gib": 4.374
+          "screening_peak_gib": 4.374,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
@@ -203,7 +285,16 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.338
           },
-          "screening_peak_gib": 4.899
+          "screening_peak_gib": 4.899,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "overall",
+            "ai2d",
+            "graph_grab_lite"
+          ],
+          "execution_status": "verified",
+          "execution_artifact": "local_foundation_Bench/results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
@@ -219,7 +310,14 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.134
           },
-          "screening_peak_gib": 4.155
+          "screening_peak_gib": 4.155,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "textvqa"
+          ],
+          "execution_status": "verified",
+          "execution_artifact": "local_foundation_Bench/results/runs/20261104-223616/edge_10gib/lfm25_3b/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "google/paligemma2-3b-mix-224",
@@ -235,7 +333,16 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": 0.026
           },
-          "screening_peak_gib": 5.761
+          "screening_peak_gib": 5.761,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth",
+            "vqa_count",
+            "vqa_description"
+          ],
+          "execution_status": "verified",
+          "execution_artifact": "general_transformers_Bench/results/edge_refinement/10gib/paligemma2-3b-mix-224/results.json",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation."
         },
         {
           "model_id": "Qwen/Qwen2-VL-2B-Instruct",
@@ -251,7 +358,13 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 6.988
+          "screening_peak_gib": 6.988,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "Qwen/Qwen2.5-VL-3B-Instruct",
@@ -267,7 +380,11 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 9.363
+          "screening_peak_gib": 9.363,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen3-VL-2B-Instruct",
@@ -283,7 +400,11 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 6.06
+          "screening_peak_gib": 6.06,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen3-VL-2B-Thinking",
@@ -299,7 +420,13 @@
             "vqa_negation": 0.68,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 6.284
+          "screening_peak_gib": 6.284,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_negation"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
@@ -315,7 +442,11 @@
             "vqa_negation": 0.4,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 24.676
+          "screening_peak_gib": 24.676,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
@@ -331,7 +462,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 23.707
+          "screening_peak_gib": 23.707,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Instruct-1M-GGUF:UD-Q4_K_XL",
@@ -347,7 +482,11 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 26.261
+          "screening_peak_gib": 26.261,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q4_K_XL",
@@ -363,7 +502,13 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 26.261
+          "screening_peak_gib": 26.261,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-8B-Thinking-bnb-4bit",
@@ -379,11 +524,15 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 9.359
+          "screening_peak_gib": 9.359,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "microsoft/Phi-3.5-vision-instruct",
-          "suite": "\u03a6-Vision",
+          "suite": "Φ-Vision",
           "suite_href": "phi_Bench/",
           "scores": {
             "ai2d": 0.74,
@@ -395,7 +544,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 8.41
+          "screening_peak_gib": 8.41,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         }
       ]
     },
@@ -417,7 +570,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.072
           },
-          "screening_peak_gib": 10.691
+          "screening_peak_gib": 10.691,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "nvidia/Cosmos3-Edge",
@@ -433,7 +590,14 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.064
           },
-          "screening_peak_gib": 9.4
+          "screening_peak_gib": 9.4,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_affordance"
+          ],
+          "execution_status": "verified",
+          "note": "Complete 12 GiB run verified at 37,888 context tokens; 52.5875% macro, 11.891 GiB whole-run peak. Two over-cap context probes remain preserved and excluded.",
+          "artifact": "cosmos_Bench/results/edge_refinement/12gib/context37888_retry_20261105/results.json"
         },
         {
           "model_id": "xtuner/llava-phi-3-mini-hf",
@@ -449,7 +613,14 @@
             "vqa_negation": 0.32,
             "graph_grab_lite": 0.082
           },
-          "screening_peak_gib": 8.159
+          "screening_peak_gib": 8.159,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_description"
+          ],
+          "execution_status": "verified",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation; 3,880 measured context tokens, 11.869 GiB whole-run peak.",
+          "execution_artifact": "llava_Bench/results/edge_refinement/12gib/xtuner--llava-phi-3-mini-hf/results.json"
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
@@ -465,7 +636,11 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": 0.276
           },
-          "screening_peak_gib": 4.374
+          "screening_peak_gib": 4.374,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
@@ -481,7 +656,15 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.338
           },
-          "screening_peak_gib": 4.899
+          "screening_peak_gib": 4.899,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "ai2d",
+            "graph_grab_lite"
+          ],
+          "execution_status": "verified",
+          "note": "Complete 12 GiB run verified at 128,000 context tokens; 58.5375% macro, 5.554 GiB whole-run peak. Earlier attempts remain preserved and excluded.",
+          "artifact": "local_foundation_Bench/results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/results.json"
         },
         {
           "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
@@ -497,7 +680,14 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.134
           },
-          "screening_peak_gib": 4.155
+          "screening_peak_gib": 4.155,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "textvqa"
+          ],
+          "execution_status": "verified",
+          "note": "Complete 12 GiB run verified at 32,768 context tokens; 58.4375% macro, 4.554 GiB whole-run peak.",
+          "artifact": "local_foundation_Bench/results/runs/edge_refinement/12gib/lfm25_3b/results.json"
         },
         {
           "model_id": "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M",
@@ -513,7 +703,11 @@
             "vqa_negation": 0.72,
             "graph_grab_lite": 0.148
           },
-          "screening_peak_gib": 10.74
+          "screening_peak_gib": 10.74,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "google/paligemma2-3b-mix-224",
@@ -529,7 +723,16 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": 0.026
           },
-          "screening_peak_gib": 5.761
+          "screening_peak_gib": 5.761,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth",
+            "vqa_count",
+            "vqa_description"
+          ],
+          "execution_status": "verified",
+          "note": "Complete 12 GiB run verified at 6,065 context tokens; 54.525% macro, 11.883 GiB whole-run peak, below the cap.",
+          "artifact": "general_transformers_Bench/results/edge_refinement/12gib/google--paligemma2-3b-mix-224/results.json"
         },
         {
           "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
@@ -545,7 +748,11 @@
             "vqa_negation": 0.24,
             "graph_grab_lite": 0.07
           },
-          "screening_peak_gib": 10.418
+          "screening_peak_gib": 10.418,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen2-VL-2B-Instruct",
@@ -561,7 +768,13 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 6.988
+          "screening_peak_gib": 6.988,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "Qwen/Qwen3-VL-2B-Instruct",
@@ -577,7 +790,11 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 6.06
+          "screening_peak_gib": 6.06,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen3-VL-4B-Instruct",
@@ -593,7 +810,13 @@
             "vqa_negation": 0.6,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 10.457
+          "screening_peak_gib": 10.457,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "Qwen/Qwen3-VL-4B-Thinking",
@@ -609,7 +832,13 @@
             "vqa_negation": 0.8,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 10.464
+          "screening_peak_gib": 10.464,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_negation"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
@@ -625,7 +854,11 @@
             "vqa_negation": 0.4,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 24.676
+          "screening_peak_gib": 24.676,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
@@ -641,7 +874,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 23.707
+          "screening_peak_gib": 23.707,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q4_K_XL",
@@ -657,7 +894,13 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 26.261
+          "screening_peak_gib": 26.261,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q8_K_XL",
@@ -673,7 +916,13 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 28.647
+          "screening_peak_gib": 28.647,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Thinking-GGUF:UD-Q8_K_XL",
@@ -689,7 +938,13 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 28.646
+          "screening_peak_gib": 28.646,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-8B-Instruct-1M-GGUF:UD-Q4_K_XL",
@@ -705,7 +960,11 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 28.766
+          "screening_peak_gib": 28.766,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL",
@@ -721,11 +980,19 @@
             "vqa_negation": 0.76,
             "graph_grab_lite": 0.14
           },
-          "screening_peak_gib": 28.777
+          "screening_peak_gib": 28.777,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "overall",
+            "vqa_truth"
+          ],
+          "execution_status": "verified",
+          "note": "Complete 12 GiB cap-specific run independently reviewed and eligible for aggregation; 60.60% macro at 32,768 measured context tokens, 11.324 GiB whole-device peak.",
+          "execution_artifact": "qwenVL_Bench/results/edge_refinement/12gib/qwen3_vl_8b_q4_fit_1gib_32768_final/results.json"
         },
         {
           "model_id": "microsoft/Phi-3-vision-128k-instruct",
-          "suite": "\u03a6-Vision",
+          "suite": "Φ-Vision",
           "suite_href": "phi_Bench/",
           "scores": {
             "ai2d": 0.28,
@@ -737,11 +1004,15 @@
             "vqa_negation": 0.08,
             "graph_grab_lite": 0.074
           },
-          "screening_peak_gib": 11.045
+          "screening_peak_gib": 11.045,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "microsoft/Phi-3.5-vision-instruct",
-          "suite": "\u03a6-Vision",
+          "suite": "Φ-Vision",
           "suite_href": "phi_Bench/",
           "scores": {
             "ai2d": 0.74,
@@ -753,9 +1024,14 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 8.41
+          "screening_peak_gib": 8.41,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         }
-      ]
+      ],
+      "verified_count": 5
     },
     {
       "cap_gib": 14,
@@ -775,7 +1051,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.072
           },
-          "screening_peak_gib": 10.691
+          "screening_peak_gib": 10.691,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "nvidia/Cosmos3-Edge",
@@ -791,7 +1071,14 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.064
           },
-          "screening_peak_gib": 9.4
+          "screening_peak_gib": 9.4,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_affordance"
+          ],
+          "execution_status": "verified",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation; 48,128 measured context tokens, 13.553 GiB whole-run peak. Three over-cap attempts are preserved separately.",
+          "execution_artifact": "cosmos_Bench/results/edge_refinement/14gib/context48128_retry/results.json"
         },
         {
           "model_id": "xtuner/llava-phi-3-mini-hf",
@@ -807,7 +1094,14 @@
             "vqa_negation": 0.32,
             "graph_grab_lite": 0.082
           },
-          "screening_peak_gib": 8.159
+          "screening_peak_gib": 8.159,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_description"
+          ],
+          "execution_status": "verified",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation; 4,096 context tokens, 12.264 GiB whole-run peak.",
+          "execution_artifact": "llava_Bench/results/edge_refinement/14gib/xtuner--llava-phi-3-mini-hf/results.json"
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
@@ -823,7 +1117,11 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": 0.276
           },
-          "screening_peak_gib": 4.374
+          "screening_peak_gib": 4.374,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
@@ -839,7 +1137,15 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.338
           },
-          "screening_peak_gib": 4.899
+          "screening_peak_gib": 4.899,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "ai2d",
+            "graph_grab_lite"
+          ],
+          "execution_status": "verified",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation; 128,000 context tokens, 5.558 GiB whole-run peak.",
+          "execution_artifact": "local_foundation_Bench/results/runs/edge_refinement/14gib/lfm3_2b_nvfp4/results.json"
         },
         {
           "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
@@ -855,7 +1161,14 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.134
           },
-          "screening_peak_gib": 4.155
+          "screening_peak_gib": 4.155,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "textvqa"
+          ],
+          "execution_status": "verified",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation; 32,768 context tokens, 4.567 GiB whole-run peak.",
+          "execution_artifact": "local_foundation_Bench/results/runs/edge_refinement/14gib/lfm25_3b/results.json"
         },
         {
           "model_id": "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M",
@@ -871,7 +1184,11 @@
             "vqa_negation": 0.72,
             "graph_grab_lite": 0.148
           },
-          "screening_peak_gib": 10.74
+          "screening_peak_gib": 10.74,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "google/paligemma2-3b-mix-224",
@@ -887,7 +1204,16 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": 0.026
           },
-          "screening_peak_gib": 5.761
+          "screening_peak_gib": 5.761,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth",
+            "vqa_count",
+            "vqa_description"
+          ],
+          "execution_status": "verified",
+          "note": "Complete cap-specific run independently reviewed and eligible for aggregation; 6,065 context tokens, 12.482 GiB whole-run peak. The first over-cap probe attempt is preserved separately.",
+          "execution_artifact": "general_transformers_Bench/results/edge_refinement/14gib/context6065_retry/google--paligemma2-3b-mix-224/results.json"
         },
         {
           "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
@@ -903,7 +1229,11 @@
             "vqa_negation": 0.24,
             "graph_grab_lite": 0.07
           },
-          "screening_peak_gib": 10.418
+          "screening_peak_gib": 10.418,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen2-VL-2B-Instruct",
@@ -919,7 +1249,13 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 6.988
+          "screening_peak_gib": 6.988,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "Qwen/Qwen3-VL-2B-Instruct",
@@ -935,7 +1271,11 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 6.06
+          "screening_peak_gib": 6.06,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen3-VL-4B-Instruct",
@@ -951,7 +1291,13 @@
             "vqa_negation": 0.6,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 10.457
+          "screening_peak_gib": 10.457,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "Qwen/Qwen3-VL-4B-Thinking",
@@ -967,7 +1313,13 @@
             "vqa_negation": 0.8,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 10.464
+          "screening_peak_gib": 10.464,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_negation"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
@@ -983,7 +1335,11 @@
             "vqa_negation": 0.4,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 24.676
+          "screening_peak_gib": 24.676,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Thinking-GGUF:UD-Q4_K_XL",
@@ -999,7 +1355,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 23.707
+          "screening_peak_gib": 23.707,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q4_K_XL",
@@ -1015,7 +1375,13 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 26.261
+          "screening_peak_gib": 26.261,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Instruct-GGUF:UD-Q8_K_XL",
@@ -1031,7 +1397,13 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 28.647
+          "screening_peak_gib": 28.647,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-4B-Thinking-GGUF:UD-Q8_K_XL",
@@ -1047,7 +1419,13 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 28.646
+          "screening_peak_gib": 28.646,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-8B-Instruct-1M-GGUF:UD-Q4_K_XL",
@@ -1063,7 +1441,11 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 28.766
+          "screening_peak_gib": 28.766,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL",
@@ -1079,11 +1461,19 @@
             "vqa_negation": 0.76,
             "graph_grab_lite": 0.14
           },
-          "screening_peak_gib": 28.777
+          "screening_peak_gib": 28.777,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "overall",
+            "vqa_truth"
+          ],
+          "execution_status": "verified",
+          "note": "Complete 14 GiB cap-specific run independently reviewed and eligible for aggregation; 60.60% macro at 65,536 measured context tokens, 13.355 GiB whole-device peak.",
+          "execution_artifact": "qwenVL_Bench/results/edge_refinement/14gib/qwen3_vl_8b_q4_fit_1gib_65536_final/results.json"
         },
         {
           "model_id": "microsoft/Phi-3-vision-128k-instruct",
-          "suite": "\u03a6-Vision",
+          "suite": "Φ-Vision",
           "suite_href": "phi_Bench/",
           "scores": {
             "ai2d": 0.28,
@@ -1095,11 +1485,15 @@
             "vqa_negation": 0.08,
             "graph_grab_lite": 0.074
           },
-          "screening_peak_gib": 11.045
+          "screening_peak_gib": 11.045,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "microsoft/Phi-3.5-vision-instruct",
-          "suite": "\u03a6-Vision",
+          "suite": "Φ-Vision",
           "suite_href": "phi_Bench/",
           "scores": {
             "ai2d": 0.74,
@@ -1111,9 +1505,14 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 8.41
+          "screening_peak_gib": 8.41,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         }
-      ]
+      ],
+      "verified_count": 5
     },
     {
       "cap_gib": 16,
@@ -1133,7 +1532,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.072
           },
-          "screening_peak_gib": 10.691
+          "screening_peak_gib": 10.691,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "nvidia/Cosmos3-Edge",
@@ -1149,7 +1552,14 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.064
           },
-          "screening_peak_gib": 9.4
+          "screening_peak_gib": 9.4,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_affordance"
+          ],
+          "execution_status": "unverified_cap",
+          "note": "Complete suite preserved but excluded: the 65,536-token context probe peaked at 16.073 GiB and exceeded the 16 GiB whole-device cap; whole-run peak was 16.073 GiB.",
+          "execution_artifact": "cosmos_Bench/results/edge_refinement/16gib/results.json"
         },
         {
           "model_id": "llava-hf/LLaVA-NeXT-Video-7B-hf",
@@ -1165,7 +1575,11 @@
             "vqa_negation": 0.32,
             "graph_grab_lite": 0.048
           },
-          "screening_peak_gib": 15.134
+          "screening_peak_gib": 15.134,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "llava-hf/llava-v1.6-mistral-7b-hf",
@@ -1181,7 +1595,13 @@
             "vqa_negation": 0.4,
             "graph_grab_lite": 0.068
           },
-          "screening_peak_gib": 15.019
+          "screening_peak_gib": 15.019,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_description"
+          ],
+          "execution_status": "pending",
+          "note": "Selected screening leader; cap-specific run remains pending."
         },
         {
           "model_id": "xtuner/llava-phi-3-mini-hf",
@@ -1197,7 +1617,11 @@
             "vqa_negation": 0.32,
             "graph_grab_lite": 0.082
           },
-          "screening_peak_gib": 8.159
+          "screening_peak_gib": 8.159,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF",
@@ -1213,7 +1637,11 @@
             "vqa_negation": 0.56,
             "graph_grab_lite": 0.276
           },
-          "screening_peak_gib": 4.374
+          "screening_peak_gib": 4.374,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
@@ -1229,7 +1657,15 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.338
           },
-          "screening_peak_gib": 4.899
+          "screening_peak_gib": 4.899,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "overall",
+            "ai2d",
+            "graph_grab_lite"
+          ],
+          "execution_status": "pending",
+          "note": "Selected screening leader; cap-specific run remains pending."
         },
         {
           "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
@@ -1245,7 +1681,13 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": 0.134
           },
-          "screening_peak_gib": 4.155
+          "screening_peak_gib": 4.155,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "textvqa"
+          ],
+          "execution_status": "pending",
+          "note": "Selected screening leader; cap-specific run remains pending."
         },
         {
           "model_id": "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M",
@@ -1261,7 +1703,11 @@
             "vqa_negation": 0.72,
             "graph_grab_lite": 0.148
           },
-          "screening_peak_gib": 10.74
+          "screening_peak_gib": 10.74,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "google/paligemma2-3b-mix-224",
@@ -1277,7 +1723,13 @@
             "vqa_negation": 0.52,
             "graph_grab_lite": 0.026
           },
-          "screening_peak_gib": 5.761
+          "screening_peak_gib": 5.761,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_count"
+          ],
+          "execution_status": "pending",
+          "note": "Selected screening leader; cap-specific run remains pending."
         },
         {
           "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
@@ -1293,7 +1745,11 @@
             "vqa_negation": 0.24,
             "graph_grab_lite": 0.07
           },
-          "screening_peak_gib": 10.418
+          "screening_peak_gib": 10.418,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen2-VL-2B-Instruct",
@@ -1309,7 +1765,11 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 6.988
+          "screening_peak_gib": 6.988,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen3-VL-2B-Instruct",
@@ -1325,7 +1785,11 @@
             "vqa_negation": 0.28,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 6.06
+          "screening_peak_gib": 6.06,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "Qwen/Qwen3-VL-4B-Thinking",
@@ -1341,7 +1805,13 @@
             "vqa_negation": 0.8,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 10.464
+          "screening_peak_gib": 10.464,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_negation"
+          ],
+          "execution_status": "unavailable_cached_weights",
+          "note": "Selected screening leader; exact pinned weights are absent from the configured local cache."
         },
         {
           "model_id": "unsloth/Qwen3-VL-2B-Instruct-GGUF:UD-Q8_K_XL",
@@ -1357,7 +1827,11 @@
             "vqa_negation": 0.4,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 24.676
+          "screening_peak_gib": 24.676,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-8B-Instruct-1M-GGUF:UD-Q4_K_XL",
@@ -1373,7 +1847,11 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 28.766
+          "screening_peak_gib": 28.766,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL",
@@ -1389,11 +1867,17 @@
             "vqa_negation": 0.64,
             "graph_grab_lite": null
           },
-          "screening_peak_gib": 23.065
+          "screening_peak_gib": 23.065,
+          "selection_status": "selected_leader",
+          "leader_categories": [
+            "vqa_truth"
+          ],
+          "execution_status": "pending",
+          "note": "Selected screening leader; cap-specific run remains pending."
         },
         {
           "model_id": "microsoft/Phi-3-vision-128k-instruct",
-          "suite": "\u03a6-Vision",
+          "suite": "Φ-Vision",
           "suite_href": "phi_Bench/",
           "scores": {
             "ai2d": 0.28,
@@ -1405,11 +1889,15 @@
             "vqa_negation": 0.08,
             "graph_grab_lite": 0.074
           },
-          "screening_peak_gib": 11.045
+          "screening_peak_gib": 11.045,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         },
         {
           "model_id": "microsoft/Phi-3.5-vision-instruct",
-          "suite": "\u03a6-Vision",
+          "suite": "Φ-Vision",
           "suite_href": "phi_Bench/",
           "scores": {
             "ai2d": 0.74,
@@ -1421,7 +1909,11 @@
             "vqa_negation": 0.44,
             "graph_grab_lite": 0.062
           },
-          "screening_peak_gib": 8.41
+          "screening_peak_gib": 8.41,
+          "selection_status": "not_selected_nonleader",
+          "leader_categories": [],
+          "execution_status": "not_selected_nonleader",
+          "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         }
       ]
     }

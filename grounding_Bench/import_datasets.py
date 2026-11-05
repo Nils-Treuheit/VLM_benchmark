@@ -74,6 +74,8 @@ def write_source(output_dir: Path, task: str, rows: list[dict[str, Any]], licens
                   "hiertext": "validation"}[task],
         "license": license_terms,
     }
+    if task == "screenspot_pro":
+        metadata["box_coordinate_policy"] = "Pixel xyxy boxes are clipped to image bounds before normalization."
     (output_dir / f"{task}.meta.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     print(f"{task}: imported {len(rows)} local annotations -> {target}")
 
@@ -132,9 +134,19 @@ def import_screenspot(annotations_dir: Path, image_root: Path) -> list[dict[str,
             actual_size = image_size(image_path)
             if actual_size != (width, height):
                 raise ValueError(f"ScreenSpot-Pro annotation dimensions disagree with image: {image_path}")
-            box = normalized_box(item["bbox"], width, height)
-            rows.append({"id": str(item.get("id", f"screenspot-{index}")), "image": str(image_path),
-                         "instruction": str(item["instruction"]), "target_box": box})
+            original_box = [float(value) for value in item["bbox"]]
+            clipped_box = [
+                max(0.0, min(float(width), original_box[0])),
+                max(0.0, min(float(height), original_box[1])),
+                max(0.0, min(float(width), original_box[2])),
+                max(0.0, min(float(height), original_box[3])),
+            ]
+            box = normalized_box(clipped_box, width, height)
+            row = {"id": str(item.get("id", f"screenspot-{index}")), "image": str(image_path),
+                   "instruction": str(item["instruction"]), "target_box": box,
+                   "img_size": [width, height], "application": item.get("application"),
+                   "platform": item.get("platform"), "ui_type": item.get("ui_type")}
+            rows.append(row)
             index += 1
     return rows
 

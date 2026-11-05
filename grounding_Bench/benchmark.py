@@ -351,7 +351,7 @@ def release_local() -> None:
 def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], tasks: list[str],
               output_path: Path, resume: bool, ground_base_url: str,
               coco_annotations: Path | None, data_provenance: dict[str, Any],
-              max_new_tokens: int | None) -> dict[str, Any]:
+              max_new_tokens: int | None, max_image_tokens: int | None) -> dict[str, Any]:
     snapshot, revision = adapters.snapshot_for(model_id)
     prior = {}
     if resume and output_path.is_file():
@@ -367,7 +367,7 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         load_memory = WholeDeviceMemory()
         load_memory.start()
         model_load_started = time.perf_counter()
-        model = adapters.LocateAnythingAdapter(snapshot)
+        model = adapters.LocateAnythingAdapter(snapshot, image_token_limit=max_image_tokens)
         model_load_duration_s = time.perf_counter() - model_load_started
         load_memory.stop()
         load_peak = load_memory.peak_gib
@@ -384,6 +384,12 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         "client_package_versions": adapters.package_versions(), "service_inventory": service_inventory,
         "model_load_peak_whole_device_vram_gib": load_peak,
         "model_load_duration_s": model_load_duration_s,
+        "image_token_limit_by_task": {
+            task: model.image_token_limit if model_id == adapters.LOCATE_ID else None
+            for task in tasks
+        },
+        "input_size": (f"native processor; max image patches={model.image_token_limit}"
+                       if model_id == adapters.LOCATE_ID else "native model processor"),
         "model_load_timing": ("measured during in-process model initialization" if model_load_duration_s is not None
                               else "dedicated service was loaded before client timing; duration not captured"),
         "query_timing_scope": ("local image read and base64/request serialization through HTTP response and parse; model load excluded" if model_id == adapters.GROUND_ID
@@ -404,7 +410,7 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         memory.start()
         for row in rows:
             item_id = str(row["id"])
-            if item_id in saved:
+            if item_id in saved and saved[item_id].get("status", "complete") == "complete":
                 continue
             prompt = adapters.prompt_for(model_id, task, row)
             record = {"id": item_id, "status": "failed", "prompt": prompt,
@@ -469,6 +475,8 @@ def main() -> int:
                         help="local instances_val2017.json for COCOeval on the selected images")
     parser.add_argument("--max-new-tokens", type=int,
                         help="override the non-answer task output limit; the chosen value is saved in run metadata")
+    parser.add_argument("--max-image-tokens", type=int,
+                        help="override LocateAnything's processor image-patch limit; saved in run metadata")
     parser.add_argument("--list-models", action="store_true")
     args = parser.parse_args()
     if args.list_models:
@@ -480,9 +488,14 @@ def main() -> int:
         parser.error("run one model per invocation; finish and release it before starting the other model")
     if args.max_new_tokens is not None and args.max_new_tokens < 1:
         parser.error("--max-new-tokens must be a positive integer")
+    if args.max_image_tokens is not None and args.max_image_tokens < 1:
+        parser.error("--max-image-tokens must be a positive integer")
+    if args.max_image_tokens is not None and adapters.LOCATE_ID not in args.models:
+        parser.error("--max-image-tokens applies only to nvidia/LocateAnything-3B")
     rows_by_task = {}
     data_provenance = {"seed": args.seed, "samples_per_task": args.samples,
-                       "max_new_tokens_override": args.max_new_tokens, "tasks": {}}
+                       "max_new_tokens_override": args.max_new_tokens,
+                       "max_image_tokens_override": args.max_image_tokens, "tasks": {}}
     for task in args.tasks:
         manifest = args.data_dir / f"{task}.json"
         if not manifest.is_file():
@@ -505,7 +518,8 @@ def main() -> int:
         safe = model_id.replace("/", "--")
         run_model(model_id, rows_by_task, args.tasks,
                   args.output_dir / f"{safe}.json", args.resume, args.groundanything_base_url,
-                  args.coco_annotations, data_provenance, args.max_new_tokens)
+                  args.coco_annotations, data_provenance, args.max_new_tokens,
+                  args.max_image_tokens)
     return 0
 
 

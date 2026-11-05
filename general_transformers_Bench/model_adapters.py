@@ -91,7 +91,7 @@ def load_paligemma(snapshot: str | Path, *, max_memory: dict[Any, int] | None = 
         "local_files_only": True,
         "torch_dtype": torch.bfloat16,
         "device_map": "auto",
-        "attn_implementation": "sdpa",
+        "attn_implementation": "eager",
     }
     if max_memory is not None:
         kwargs["max_memory"] = max_memory
