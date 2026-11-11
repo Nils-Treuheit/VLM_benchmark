@@ -17,6 +17,8 @@ import numpy as np
 from scoring import INTERVAL_PARSER_VERSION, parse_choice, parse_intervals
 
 PROJECT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT))
+from gpu_queue import run_queued  # noqa: E402
 ROBOTICS_SRC = Path("/mnt/HDD1/Project_Code/robotics_VLM/src")
 sys.path.insert(0, str(ROBOTICS_SRC))
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
@@ -277,4 +279,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_queued(main, "video-vlm"))

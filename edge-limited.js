@@ -78,9 +78,11 @@
 
   function appendRunEvidence(host, record) {
     const detail = document.createElement('p');
+    const loadPeak = Number.isFinite(record.load_peak_gib)
+      ? `; load peak ${record.load_peak_gib.toFixed(2)} GiB` : '';
     const processPeak = Number.isFinite(record.process_peak_gib)
       ? `; process peak ${record.process_peak_gib.toFixed(2)} GiB` : '';
-    detail.textContent = `Measured context ${Math.round(record.context_tokens).toLocaleString()} tokens; context-probe peak ${record.context_probe_peak_gib.toFixed(2)} GiB; scoring-run peak ${record.scoring_peak_gib.toFixed(2)} GiB${processPeak}.`;
+    detail.textContent = `Measured context ${Math.round(record.context_tokens).toLocaleString()} tokens; context-probe peak ${record.context_probe_peak_gib.toFixed(2)} GiB${loadPeak}; scoring-run peak ${record.scoring_peak_gib.toFixed(2)} GiB; whole-device peak across the run ${record.whole_device_peak_gib.toFixed(2)} GiB${processPeak}.`;
     host.append(detail);
   }
 
@@ -185,7 +187,7 @@
     const categoryCount = tasks.reduce((count, [task]) => count +
       (stage?.category_leaders?.[task] || []).filter(record => validRecord(record, cap, false)).length, 0);
     status.textContent = records.length
-      ? `${records.length} complete model-cap runs passed both the controlled context probe and full suite at ${cap} GiB. Leaders below rank the currently verified runs; refinement may add selected candidates.`
+      ? `${records.length} complete model-cap runs passed both the controlled context probe and full suite at ${cap} GiB. Leaders below show verified runs; blocked and unavailable candidates are excluded.`
       : categoryCount
         ? `No complete eight-task run is verified at ${cap} GiB; ${categoryCount} category result(s) have a passing cap probe and complete task coverage.`
         : `No verified cap-specific run is available at ${cap} GiB. Provisional estimates are not shown as results.`;

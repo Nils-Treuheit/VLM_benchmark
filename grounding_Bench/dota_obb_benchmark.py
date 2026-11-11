@@ -16,6 +16,8 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent))
+from gpu_queue import run_queued  # noqa: E402
 from vision_benchmark import DeviceMemory, checkpoint_identity, release_local  # noqa: E402
 
 
@@ -115,4 +117,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_queued(main, "grounding-dota-obb"))

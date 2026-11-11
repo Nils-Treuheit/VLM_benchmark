@@ -16,11 +16,11 @@ The full-suite macro is the unweighted mean of eight local task scores and requi
 | 10 GiB | google/paligemma2-3b-mix-224 | verified | 54.53% | 4,418 tokens | 9.961 GiB | 7.244 GiB | 9.961 GiB |
 | 12 GiB | google/paligemma2-3b-mix-224 | verified | 54.53% | 6,065 tokens | 11.883 GiB | 7.252 GiB | 11.883 GiB |
 
-The eager-attention run completed all eight shared tasks. The [detailed report](../edge_refinement/8gib/paligemma2-3b-mix-224/retry_eager_1800_20261104/report.md) and [raw artifact](../edge_refinement/8gib/paligemma2-3b-mix-224/retry_eager_1800_20261104/results.json) contain the measured context and sampling evidence. The earlier SDPA failure and first eager probe that exceeded the cap remain in their separate attempt directories.
+The eager-attention run completed all eight shared tasks. The [detailed report](../edge_refinement/8gib/paligemma2-3b-mix-224/retry_eager_1800_20261104/report.md) and raw artifact (local artifact; not published) contain the measured context and sampling evidence. The earlier SDPA failure and first eager probe that exceeded the cap remain in their separate attempt directories.
 
-The 10 GiB run also completed all eight tasks and passed cap verification. See its [detailed report](../edge_refinement/10gib/paligemma2-3b-mix-224/report.md) and [raw artifact](../edge_refinement/10gib/paligemma2-3b-mix-224/results.json). The 4,418-token measured context reflects the largest observed input-plus-output length that remained under the 10 GiB cap; larger probe attempts are preserved in the artifact.
+The 10 GiB run also completed all eight tasks and passed cap verification. See its [detailed report](../edge_refinement/10gib/paligemma2-3b-mix-224/report.md) and raw artifact (local artifact; not published). The 4,418-token measured context reflects the largest observed input-plus-output length that remained under the 10 GiB cap; larger probe attempts are preserved in the artifact.
 
-The 12 GiB run completed all eight tasks and passed cap verification at 6,065 tokens. Its 11.883 GiB whole-run peak remained below the cap. See the [detailed report](../edge_refinement/12gib/google--paligemma2-3b-mix-224/report.md) and [raw artifact](../edge_refinement/12gib/google--paligemma2-3b-mix-224/results.json).
+The 12 GiB run completed all eight tasks and passed cap verification at 6,065 tokens. Its 11.883 GiB whole-run peak remained below the cap. See the [detailed report](../edge_refinement/12gib/google--paligemma2-3b-mix-224/report.md) and raw artifact (local artifact; not published).
 
 ## Selection guide
 

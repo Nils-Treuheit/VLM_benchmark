@@ -1,6 +1,6 @@
 # Image Scene Graph Generation benchmark
 
-**Status:** Proposed. No benchmark code or run artifacts have been created.
+**Status checked:** 2026-11-09. The data audit and all three fixed 200-image manifests are ready. The runner normalizes processor metadata recursively after an earlier `SizeDict` serialization error and isolates each model in a fresh process. Three of eight candidates have complete direct host-GPU panels: Qwen2-VL-7B, Qwen2.5-VL-7B, and G-Substrate-Qwen3-VL-2B. Their JSON-valid counts were 145/600, 4/600, and 0/600; malformed output remains in each denominator. The remaining five GGUF entries now run directly on the host GPU, with llama.cpp launched as an owned child process and no scheduler or model-control service. The current batch is `qwenVL_Bench/image_SGG_Bench/results/20261109_direct_host_detached/`; the 72B IQ2_XXS panel is in progress. llama.cpp uses automatic layer fitting, a 32,768-token context, and at least 1,024 image tokens for grounding. A prior interactive attempt was interrupted by the command-session limit after seven saved items; that partial attempt is retained separately and excluded from aggregation.
 
 ## Goal
 
@@ -12,9 +12,9 @@ The task is **scene graph detection (SGDet)** from pixels. Do not provide ground
 
 | Dataset and split | Role | Local data | Planned panel |
 |---|---|---|---:|
-| Visual Genome, canonical VG-150 test | Standard closed-vocabulary image SGG | Images and raw `scene_graphs.json`, `objects.json`, and `relationships.json` are under `/mnt/HDD1/Project_Data/public_datasets/visual_genome/`. Canonical VG-150 preprocessing and a fixed test manifest still need to be produced. | 200 images |
-| Open Images V7 validation, visual relationships | Diverse relationship detection with a larger object and relation vocabulary | Images, detection labels, relationship labels, and metadata are under `/mnt/HDD1/Project_Data/public_datasets/open_images_v7/validation/`. | 200 images |
-| PSG validation in the local Hugging Face mirror | Panoptic scene content and relations; a separate box-grounded adaptation for VLMs | Parquet shards are under `/mnt/HDD1/Project_Data/public_datasets/psg/huggingface_dataset/`. The mirror labels the official PSG test split `validation`; record both names. | 200 images |
+| Visual Genome, canonical VG-150 test | Standard closed-vocabulary image SGG | Images and source annotations are under `/mnt/HDD1/Project_Data/public_datasets/visual_genome/`. Canonical VG-150 preprocessing and the fixed manifest are ready at `qwenVL_Bench/image_SGG_Bench/data/vg150/manifest.json`; the recorded panel excludes test rows with out-of-bounds boxes. | 200 images |
+| Open Images V7 validation, visual relationships | Diverse relationship detection with a larger object and relation vocabulary | Images, detection labels, relationship labels, metadata, and the fixed manifest are under `/mnt/HDD1/Project_Data/public_datasets/open_images_v7/validation/` and `qwenVL_Bench/image_SGG_Bench/data/openimages_v7/manifest.json`. | 200 images |
+| PSG validation in the local Hugging Face mirror | Panoptic scene content and relations; a separate box-grounded adaptation for VLMs | Parquet shards are under `/mnt/HDD1/Project_Data/public_datasets/psg/huggingface_dataset/`. The fixed manifest is `qwenVL_Bench/image_SGG_Bench/data/psg/manifest.json`. The mirror labels the official PSG test split `validation`; record both names. | 200 images |
 
 The panels are fixed, deterministic, and relation-stratified. Greedily select unique images that add the most uncovered predicates; break ties by SHA-256 of `3407|dataset|image_id`. Fill remaining slots with a seeded random selection (`3407`). Save selected IDs, class support, source split, source revision or file hashes, and selection code version. These are **small local panels**, not full-set leaderboard scores.
 

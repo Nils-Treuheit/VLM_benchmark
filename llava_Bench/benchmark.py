@@ -21,6 +21,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 QWEN_BENCH = ROOT / "qwenVL_Bench"
 sys.path.insert(0, str(QWEN_BENCH))
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
 import benchmark as common  # noqa: E402
 import benchmark_runners as shared  # noqa: E402
 
@@ -738,10 +740,16 @@ def main() -> int:
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--whole-device-cap-gib", type=int, choices=(8, 10, 12, 14, 16))
     parser.add_argument("--context-probe-limit", type=int, default=32768)
+    parser.add_argument("--allocator-reserve-gib", type=float, default=EDGE_ALLOCATOR_RESERVE_GIB,
+                        help="extra reserve beyond the measured idle baseline for Edge allocator limits")
     args = parser.parse_args()
+    if not math.isfinite(args.allocator_reserve_gib) or args.allocator_reserve_gib < 0:
+        parser.error("--allocator-reserve-gib must be finite and nonnegative")
     edge_mode = args.whole_device_cap_gib is not None
     if edge_mode:
         MEMORY_CAP_GIB = float(args.whole_device_cap_gib)
+        if args.allocator_reserve_gib >= MEMORY_CAP_GIB:
+            parser.error("--allocator-reserve-gib must be less than the selected whole-device cap")
         if not args.models or len(args.models) != 1 or args.models[0] not in EDGE_MODEL_IDS:
             parser.error("Edge mode requires exactly one screened LLaVA model ID")
         if args.tasks and tuple(args.tasks) != TASKS:
@@ -750,8 +758,11 @@ def main() -> int:
             parser.error("Edge mode requires shared sample counts and seed 3407; --resume is unsupported")
         if args.context_probe_limit < 1024:
             parser.error("--context-probe-limit must be at least 1024 tokens")
-    elif args.context_probe_limit != 32768:
-        parser.error("--context-probe-limit requires --whole-device-cap-gib")
+    else:
+        if args.context_probe_limit != 32768:
+            parser.error("--context-probe-limit requires --whole-device-cap-gib")
+        if args.allocator_reserve_gib != EDGE_ALLOCATOR_RESERVE_GIB:
+            parser.error("--allocator-reserve-gib requires --whole-device-cap-gib")
     transformers_version = version("transformers")
 
     entries = list_models()
@@ -814,7 +825,7 @@ def main() -> int:
         properties = torch.cuda.get_device_properties(device)
         result.update(
             whole_device_cap_gib=MEMORY_CAP_GIB,
-            allocator_reserve_gib=EDGE_ALLOCATOR_RESERVE_GIB,
+            allocator_reserve_gib=args.allocator_reserve_gib,
             gpu_baseline_gib=None,
             hardware={"gpu_name": properties.name, "total_memory_gib": round(total_memory / 1024**3, 3),
                       "cuda_device": int(device)},
@@ -825,7 +836,7 @@ def main() -> int:
             },
             cap_enforcement_method=(
                 "whole-device nvidia-smi memory.used polling; allocator fraction and max_memory load limit "
-                f"after reserving {EDGE_ALLOCATOR_RESERVE_GIB:.2f} GiB beyond idle baseline"
+                f"after reserving {args.allocator_reserve_gib:.2f} GiB beyond idle baseline"
             ),
         )
 
@@ -871,12 +882,12 @@ def main() -> int:
                 baseline_gib = baseline_mib / 1024 if baseline_mib is not None else None
                 result["gpu_baseline_gib"] = round(baseline_gib, 3) if baseline_gib is not None else None
                 if baseline_gib is not None:
-                    allocator_limit_gib = MEMORY_CAP_GIB - baseline_gib - EDGE_ALLOCATOR_RESERVE_GIB
+                    allocator_limit_gib = MEMORY_CAP_GIB - baseline_gib - args.allocator_reserve_gib
                 whole_monitor = WholeDeviceMemorySampler(device_index=int(device))
                 whole_monitor.start()
                 record.update(
                     whole_device_cap_gib=MEMORY_CAP_GIB,
-                    allocator_reserve_gib=EDGE_ALLOCATOR_RESERVE_GIB,
+                    allocator_reserve_gib=args.allocator_reserve_gib,
                     configured_context_tokens=None,
                     cap_enforcement_method=result["cap_enforcement_method"],
                 )
@@ -903,7 +914,7 @@ def main() -> int:
                 record["configured_context"] = configured_context
                 if edge_mode:
                     record["allocator_memory_limit_gib"] = allocator_limit_gib
-                    record["allocator_reserve_gib"] = EDGE_ALLOCATOR_RESERVE_GIB
+                    record["allocator_reserve_gib"] = args.allocator_reserve_gib
                 context_limit = min(configured_context, args.context_probe_limit) if configured_context else 0
                 if edge_mode and (not whole_monitor.sample_count or whole_monitor.error):
                     raise RuntimeError(
@@ -1072,4 +1083,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_queued(main, "llava"))

@@ -22,8 +22,11 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
 import model_adapters as adapters  # noqa: E402
 import scoring  # noqa: E402
+from gpu_runtime import release_local  # noqa: E402
 
 BASE_TASKS = ("refcocog", "coco", "screenspot_pro", "hiertext")
 AUX_TASKS = ("vqa_count", "vqa_truth", "vqa_description", "textvqa")
@@ -183,10 +186,27 @@ def enforce_no_target_policy(task: str, parsed: dict[str, Any], row: dict[str, A
     no_target_records = [record for record in parsed.get("records", []) if record.get("kind") == "none"]
     if not no_target_records:
         return parsed
+    if task == "coco":
+        aliases = {str(alias).casefold(): str(name).casefold()
+                   for alias, name in row.get("prediction_aliases", {}).items()}
+        categories = {str(category["name"]).casefold(): str(category["name"])
+                      for category in row.get("categories", [])}
+        targets = row.get("targets_by_category", {})
+        targets_by_name = {str(name).casefold(): boxes for name, boxes in targets.items()}
+        for record in no_target_records:
+            label = str(record.get("label") or "").casefold()
+            canonical = aliases.get(label, label)
+            category_name = categories.get(canonical)
+            record["valid"] = bool(category_name is not None
+                                   and category_name.casefold() in targets_by_name
+                                   and not targets_by_name.get(category_name.casefold(), []))
+        parsed["no_target_allowed"] = all(record["valid"] for record in no_target_records)
+        parsed["valid"] = bool(parsed.get("valid", True)) and all(
+            record.get("valid", False) for record in parsed.get("records", []))
+        return parsed
     has_target = {
         "refcocog": True,
         "screenspot_pro": True,
-        "coco": any(row.get("targets_by_category", {}).values()),
         "hiertext": bool(row.get("target_boxes")),
     }[task]
     parsed["no_target_allowed"] = not has_target
@@ -340,18 +360,11 @@ def coco_official_ap(annotation_file: Path | None, rows: list[dict[str, Any]],
         return {"status": "failed", "reason": f"{type(exc).__name__}: {exc}"}
 
 
-def release_local() -> None:
-    workflow = ROOT / ".agentic_workflow"
-    executor = workflow / "src" / "executor.py"
-    if not executor.is_file():
-        raise FileNotFoundError(f"required local engine release helper is missing: {executor}")
-    subprocess.run([sys.executable, "src/executor.py", "release-local"], cwd=workflow, check=True)
-
-
 def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], tasks: list[str],
               output_path: Path, resume: bool, ground_base_url: str,
               coco_annotations: Path | None, data_provenance: dict[str, Any],
-              max_new_tokens: int | None, max_image_tokens: int | None) -> dict[str, Any]:
+              max_new_tokens: int | None, max_image_tokens: int | None,
+              groundanything_model_load_duration_s: float | None = None) -> dict[str, Any]:
     snapshot, revision = adapters.snapshot_for(model_id)
     prior = {}
     if resume and output_path.is_file():
@@ -377,7 +390,7 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         # Check that the configured model-specific endpoint is alive before any examples run.
         service_inventory = model.model_inventory()
         load_peak = None
-        model_load_duration_s = None
+        model_load_duration_s = groundanything_model_load_duration_s
     result = {
         "model_id": model_id, "revision": revision, "snapshot": str(snapshot),
         "backend": model.backend, "precision": model.precision, "generation_mode": model.mode,
@@ -390,8 +403,12 @@ def run_model(model_id: str, rows_by_task: dict[str, list[dict[str, Any]]], task
         },
         "input_size": (f"native processor; max image patches={model.image_token_limit}"
                        if model_id == adapters.LOCATE_ID else "native model processor"),
-        "model_load_timing": ("measured during in-process model initialization" if model_load_duration_s is not None
-                              else "dedicated service was loaded before client timing; duration not captured"),
+        "model_load_timing": (
+            "measured during in-process model initialization" if model_id == adapters.LOCATE_ID else
+            "dedicated service startup through API readiness; measured by the batch wrapper"
+            if model_load_duration_s is not None else
+            "dedicated service was loaded before client timing; duration not captured"
+        ),
         "query_timing_scope": ("local image read and base64/request serialization through HTTP response and parse; model load excluded" if model_id == adapters.GROUND_ID
                                else "local image read, processor encoding, model generation, output decoding and parse; prompt prepared before timing; model load excluded"),
         "max_new_tokens_by_task": {
@@ -477,8 +494,17 @@ def main() -> int:
                         help="override the non-answer task output limit; the chosen value is saved in run metadata")
     parser.add_argument("--max-image-tokens", type=int,
                         help="override LocateAnything's processor image-patch limit; saved in run metadata")
+    parser.add_argument("--groundanything-model-load-duration-s", type=float,
+                        help="measured dedicated-service startup duration, supplied by an autostart wrapper")
+    parser.add_argument("--transformers-compat-overlay", type=Path,
+                        help="optional local package overlay for the pinned LocateAnything Transformers runtime")
     parser.add_argument("--list-models", action="store_true")
     args = parser.parse_args()
+    if args.transformers_compat_overlay:
+        overlay = args.transformers_compat_overlay.expanduser().resolve()
+        if not overlay.is_dir():
+            raise FileNotFoundError(f"Transformers compatibility overlay is missing: {overlay}")
+        sys.path.insert(0, str(overlay))
     if args.list_models:
         for model_id in MODEL_IDS:
             snapshot, revision = adapters.snapshot_for(model_id)
@@ -519,9 +545,9 @@ def main() -> int:
         run_model(model_id, rows_by_task, args.tasks,
                   args.output_dir / f"{safe}.json", args.resume, args.groundanything_base_url,
                   args.coco_annotations, data_provenance, args.max_new_tokens,
-                  args.max_image_tokens)
+                  args.max_image_tokens, args.groundanything_model_load_duration_s)
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_queued(main, "grounding"))

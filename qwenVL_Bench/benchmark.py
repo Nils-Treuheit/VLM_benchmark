@@ -9,10 +9,15 @@ import os
 import random
 import re
 import statistics
+import sys
 import time
 import traceback
 from pathlib import Path
 from typing import Any
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+from gpu_queue import run_queued  # noqa: E402
 
 HF_HOME = Path(os.environ.get("HF_HOME", Path.home() / ".cache/huggingface"))
 HUB = HF_HOME / "hub"
@@ -679,4 +684,4 @@ def main() -> int:
 if __name__ == "__main__":
     from benchmark_runners import main as corrected_main
 
-    raise SystemExit(corrected_main())
+    raise SystemExit(run_queued(corrected_main, "qwen-vl"))

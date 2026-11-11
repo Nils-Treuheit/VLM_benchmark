@@ -195,13 +195,15 @@ python3 grounding_Bench/vision_benchmark.py \
 
 This local COCOeval comparison is not official KITTI AP_R40. The official KITTI object devkit or a verified equivalent is still required for AP_R40. Public test labels are unavailable.
 
-Prepare the five fixed 20-image RF100-VL test panels from local, MIT-licensed dataset exports:
+Prepare a fixed sample of up to 20 labeled test images from every local RF100-VL subset:
 
 ```bash
-python3 grounding_Bench/prepare_rf100_benchmark.py --samples 20 --seed 3407
+python3 grounding_Bench/prepare_rf100_benchmark.py --all-datasets --samples 20 --seed 3407
 ```
 
-This uses `aerial-airport`, `activity-diagrams`, `cable-damage`, `marine-sharks`, and `taco-trash-annotations-in-context`. It writes selected COCO annotations and shared image manifests under `data/domain_manifests/rf100_vl/`; image files stay in the public data tree. Run `vision_benchmark.py` and `benchmark.py` once per panel and model, using each panel's `coco.json` and `coco_annotations.json`. YOLOE-26-L and SAM 3.1 have complete results; LocateAnything has repeated high-resolution OOMs on two panels. RF100 exports contain no usable instance masks, so report mask AP as unsupported. The static report shows per-domain results and a macro over complete panels only.
+The command prepares all 100 local test subsets, sampling 1,973 images total with seed 3407. Small subsets use every labeled test image. Individual panel manifests and annotations are written under `data/domain_manifests/rf100_vl/`; the combined shared panel is `data/domain_manifests/manifests/rf100_vl_all/coco.json`. Image files remain in the public data tree. Every local subset README records MIT metadata. The supplied test exports contain boxes but no instance masks, so mask AP is unsupported for this RF100-VL copy. The five earlier panels remain pilot results and do not count as all-subset coverage.
+
+For each completed all-subset run, split its grounding-model JSON with `import_rf100_batch_results.py` and each vision-model JSON with `import_rf100_vision_results.py`. Both importers map the combined panel back to each subset's original image and category IDs. Then regenerate the report with `python3 grounding_Bench/generate_report.py`.
 
 LVIS has a completed exploratory 30-category panel; it reuses COCO imagery and does not represent the full 1,203-category leaderboard.
 

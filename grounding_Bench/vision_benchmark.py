@@ -22,6 +22,9 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
+from gpu_runtime import release_local  # noqa: E402
 DEFAULT_SAM31 = Path(
     "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/"
     "models--facebook--sam3.1/snapshots/daa63191845a41281374e725f4c9e51c7a824460/sam3.1_multiplex.pt"
@@ -66,14 +69,6 @@ class DeviceMemory:
 
     def gib(self) -> float | None:
         return round(self.peak_mib / 1024, 3) if self.peak_mib is not None else None
-
-
-def release_local() -> None:
-    workflow = ROOT / ".agentic_workflow"
-    executor = workflow / "src" / "executor.py"
-    if not executor.is_file():
-        raise FileNotFoundError(f"required local-engine release helper is missing: {executor}")
-    subprocess.run([sys.executable, "src/executor.py", "release-local"], cwd=workflow, check=True)
 
 
 def parse_weights(values: list[str]) -> dict[str, Path]:
@@ -302,11 +297,10 @@ def main() -> int:
         coco = COCO(str(args.coco_annotations))
         image_ids = [row["image_id"] for row in rows]
         categories = coco.loadCats(coco.getCatIds())
-        category_names = [str(category["name"]) for category in categories]
-        category_by_name = {name.casefold(): int(category["id"]) for name, category in
-                            ((c["name"], c) for c in categories)}
+        category_names = sorted({str(category["name"]) for category in categories})
+        category_by_id = {int(category["id"]): str(category["name"]) for category in categories}
         annotations_by_image: dict[int, list[dict[str, Any]]] = {image_id: [] for image_id in image_ids}
-        for ann in coco.loadAnns(coco.getAnnIds(imgIds=image_ids, catIds=list(category_by_name.values()))):
+        for ann in coco.loadAnns(coco.getAnnIds(imgIds=image_ids, catIds=list(category_by_id))):
             if ann.get("iscrowd"):
                 continue
             annotations_by_image[int(ann["image_id"])].append(ann)
@@ -323,10 +317,11 @@ def main() -> int:
         model_load_duration_s = time.perf_counter() - model_load_started
         warmup_count = min(max(args.warmup_images, 0), len(rows))
         for warmup_row in rows[:warmup_count]:
+            prompt_names = [str(category["name"]) for category in warmup_row.get("categories", [])] or category_names
             if args.model == "sam3.1":
-                sam_predictions(processor, warmup_row, category_names)
+                sam_predictions(processor, warmup_row, prompt_names)
             else:
-                yolo_predictions(model, args.model, warmup_row, category_names, imgsz)
+                yolo_predictions(model, args.model, warmup_row, prompt_names, imgsz)
         grounding_items = []
         if args.refcocog_manifest:
             if args.model in {"yoloe26l-seg", "sam3.1"}:
@@ -356,17 +351,21 @@ def main() -> int:
         per_image_times = []
         for row in rows:
             image_id = int(row["image_id"])
+            row_categories = row.get("categories") or categories
+            row_category_names = [str(category["name"]) for category in row_categories]
+            category_by_name = {str(category["name"]).casefold(): int(category["id"])
+                                for category in row_categories}
             gt = []
             for ann in annotations_by_image[image_id]:
-                category = coco.loadCats([ann["category_id"]])[0]
                 gt.append({"box": [float(ann["bbox"][0]), float(ann["bbox"][1]),
                                      float(ann["bbox"][0] + ann["bbox"][2]),
                                      float(ann["bbox"][1] + ann["bbox"][3])],
-                           "category_id": int(ann["category_id"]), "name": category["name"], "ann": ann})
+                           "category_id": int(ann["category_id"]),
+                           "name": category_by_id[int(ann["category_id"])], "ann": ann})
             if args.model == "sam3.1":
-                predictions, elapsed = sam_predictions(processor, row, category_names)
+                predictions, elapsed = sam_predictions(processor, row, row_category_names)
             else:
-                predictions, elapsed = yolo_predictions(model, args.model, row, category_names, imgsz)
+                predictions, elapsed = yolo_predictions(model, args.model, row, row_category_names, imgsz)
             aliases = row.get("prediction_aliases", {})
             if aliases:
                 alias_lookup = {str(alias).casefold(): str(name) for alias, name in aliases.items()}
@@ -442,6 +441,8 @@ def main() -> int:
             "warmup_images_excluded_from_timing": warmup_count,
             "model_load_warnings": model_load_warnings,
             "category_prompt_set": category_names,
+            "category_prompt_protocol": "per-image manifest categories" if any(row.get("source_dataset") for row in rows)
+                                       else "full annotation category list",
             "tasks": {"object_detection": detection_result,
                       "instance_segmentation": evaluate(segm_results, "segm"),
                       "classification": {"status": "complete" if matched_count else "not run",
@@ -488,4 +489,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_queued(main, "grounding-vision"))

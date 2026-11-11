@@ -14,6 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 QWEN_DIR = ROOT / "qwenVL_Bench"
 sys.path.insert(0, str(QWEN_DIR))
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
 import benchmark as common  # noqa: E402
 import benchmark_runners as runner  # noqa: E402
 
@@ -149,4 +151,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_queued(main, "cosmos-nano-vllm"))

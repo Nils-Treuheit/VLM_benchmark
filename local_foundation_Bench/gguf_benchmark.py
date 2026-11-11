@@ -25,6 +25,8 @@ sys_path = [str(ROOT / "qwenVL_Bench"), str(ROBOTICS / "src")]
 import sys
 for entry in reversed(sys_path):
     sys.path.insert(0, entry)
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
 import benchmark as common  # noqa: E402
 import benchmark_runners as shared  # noqa: E402
 
@@ -867,6 +869,7 @@ def execute(slug: str, whole_device_cap_gib: int | None = None,
         whole_run_peaks = [sampler.peak_gib, *task_sampler_peaks]
         if edge_run:
             whole_run_peaks.extend([
+                suite_sampler.peak_gib if suite_sampler else None,
                 model.get("load_peak_whole_device_gib"),
                 (model.get("context_probe") or {}).get("peak_whole_device_gib"),
             ])
@@ -973,4 +976,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_queued(main, "local-foundation-gguf"))

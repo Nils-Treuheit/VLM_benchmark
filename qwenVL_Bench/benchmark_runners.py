@@ -18,6 +18,10 @@ import traceback
 from pathlib import Path
 from typing import Any
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+from gpu_queue import run_queued  # noqa: E402
+
 import benchmark as common
 
 LLAMA_SERVER = Path("/usr/local/lib/ollama/llama-server")
@@ -1505,7 +1509,15 @@ def write_report(path: Path, result: dict[str, Any]):
             cells.append("—" if value is None else f"{100*value:.1f}%")
             reference = score_by_id.get(model.get("comparison_reference"), {}).get(task, {}).get("score")
             deltas.append("—" if value is None or reference is None else f"{100*(value-reference):+.1f} pp")
-        lines.append(f"| {model['model_id']} | {model.get('backend','—')} | {model.get('comparison_reference') or '—'} | {cells[0]} | {deltas[0]} | {cells[1]} | {deltas[1]} | {model.get('status','—')} |")
+        ai2d_cell = cells[0] if cells else "—"
+        ai2d_delta = deltas[0] if deltas else "—"
+        textvqa_cell = cells[1] if len(cells) > 1 else "—"
+        textvqa_delta = deltas[1] if len(deltas) > 1 else "—"
+        lines.append(
+            f"| {model['model_id']} | {model.get('backend','—')} | "
+            f"{model.get('comparison_reference') or '—'} | {ai2d_cell} | {ai2d_delta} | "
+            f"{textvqa_cell} | {textvqa_delta} | {model.get('status','—')} |"
+        )
     lines += ["", "## Per task VRAM and speed", "",
               "| Model | Task | Completed / parse errors | Peak GPU used | Mean seconds/example | Effective output tokens/second | Context | KV cache |",
               "|---|---|---:|---:|---:|---:|---:|---|"]
@@ -1780,4 +1792,4 @@ HF_HOME = Path(os.environ.get("HF_HOME", Path.home() / ".cache/huggingface"))
 HUB = HF_HOME / "hub"
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_queued(main, "qwen-vl"))

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-11-05T10:11:06+00:00",
+  "generated_at_utc": "2026-11-06T19:17:28+00:00",
   "status": "measured",
   "method": "Cap-specific results require a passing real-image context probe and a complete shared-task run below the same whole-device VRAM cap.",
   "caps": [
@@ -7714,29 +7714,18 @@
     },
     {
       "cap_gib": 16,
-      "status": "no_verified_runs",
-      "verified_candidate_count": 0,
-      "overall": null,
-      "category_leaders": {
-        "ai2d": [],
-        "textvqa": [],
-        "vqa_truth": [],
-        "vqa_count": [],
-        "vqa_description": [],
-        "vqa_affordance": [],
-        "vqa_negation": [],
-        "graph_grab_lite": []
-      },
-      "records": [
+      "status": "measured",
+      "verified_candidate_count": 5,
+      "overall": [
         {
-          "model_id": "nvidia/Cosmos3-Edge",
-          "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
-          "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--nvidia--Cosmos3-Edge/snapshots/344d602b128d1bbdacb43b08d0a3626f46343e29",
-          "revision": "344d602b128d1bbdacb43b08d0a3626f46343e29",
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL",
+          "backend": "llama.cpp (UD-Q8_K_XL)",
+          "snapshot": null,
+          "revision": null,
           "quantization": null,
-          "suite_name": "Cosmos",
-          "suite_href": "cosmos_Bench/results/edge_refinement/16gib/",
-          "status": "unverified",
+          "suite_name": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "status": "verified",
           "complete": true,
           "task_complete": {
             "ai2d": true,
@@ -7748,10 +7737,1265 @@
             "vqa_negation": true,
             "graph_grab_lite": true
           },
-          "context_probe_passed": false,
+          "context_probe_passed": true,
           "whole_device_cap_gib": 16.0,
-          "context_tokens": 61440,
-          "context_probe_peak_gib": 16.073,
+          "context_tokens": 262144,
+          "context_probe_peak_gib": 14.972,
+          "context_probe_image": {
+            "dataset": "AI2D test",
+            "index": 1717,
+            "size_px": [
+              1500,
+              1500
+            ],
+            "selection_method": "maximum measured prompt token count across 100 fixed AI2D examples",
+            "visual_token_count": null,
+            "prompt_tokens": 2281,
+            "total_input_token_proxy": 2281,
+            "token_measure": "prompt_tokens",
+            "sample_count": 100,
+            "successful_samples": 100,
+            "complete": true
+          },
+          "context_probe_actual_input_tokens": 262143,
+          "context_probe_output_tokens": 1,
+          "context_probe_configured_limit_reached": true,
+          "scoring_peak_gib": 15.753,
+          "whole_device_peak_gib": 15.753,
+          "load_peak_gib": 14.80859375,
+          "process_peak_gib": null,
+          "task_scores": {
+            "ai2d": 0.83,
+            "textvqa": 0.781,
+            "vqa_truth": 1.0,
+            "vqa_count": 0.764,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.15
+          },
+          "task_peaks_gib": {
+            "ai2d": 14.915,
+            "textvqa": 14.942,
+            "vqa_truth": 14.95,
+            "vqa_count": 14.937,
+            "vqa_description": 14.95,
+            "vqa_affordance": 14.937,
+            "vqa_negation": 15.188,
+            "graph_grab_lite": 15.753
+          },
+          "peak_task": "graph_grab_lite",
+          "task_completion_counts": {
+            "ai2d": {
+              "completed": 100,
+              "requested": 100
+            },
+            "textvqa": {
+              "completed": 100,
+              "requested": 100
+            },
+            "vqa_truth": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_count": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_description": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_affordance": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_negation": {
+              "completed": 25,
+              "requested": 25
+            },
+            "graph_grab_lite": {
+              "completed": 500,
+              "requested": 500
+            }
+          },
+          "score": 0.599125,
+          "run_status": "complete",
+          "run_date": "2026-11-06 17:57:16 +0100",
+          "gpu_baseline_gib": 0.9,
+          "hardware": {
+            "gpu_name": "NVIDIA GeForce RTX 5090",
+            "driver_version": "595.99.02"
+          },
+          "runtime_versions": {
+            "python": "3.13.13",
+            "torch": "2.14.1+cu130"
+          },
+          "cap_enforcement_method": "llama.cpp --fit on with whole-device-derived --fit-target; edge runs leave GPU-layer count automatic with a 1 GiB fit reserve; qualification by sampled nvidia-smi peaks",
+          "configured_context_tokens": 262144,
+          "llama_fit_target_mib": 18169,
+          "source_artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-02-qwen3-vl-8b-q8-complete/results.json"
+        }
+      ],
+      "category_leaders": {
+        "ai2d": [
+          {
+            "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+            "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--LiquidAI--LFM3-VL-2B-GGUF/snapshots/1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+            "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+            "quantization": "NVFP4 feed-forward weights, Q8_0 other weights + F16 mmproj",
+            "suite_name": "Local foundation",
+            "suite_href": "local_foundation_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16,
+            "context_tokens": 128000,
+            "context_probe_peak_gib": 5.305,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1717,
+              "size_px": [
+                1500,
+                1500
+              ],
+              "selection_method": "highest llama.cpp prompt-token count across the fixed AI2D sample",
+              "visual_token_count": null,
+              "prompt_tokens": 2283,
+              "total_input_token_proxy": 2283,
+              "token_measure": "prompt_tokens",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 127999,
+            "context_probe_output_tokens": 1,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 5.981,
+            "whole_device_peak_gib": 5.981,
+            "load_peak_gib": 5.047,
+            "process_peak_gib": null,
+            "task_scores": {
+              "ai2d": 0.92,
+              "textvqa": 0.785,
+              "vqa_truth": 0.544,
+              "vqa_count": 0.756,
+              "vqa_description": 0.66,
+              "vqa_affordance": 0.04,
+              "vqa_negation": 0.64,
+              "graph_grab_lite": 0.338
+            },
+            "task_peaks_gib": {
+              "ai2d": 5.274,
+              "textvqa": 5.244,
+              "vqa_truth": 5.25,
+              "vqa_count": 5.243,
+              "vqa_description": 5.249,
+              "vqa_affordance": 5.244,
+              "vqa_negation": 5.457,
+              "graph_grab_lite": 5.981
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.92,
+            "run_status": "complete",
+            "run_date": "2026-11-06 10:58:15 +0100",
+            "gpu_baseline_gib": 0.875,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02",
+              "total_memory_mib": 32607
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "llama.cpp": "b12097",
+              "CUDA": "13.2"
+            },
+            "cap_enforcement_method": "llama.cpp --fit on --fit-target 17119 MiB; whole-device nvidia-smi sampling",
+            "configured_context_tokens": 128000,
+            "llama_fit_target_mib": 17119,
+            "source_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm3_2b_nvfp4/results.json"
+          }
+        ],
+        "textvqa": [
+          {
+            "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+            "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--LFM2.5-VL-3B-GGUF/snapshots/22f063714556bd4daa81c40dc1ff15ca37ae92ea",
+            "revision": "22f063714556bd4daa81c40dc1ff15ca37ae92ea",
+            "quantization": "UD-Q4_K_XL + F16 mmproj",
+            "suite_name": "Local foundation",
+            "suite_href": "local_foundation_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16,
+            "context_tokens": 32768,
+            "context_probe_peak_gib": 4.644,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1071,
+              "size_px": [
+                625,
+                1500
+              ],
+              "selection_method": "highest llama.cpp prompt-token count across the fixed AI2D sample",
+              "visual_token_count": null,
+              "prompt_tokens": 2865,
+              "total_input_token_proxy": 2865,
+              "token_measure": "prompt_tokens",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 32767,
+            "context_probe_output_tokens": 1,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 5.158,
+            "whole_device_peak_gib": 5.158,
+            "load_peak_gib": 4.532,
+            "process_peak_gib": null,
+            "task_scores": {
+              "ai2d": 0.73,
+              "textvqa": 0.843,
+              "vqa_truth": 0.932,
+              "vqa_count": 0.64,
+              "vqa_description": 0.676,
+              "vqa_affordance": 0.08,
+              "vqa_negation": 0.64,
+              "graph_grab_lite": 0.134
+            },
+            "task_peaks_gib": {
+              "ai2d": 4.644,
+              "textvqa": 4.691,
+              "vqa_truth": 4.696,
+              "vqa_count": 4.696,
+              "vqa_description": 4.677,
+              "vqa_affordance": 4.677,
+              "vqa_negation": 4.677,
+              "graph_grab_lite": 4.781
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.843,
+            "run_status": "complete",
+            "run_date": "2026-11-06 11:55:19 +0100",
+            "gpu_baseline_gib": 0.7109375,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02",
+              "total_memory_mib": 32607
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "llama.cpp": "b12097",
+              "CUDA": "13.2"
+            },
+            "cap_enforcement_method": "llama.cpp --fit on --fit-target 16951 MiB; whole-device nvidia-smi sampling",
+            "configured_context_tokens": 32768,
+            "llama_fit_target_mib": 16951,
+            "source_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm25_3b/results.json"
+          }
+        ],
+        "vqa_truth": [
+          {
+            "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL",
+            "backend": "llama.cpp (UD-Q8_K_XL)",
+            "snapshot": null,
+            "revision": null,
+            "quantization": null,
+            "suite_name": "Qwen-VL",
+            "suite_href": "qwenVL_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16.0,
+            "context_tokens": 262144,
+            "context_probe_peak_gib": 14.972,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1717,
+              "size_px": [
+                1500,
+                1500
+              ],
+              "selection_method": "maximum measured prompt token count across 100 fixed AI2D examples",
+              "visual_token_count": null,
+              "prompt_tokens": 2281,
+              "total_input_token_proxy": 2281,
+              "token_measure": "prompt_tokens",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 262143,
+            "context_probe_output_tokens": 1,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 15.753,
+            "whole_device_peak_gib": 15.753,
+            "load_peak_gib": 14.80859375,
+            "process_peak_gib": null,
+            "task_scores": {
+              "ai2d": 0.83,
+              "textvqa": 0.781,
+              "vqa_truth": 1.0,
+              "vqa_count": 0.764,
+              "vqa_description": 0.588,
+              "vqa_affordance": 0.04,
+              "vqa_negation": 0.64,
+              "graph_grab_lite": 0.15
+            },
+            "task_peaks_gib": {
+              "ai2d": 14.915,
+              "textvqa": 14.942,
+              "vqa_truth": 14.95,
+              "vqa_count": 14.937,
+              "vqa_description": 14.95,
+              "vqa_affordance": 14.937,
+              "vqa_negation": 15.188,
+              "graph_grab_lite": 15.753
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 1.0,
+            "run_status": "complete",
+            "run_date": "2026-11-06 17:57:16 +0100",
+            "gpu_baseline_gib": 0.9,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02"
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "torch": "2.14.1+cu130"
+            },
+            "cap_enforcement_method": "llama.cpp --fit on with whole-device-derived --fit-target; edge runs leave GPU-layer count automatic with a 1 GiB fit reserve; qualification by sampled nvidia-smi peaks",
+            "configured_context_tokens": 262144,
+            "llama_fit_target_mib": 18169,
+            "source_artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-02-qwen3-vl-8b-q8-complete/results.json"
+          }
+        ],
+        "vqa_count": [
+          {
+            "model_id": "google/paligemma2-3b-mix-224",
+            "backend": "Transformers (local cached checkpoint)",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--google--paligemma2-3b-mix-224/snapshots/8e40ab4cc5df93dfb7fd2fff754bcdff8b62ee78",
+            "revision": null,
+            "quantization": null,
+            "suite_name": "Other Big VLMs",
+            "suite_href": "general_transformers_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16.0,
+            "context_tokens": 8189,
+            "context_probe_peak_gib": 15.693359375,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 2426,
+              "size_px": [
+                415,
+                376
+              ],
+              "selection_method": "maximum measured total input-token proxy across fixed AI2D examples; visual-token counts unavailable for the full sample",
+              "visual_token_count": null,
+              "prompt_tokens": null,
+              "total_input_token_proxy": 339,
+              "token_measure": "total_input_token_proxy",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 8181,
+            "context_probe_output_tokens": 8,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 7.547,
+            "whole_device_peak_gib": 15.693,
+            "load_peak_gib": 7.43,
+            "process_peak_gib": 5.758,
+            "task_scores": {
+              "ai2d": 0.71,
+              "textvqa": 0.58,
+              "vqa_truth": 0.972,
+              "vqa_count": 0.78,
+              "vqa_description": 0.692,
+              "vqa_affordance": 0.08,
+              "vqa_negation": 0.52,
+              "graph_grab_lite": 0.028
+            },
+            "task_peaks_gib": {
+              "ai2d": 7.524,
+              "textvqa": 7.473,
+              "vqa_truth": 7.466,
+              "vqa_count": 7.469,
+              "vqa_description": 7.473,
+              "vqa_affordance": 7.47,
+              "vqa_negation": 7.473,
+              "graph_grab_lite": 7.547
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.78,
+            "run_status": "complete",
+            "run_date": "2026-11-06 13:39:50 +0100",
+            "gpu_baseline_gib": 1.093,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02"
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "transformers": "5.22.1",
+              "torch": "2.14.1+cu130",
+              "torch_cuda": "13.0"
+            },
+            "cap_enforcement_method": "torch per-process CUDA memory fraction for Transformers; llama.cpp fit-target margin for GGUF; nvidia-smi whole-device peak sampled throughout load, probe, and scoring",
+            "configured_context_tokens": 8192,
+            "llama_fit_target_mib": null,
+            "source_artifact": "general_transformers_Bench/results/edge_refinement/16gib/20261106-02-paligemma2-clean/results.json"
+          }
+        ],
+        "vqa_description": [
+          {
+            "model_id": "google/paligemma2-3b-mix-224",
+            "backend": "Transformers (local cached checkpoint)",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--google--paligemma2-3b-mix-224/snapshots/8e40ab4cc5df93dfb7fd2fff754bcdff8b62ee78",
+            "revision": null,
+            "quantization": null,
+            "suite_name": "Other Big VLMs",
+            "suite_href": "general_transformers_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16.0,
+            "context_tokens": 8189,
+            "context_probe_peak_gib": 15.693359375,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 2426,
+              "size_px": [
+                415,
+                376
+              ],
+              "selection_method": "maximum measured total input-token proxy across fixed AI2D examples; visual-token counts unavailable for the full sample",
+              "visual_token_count": null,
+              "prompt_tokens": null,
+              "total_input_token_proxy": 339,
+              "token_measure": "total_input_token_proxy",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 8181,
+            "context_probe_output_tokens": 8,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 7.547,
+            "whole_device_peak_gib": 15.693,
+            "load_peak_gib": 7.43,
+            "process_peak_gib": 5.758,
+            "task_scores": {
+              "ai2d": 0.71,
+              "textvqa": 0.58,
+              "vqa_truth": 0.972,
+              "vqa_count": 0.78,
+              "vqa_description": 0.692,
+              "vqa_affordance": 0.08,
+              "vqa_negation": 0.52,
+              "graph_grab_lite": 0.028
+            },
+            "task_peaks_gib": {
+              "ai2d": 7.524,
+              "textvqa": 7.473,
+              "vqa_truth": 7.466,
+              "vqa_count": 7.469,
+              "vqa_description": 7.473,
+              "vqa_affordance": 7.47,
+              "vqa_negation": 7.473,
+              "graph_grab_lite": 7.547
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.692,
+            "run_status": "complete",
+            "run_date": "2026-11-06 13:39:50 +0100",
+            "gpu_baseline_gib": 1.093,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02"
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "transformers": "5.22.1",
+              "torch": "2.14.1+cu130",
+              "torch_cuda": "13.0"
+            },
+            "cap_enforcement_method": "torch per-process CUDA memory fraction for Transformers; llama.cpp fit-target margin for GGUF; nvidia-smi whole-device peak sampled throughout load, probe, and scoring",
+            "configured_context_tokens": 8192,
+            "llama_fit_target_mib": null,
+            "source_artifact": "general_transformers_Bench/results/edge_refinement/16gib/20261106-02-paligemma2-clean/results.json"
+          }
+        ],
+        "vqa_affordance": [
+          {
+            "model_id": "nvidia/Cosmos3-Edge",
+            "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--nvidia--Cosmos3-Edge/snapshots/344d602b128d1bbdacb43b08d0a3626f46343e29",
+            "revision": "344d602b128d1bbdacb43b08d0a3626f46343e29",
+            "quantization": null,
+            "suite_name": "Cosmos",
+            "suite_href": "cosmos_Bench/results/edge_refinement/16gib/context58368_score_reused/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16.0,
+            "context_tokens": 58368,
+            "context_probe_peak_gib": 15.446,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1717,
+              "size_px": [
+                1500,
+                1500
+              ],
+              "selection_method": null,
+              "visual_token_count": 2209,
+              "prompt_tokens": null,
+              "total_input_token_proxy": null,
+              "token_measure": null,
+              "sample_count": null,
+              "successful_samples": null,
+              "complete": null
+            },
+            "context_probe_actual_input_tokens": 58360,
+            "context_probe_output_tokens": 8,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 15.907,
+            "whole_device_peak_gib": 15.907,
+            "load_peak_gib": 6.034,
+            "process_peak_gib": 12.253,
+            "task_scores": {
+              "ai2d": 0.63,
+              "textvqa": 0.741,
+              "vqa_truth": 0.904,
+              "vqa_count": 0.736,
+              "vqa_description": 0.532,
+              "vqa_affordance": 0.16,
+              "vqa_negation": 0.44,
+              "graph_grab_lite": 0.064
+            },
+            "task_peaks_gib": {
+              "ai2d": 6.55,
+              "textvqa": 6.437,
+              "vqa_truth": 6.347,
+              "vqa_count": 6.266,
+              "vqa_description": 6.205,
+              "vqa_affordance": 6.35,
+              "vqa_negation": 6.615,
+              "graph_grab_lite": 9.469
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.16,
+            "run_status": "complete",
+            "run_date": "2026-11-05 15:59:07 +0100",
+            "gpu_baseline_gib": 1.005,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02"
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "torch": "2.14.1+cu130",
+              "cuda": "13.0",
+              "transformers": "5.22.1"
+            },
+            "cap_enforcement_method": "torch per-process CUDA memory fraction; qualification by sampled nvidia-smi peaks",
+            "configured_context_tokens": 61440,
+            "llama_fit_target_mib": null,
+            "source_artifact": "cosmos_Bench/results/edge_refinement/16gib/context58368_score_reused/results.json"
+          }
+        ],
+        "vqa_negation": [
+          {
+            "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+            "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--LiquidAI--LFM3-VL-2B-GGUF/snapshots/1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+            "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+            "quantization": "NVFP4 feed-forward weights, Q8_0 other weights + F16 mmproj",
+            "suite_name": "Local foundation",
+            "suite_href": "local_foundation_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16,
+            "context_tokens": 128000,
+            "context_probe_peak_gib": 5.305,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1717,
+              "size_px": [
+                1500,
+                1500
+              ],
+              "selection_method": "highest llama.cpp prompt-token count across the fixed AI2D sample",
+              "visual_token_count": null,
+              "prompt_tokens": 2283,
+              "total_input_token_proxy": 2283,
+              "token_measure": "prompt_tokens",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 127999,
+            "context_probe_output_tokens": 1,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 5.981,
+            "whole_device_peak_gib": 5.981,
+            "load_peak_gib": 5.047,
+            "process_peak_gib": null,
+            "task_scores": {
+              "ai2d": 0.92,
+              "textvqa": 0.785,
+              "vqa_truth": 0.544,
+              "vqa_count": 0.756,
+              "vqa_description": 0.66,
+              "vqa_affordance": 0.04,
+              "vqa_negation": 0.64,
+              "graph_grab_lite": 0.338
+            },
+            "task_peaks_gib": {
+              "ai2d": 5.274,
+              "textvqa": 5.244,
+              "vqa_truth": 5.25,
+              "vqa_count": 5.243,
+              "vqa_description": 5.249,
+              "vqa_affordance": 5.244,
+              "vqa_negation": 5.457,
+              "graph_grab_lite": 5.981
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.64,
+            "run_status": "complete",
+            "run_date": "2026-11-06 10:58:15 +0100",
+            "gpu_baseline_gib": 0.875,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02",
+              "total_memory_mib": 32607
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "llama.cpp": "b12097",
+              "CUDA": "13.2"
+            },
+            "cap_enforcement_method": "llama.cpp --fit on --fit-target 17119 MiB; whole-device nvidia-smi sampling",
+            "configured_context_tokens": 128000,
+            "llama_fit_target_mib": 17119,
+            "source_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm3_2b_nvfp4/results.json"
+          },
+          {
+            "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+            "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--LFM2.5-VL-3B-GGUF/snapshots/22f063714556bd4daa81c40dc1ff15ca37ae92ea",
+            "revision": "22f063714556bd4daa81c40dc1ff15ca37ae92ea",
+            "quantization": "UD-Q4_K_XL + F16 mmproj",
+            "suite_name": "Local foundation",
+            "suite_href": "local_foundation_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16,
+            "context_tokens": 32768,
+            "context_probe_peak_gib": 4.644,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1071,
+              "size_px": [
+                625,
+                1500
+              ],
+              "selection_method": "highest llama.cpp prompt-token count across the fixed AI2D sample",
+              "visual_token_count": null,
+              "prompt_tokens": 2865,
+              "total_input_token_proxy": 2865,
+              "token_measure": "prompt_tokens",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 32767,
+            "context_probe_output_tokens": 1,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 5.158,
+            "whole_device_peak_gib": 5.158,
+            "load_peak_gib": 4.532,
+            "process_peak_gib": null,
+            "task_scores": {
+              "ai2d": 0.73,
+              "textvqa": 0.843,
+              "vqa_truth": 0.932,
+              "vqa_count": 0.64,
+              "vqa_description": 0.676,
+              "vqa_affordance": 0.08,
+              "vqa_negation": 0.64,
+              "graph_grab_lite": 0.134
+            },
+            "task_peaks_gib": {
+              "ai2d": 4.644,
+              "textvqa": 4.691,
+              "vqa_truth": 4.696,
+              "vqa_count": 4.696,
+              "vqa_description": 4.677,
+              "vqa_affordance": 4.677,
+              "vqa_negation": 4.677,
+              "graph_grab_lite": 4.781
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.64,
+            "run_status": "complete",
+            "run_date": "2026-11-06 11:55:19 +0100",
+            "gpu_baseline_gib": 0.7109375,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02",
+              "total_memory_mib": 32607
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "llama.cpp": "b12097",
+              "CUDA": "13.2"
+            },
+            "cap_enforcement_method": "llama.cpp --fit on --fit-target 16951 MiB; whole-device nvidia-smi sampling",
+            "configured_context_tokens": 32768,
+            "llama_fit_target_mib": 16951,
+            "source_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm25_3b/results.json"
+          },
+          {
+            "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL",
+            "backend": "llama.cpp (UD-Q8_K_XL)",
+            "snapshot": null,
+            "revision": null,
+            "quantization": null,
+            "suite_name": "Qwen-VL",
+            "suite_href": "qwenVL_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16.0,
+            "context_tokens": 262144,
+            "context_probe_peak_gib": 14.972,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1717,
+              "size_px": [
+                1500,
+                1500
+              ],
+              "selection_method": "maximum measured prompt token count across 100 fixed AI2D examples",
+              "visual_token_count": null,
+              "prompt_tokens": 2281,
+              "total_input_token_proxy": 2281,
+              "token_measure": "prompt_tokens",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 262143,
+            "context_probe_output_tokens": 1,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 15.753,
+            "whole_device_peak_gib": 15.753,
+            "load_peak_gib": 14.80859375,
+            "process_peak_gib": null,
+            "task_scores": {
+              "ai2d": 0.83,
+              "textvqa": 0.781,
+              "vqa_truth": 1.0,
+              "vqa_count": 0.764,
+              "vqa_description": 0.588,
+              "vqa_affordance": 0.04,
+              "vqa_negation": 0.64,
+              "graph_grab_lite": 0.15
+            },
+            "task_peaks_gib": {
+              "ai2d": 14.915,
+              "textvqa": 14.942,
+              "vqa_truth": 14.95,
+              "vqa_count": 14.937,
+              "vqa_description": 14.95,
+              "vqa_affordance": 14.937,
+              "vqa_negation": 15.188,
+              "graph_grab_lite": 15.753
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.64,
+            "run_status": "complete",
+            "run_date": "2026-11-06 17:57:16 +0100",
+            "gpu_baseline_gib": 0.9,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02"
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "torch": "2.14.1+cu130"
+            },
+            "cap_enforcement_method": "llama.cpp --fit on with whole-device-derived --fit-target; edge runs leave GPU-layer count automatic with a 1 GiB fit reserve; qualification by sampled nvidia-smi peaks",
+            "configured_context_tokens": 262144,
+            "llama_fit_target_mib": 18169,
+            "source_artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-02-qwen3-vl-8b-q8-complete/results.json"
+          }
+        ],
+        "graph_grab_lite": [
+          {
+            "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+            "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+            "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--LiquidAI--LFM3-VL-2B-GGUF/snapshots/1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+            "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+            "quantization": "NVFP4 feed-forward weights, Q8_0 other weights + F16 mmproj",
+            "suite_name": "Local foundation",
+            "suite_href": "local_foundation_Bench/",
+            "status": "verified",
+            "complete": true,
+            "task_complete": true,
+            "context_probe_passed": true,
+            "whole_device_cap_gib": 16,
+            "context_tokens": 128000,
+            "context_probe_peak_gib": 5.305,
+            "context_probe_image": {
+              "dataset": "AI2D test",
+              "index": 1717,
+              "size_px": [
+                1500,
+                1500
+              ],
+              "selection_method": "highest llama.cpp prompt-token count across the fixed AI2D sample",
+              "visual_token_count": null,
+              "prompt_tokens": 2283,
+              "total_input_token_proxy": 2283,
+              "token_measure": "prompt_tokens",
+              "sample_count": 100,
+              "successful_samples": 100,
+              "complete": true
+            },
+            "context_probe_actual_input_tokens": 127999,
+            "context_probe_output_tokens": 1,
+            "context_probe_configured_limit_reached": true,
+            "scoring_peak_gib": 5.981,
+            "whole_device_peak_gib": 5.981,
+            "load_peak_gib": 5.047,
+            "process_peak_gib": null,
+            "task_scores": {
+              "ai2d": 0.92,
+              "textvqa": 0.785,
+              "vqa_truth": 0.544,
+              "vqa_count": 0.756,
+              "vqa_description": 0.66,
+              "vqa_affordance": 0.04,
+              "vqa_negation": 0.64,
+              "graph_grab_lite": 0.338
+            },
+            "task_peaks_gib": {
+              "ai2d": 5.274,
+              "textvqa": 5.244,
+              "vqa_truth": 5.25,
+              "vqa_count": 5.243,
+              "vqa_description": 5.249,
+              "vqa_affordance": 5.244,
+              "vqa_negation": 5.457,
+              "graph_grab_lite": 5.981
+            },
+            "peak_task": "graph_grab_lite",
+            "task_completion_counts": {
+              "ai2d": {
+                "completed": 100,
+                "requested": 100
+              },
+              "textvqa": {
+                "completed": 100,
+                "requested": 100
+              },
+              "vqa_truth": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_count": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_description": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_affordance": {
+                "completed": 25,
+                "requested": 25
+              },
+              "vqa_negation": {
+                "completed": 25,
+                "requested": 25
+              },
+              "graph_grab_lite": {
+                "completed": 500,
+                "requested": 500
+              }
+            },
+            "score": 0.338,
+            "run_status": "complete",
+            "run_date": "2026-11-06 10:58:15 +0100",
+            "gpu_baseline_gib": 0.875,
+            "hardware": {
+              "gpu_name": "NVIDIA GeForce RTX 5090",
+              "driver_version": "595.99.02",
+              "total_memory_mib": 32607
+            },
+            "runtime_versions": {
+              "python": "3.13.13",
+              "llama.cpp": "b12097",
+              "CUDA": "13.2"
+            },
+            "cap_enforcement_method": "llama.cpp --fit on --fit-target 17119 MiB; whole-device nvidia-smi sampling",
+            "configured_context_tokens": 128000,
+            "llama_fit_target_mib": 17119,
+            "source_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm3_2b_nvfp4/results.json"
+          }
+        ]
+      },
+      "records": [
+        {
+          "model_id": "nvidia/Cosmos3-Edge",
+          "backend": "Transformers (cached checkpoint, bfloat16, HQQ int8 KV cache)",
+          "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--nvidia--Cosmos3-Edge/snapshots/344d602b128d1bbdacb43b08d0a3626f46343e29",
+          "revision": "344d602b128d1bbdacb43b08d0a3626f46343e29",
+          "quantization": null,
+          "suite_name": "Cosmos",
+          "suite_href": "cosmos_Bench/results/edge_refinement/16gib/context58368_score_reused/",
+          "status": "verified",
+          "complete": true,
+          "task_complete": {
+            "ai2d": true,
+            "textvqa": true,
+            "vqa_truth": true,
+            "vqa_count": true,
+            "vqa_description": true,
+            "vqa_affordance": true,
+            "vqa_negation": true,
+            "graph_grab_lite": true
+          },
+          "context_probe_passed": true,
+          "whole_device_cap_gib": 16.0,
+          "context_tokens": 58368,
+          "context_probe_peak_gib": 15.446,
           "context_probe_image": {
             "dataset": "AI2D test",
             "index": 1717,
@@ -7768,11 +9012,11 @@
             "successful_samples": null,
             "complete": null
           },
-          "context_probe_actual_input_tokens": 61432,
+          "context_probe_actual_input_tokens": 58360,
           "context_probe_output_tokens": 8,
-          "context_probe_configured_limit_reached": false,
+          "context_probe_configured_limit_reached": true,
           "scoring_peak_gib": 15.907,
-          "whole_device_peak_gib": 16.073,
+          "whole_device_peak_gib": 15.907,
           "load_peak_gib": 6.034,
           "process_peak_gib": 12.253,
           "task_scores": {
@@ -7831,8 +9075,8 @@
             }
           },
           "score": 0.525875,
-          "run_status": "unverified_cap",
-          "run_date": "2026-11-05 10:54:39 +0100",
+          "run_status": "complete",
+          "run_date": "2026-11-05 15:59:07 +0100",
           "gpu_baseline_gib": 1.005,
           "hardware": {
             "gpu_name": "NVIDIA GeForce RTX 5090",
@@ -7847,7 +9091,489 @@
           "cap_enforcement_method": "torch per-process CUDA memory fraction; qualification by sampled nvidia-smi peaks",
           "configured_context_tokens": 61440,
           "llama_fit_target_mib": null,
-          "source_artifact": "cosmos_Bench/results/edge_refinement/16gib/results.json"
+          "source_artifact": "cosmos_Bench/results/edge_refinement/16gib/context58368_score_reused/results.json"
+        },
+        {
+          "model_id": "LiquidAI/LFM3-VL-2B-GGUF:NVFP4",
+          "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+          "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--LiquidAI--LFM3-VL-2B-GGUF/snapshots/1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+          "revision": "1add221a5ea6c047fcf1eaaf2d247939d7cf8849",
+          "quantization": "NVFP4 feed-forward weights, Q8_0 other weights + F16 mmproj",
+          "suite_name": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "status": "verified",
+          "complete": true,
+          "task_complete": {
+            "ai2d": true,
+            "textvqa": true,
+            "vqa_truth": true,
+            "vqa_count": true,
+            "vqa_description": true,
+            "vqa_affordance": true,
+            "vqa_negation": true,
+            "graph_grab_lite": true
+          },
+          "context_probe_passed": true,
+          "whole_device_cap_gib": 16,
+          "context_tokens": 128000,
+          "context_probe_peak_gib": 5.305,
+          "context_probe_image": {
+            "dataset": "AI2D test",
+            "index": 1717,
+            "size_px": [
+              1500,
+              1500
+            ],
+            "selection_method": "highest llama.cpp prompt-token count across the fixed AI2D sample",
+            "visual_token_count": null,
+            "prompt_tokens": 2283,
+            "total_input_token_proxy": 2283,
+            "token_measure": "prompt_tokens",
+            "sample_count": 100,
+            "successful_samples": 100,
+            "complete": true
+          },
+          "context_probe_actual_input_tokens": 127999,
+          "context_probe_output_tokens": 1,
+          "context_probe_configured_limit_reached": true,
+          "scoring_peak_gib": 5.981,
+          "whole_device_peak_gib": 5.981,
+          "load_peak_gib": 5.047,
+          "process_peak_gib": null,
+          "task_scores": {
+            "ai2d": 0.92,
+            "textvqa": 0.785,
+            "vqa_truth": 0.544,
+            "vqa_count": 0.756,
+            "vqa_description": 0.66,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.338
+          },
+          "task_peaks_gib": {
+            "ai2d": 5.274,
+            "textvqa": 5.244,
+            "vqa_truth": 5.25,
+            "vqa_count": 5.243,
+            "vqa_description": 5.249,
+            "vqa_affordance": 5.244,
+            "vqa_negation": 5.457,
+            "graph_grab_lite": 5.981
+          },
+          "peak_task": "graph_grab_lite",
+          "task_completion_counts": {
+            "ai2d": {
+              "completed": 100,
+              "requested": 100
+            },
+            "textvqa": {
+              "completed": 100,
+              "requested": 100
+            },
+            "vqa_truth": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_count": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_description": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_affordance": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_negation": {
+              "completed": 25,
+              "requested": 25
+            },
+            "graph_grab_lite": {
+              "completed": 500,
+              "requested": 500
+            }
+          },
+          "score": 0.585375,
+          "run_status": "complete",
+          "run_date": "2026-11-06 10:58:15 +0100",
+          "gpu_baseline_gib": 0.875,
+          "hardware": {
+            "gpu_name": "NVIDIA GeForce RTX 5090",
+            "driver_version": "595.99.02",
+            "total_memory_mib": 32607
+          },
+          "runtime_versions": {
+            "python": "3.13.13",
+            "llama.cpp": "b12097",
+            "CUDA": "13.2"
+          },
+          "cap_enforcement_method": "llama.cpp --fit on --fit-target 17119 MiB; whole-device nvidia-smi sampling",
+          "configured_context_tokens": 128000,
+          "llama_fit_target_mib": 17119,
+          "source_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm3_2b_nvfp4/results.json"
+        },
+        {
+          "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
+          "backend": "llama.cpp b12097 CUDA 13.2 OpenAI-compatible server",
+          "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--unsloth--LFM2.5-VL-3B-GGUF/snapshots/22f063714556bd4daa81c40dc1ff15ca37ae92ea",
+          "revision": "22f063714556bd4daa81c40dc1ff15ca37ae92ea",
+          "quantization": "UD-Q4_K_XL + F16 mmproj",
+          "suite_name": "Local foundation",
+          "suite_href": "local_foundation_Bench/",
+          "status": "verified",
+          "complete": true,
+          "task_complete": {
+            "ai2d": true,
+            "textvqa": true,
+            "vqa_truth": true,
+            "vqa_count": true,
+            "vqa_description": true,
+            "vqa_affordance": true,
+            "vqa_negation": true,
+            "graph_grab_lite": true
+          },
+          "context_probe_passed": true,
+          "whole_device_cap_gib": 16,
+          "context_tokens": 32768,
+          "context_probe_peak_gib": 4.644,
+          "context_probe_image": {
+            "dataset": "AI2D test",
+            "index": 1071,
+            "size_px": [
+              625,
+              1500
+            ],
+            "selection_method": "highest llama.cpp prompt-token count across the fixed AI2D sample",
+            "visual_token_count": null,
+            "prompt_tokens": 2865,
+            "total_input_token_proxy": 2865,
+            "token_measure": "prompt_tokens",
+            "sample_count": 100,
+            "successful_samples": 100,
+            "complete": true
+          },
+          "context_probe_actual_input_tokens": 32767,
+          "context_probe_output_tokens": 1,
+          "context_probe_configured_limit_reached": true,
+          "scoring_peak_gib": 5.158,
+          "whole_device_peak_gib": 5.158,
+          "load_peak_gib": 4.532,
+          "process_peak_gib": null,
+          "task_scores": {
+            "ai2d": 0.73,
+            "textvqa": 0.843,
+            "vqa_truth": 0.932,
+            "vqa_count": 0.64,
+            "vqa_description": 0.676,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.134
+          },
+          "task_peaks_gib": {
+            "ai2d": 4.644,
+            "textvqa": 4.691,
+            "vqa_truth": 4.696,
+            "vqa_count": 4.696,
+            "vqa_description": 4.677,
+            "vqa_affordance": 4.677,
+            "vqa_negation": 4.677,
+            "graph_grab_lite": 4.781
+          },
+          "peak_task": "graph_grab_lite",
+          "task_completion_counts": {
+            "ai2d": {
+              "completed": 100,
+              "requested": 100
+            },
+            "textvqa": {
+              "completed": 100,
+              "requested": 100
+            },
+            "vqa_truth": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_count": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_description": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_affordance": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_negation": {
+              "completed": 25,
+              "requested": 25
+            },
+            "graph_grab_lite": {
+              "completed": 500,
+              "requested": 500
+            }
+          },
+          "score": 0.584375,
+          "run_status": "complete",
+          "run_date": "2026-11-06 11:55:19 +0100",
+          "gpu_baseline_gib": 0.7109375,
+          "hardware": {
+            "gpu_name": "NVIDIA GeForce RTX 5090",
+            "driver_version": "595.99.02",
+            "total_memory_mib": 32607
+          },
+          "runtime_versions": {
+            "python": "3.13.13",
+            "llama.cpp": "b12097",
+            "CUDA": "13.2"
+          },
+          "cap_enforcement_method": "llama.cpp --fit on --fit-target 16951 MiB; whole-device nvidia-smi sampling",
+          "configured_context_tokens": 32768,
+          "llama_fit_target_mib": 16951,
+          "source_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm25_3b/results.json"
+        },
+        {
+          "model_id": "google/paligemma2-3b-mix-224",
+          "backend": "Transformers (local cached checkpoint)",
+          "snapshot": "/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--google--paligemma2-3b-mix-224/snapshots/8e40ab4cc5df93dfb7fd2fff754bcdff8b62ee78",
+          "revision": null,
+          "quantization": null,
+          "suite_name": "Other Big VLMs",
+          "suite_href": "general_transformers_Bench/",
+          "status": "verified",
+          "complete": true,
+          "task_complete": {
+            "ai2d": true,
+            "textvqa": true,
+            "vqa_truth": true,
+            "vqa_count": true,
+            "vqa_description": true,
+            "vqa_affordance": true,
+            "vqa_negation": true,
+            "graph_grab_lite": true
+          },
+          "context_probe_passed": true,
+          "whole_device_cap_gib": 16.0,
+          "context_tokens": 8189,
+          "context_probe_peak_gib": 15.693359375,
+          "context_probe_image": {
+            "dataset": "AI2D test",
+            "index": 2426,
+            "size_px": [
+              415,
+              376
+            ],
+            "selection_method": "maximum measured total input-token proxy across fixed AI2D examples; visual-token counts unavailable for the full sample",
+            "visual_token_count": null,
+            "prompt_tokens": null,
+            "total_input_token_proxy": 339,
+            "token_measure": "total_input_token_proxy",
+            "sample_count": 100,
+            "successful_samples": 100,
+            "complete": true
+          },
+          "context_probe_actual_input_tokens": 8181,
+          "context_probe_output_tokens": 8,
+          "context_probe_configured_limit_reached": true,
+          "scoring_peak_gib": 7.547,
+          "whole_device_peak_gib": 15.693,
+          "load_peak_gib": 7.43,
+          "process_peak_gib": 5.758,
+          "task_scores": {
+            "ai2d": 0.71,
+            "textvqa": 0.58,
+            "vqa_truth": 0.972,
+            "vqa_count": 0.78,
+            "vqa_description": 0.692,
+            "vqa_affordance": 0.08,
+            "vqa_negation": 0.52,
+            "graph_grab_lite": 0.028
+          },
+          "task_peaks_gib": {
+            "ai2d": 7.524,
+            "textvqa": 7.473,
+            "vqa_truth": 7.466,
+            "vqa_count": 7.469,
+            "vqa_description": 7.473,
+            "vqa_affordance": 7.47,
+            "vqa_negation": 7.473,
+            "graph_grab_lite": 7.547
+          },
+          "peak_task": "graph_grab_lite",
+          "task_completion_counts": {
+            "ai2d": {
+              "completed": 100,
+              "requested": 100
+            },
+            "textvqa": {
+              "completed": 100,
+              "requested": 100
+            },
+            "vqa_truth": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_count": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_description": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_affordance": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_negation": {
+              "completed": 25,
+              "requested": 25
+            },
+            "graph_grab_lite": {
+              "completed": 500,
+              "requested": 500
+            }
+          },
+          "score": 0.54525,
+          "run_status": "complete",
+          "run_date": "2026-11-06 13:39:50 +0100",
+          "gpu_baseline_gib": 1.093,
+          "hardware": {
+            "gpu_name": "NVIDIA GeForce RTX 5090",
+            "driver_version": "595.99.02"
+          },
+          "runtime_versions": {
+            "python": "3.13.13",
+            "transformers": "5.22.1",
+            "torch": "2.14.1+cu130",
+            "torch_cuda": "13.0"
+          },
+          "cap_enforcement_method": "torch per-process CUDA memory fraction for Transformers; llama.cpp fit-target margin for GGUF; nvidia-smi whole-device peak sampled throughout load, probe, and scoring",
+          "configured_context_tokens": 8192,
+          "llama_fit_target_mib": null,
+          "source_artifact": "general_transformers_Bench/results/edge_refinement/16gib/20261106-02-paligemma2-clean/results.json"
+        },
+        {
+          "model_id": "unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL",
+          "backend": "llama.cpp (UD-Q8_K_XL)",
+          "snapshot": null,
+          "revision": null,
+          "quantization": null,
+          "suite_name": "Qwen-VL",
+          "suite_href": "qwenVL_Bench/",
+          "status": "verified",
+          "complete": true,
+          "task_complete": {
+            "ai2d": true,
+            "textvqa": true,
+            "vqa_truth": true,
+            "vqa_count": true,
+            "vqa_description": true,
+            "vqa_affordance": true,
+            "vqa_negation": true,
+            "graph_grab_lite": true
+          },
+          "context_probe_passed": true,
+          "whole_device_cap_gib": 16.0,
+          "context_tokens": 262144,
+          "context_probe_peak_gib": 14.972,
+          "context_probe_image": {
+            "dataset": "AI2D test",
+            "index": 1717,
+            "size_px": [
+              1500,
+              1500
+            ],
+            "selection_method": "maximum measured prompt token count across 100 fixed AI2D examples",
+            "visual_token_count": null,
+            "prompt_tokens": 2281,
+            "total_input_token_proxy": 2281,
+            "token_measure": "prompt_tokens",
+            "sample_count": 100,
+            "successful_samples": 100,
+            "complete": true
+          },
+          "context_probe_actual_input_tokens": 262143,
+          "context_probe_output_tokens": 1,
+          "context_probe_configured_limit_reached": true,
+          "scoring_peak_gib": 15.753,
+          "whole_device_peak_gib": 15.753,
+          "load_peak_gib": 14.80859375,
+          "process_peak_gib": null,
+          "task_scores": {
+            "ai2d": 0.83,
+            "textvqa": 0.781,
+            "vqa_truth": 1.0,
+            "vqa_count": 0.764,
+            "vqa_description": 0.588,
+            "vqa_affordance": 0.04,
+            "vqa_negation": 0.64,
+            "graph_grab_lite": 0.15
+          },
+          "task_peaks_gib": {
+            "ai2d": 14.915,
+            "textvqa": 14.942,
+            "vqa_truth": 14.95,
+            "vqa_count": 14.937,
+            "vqa_description": 14.95,
+            "vqa_affordance": 14.937,
+            "vqa_negation": 15.188,
+            "graph_grab_lite": 15.753
+          },
+          "peak_task": "graph_grab_lite",
+          "task_completion_counts": {
+            "ai2d": {
+              "completed": 100,
+              "requested": 100
+            },
+            "textvqa": {
+              "completed": 100,
+              "requested": 100
+            },
+            "vqa_truth": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_count": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_description": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_affordance": {
+              "completed": 25,
+              "requested": 25
+            },
+            "vqa_negation": {
+              "completed": 25,
+              "requested": 25
+            },
+            "graph_grab_lite": {
+              "completed": 500,
+              "requested": 500
+            }
+          },
+          "score": 0.599125,
+          "run_status": "complete",
+          "run_date": "2026-11-06 17:57:16 +0100",
+          "gpu_baseline_gib": 0.9,
+          "hardware": {
+            "gpu_name": "NVIDIA GeForce RTX 5090",
+            "driver_version": "595.99.02"
+          },
+          "runtime_versions": {
+            "python": "3.13.13",
+            "torch": "2.14.1+cu130"
+          },
+          "cap_enforcement_method": "llama.cpp --fit on with whole-device-derived --fit-target; edge runs leave GPU-layer count automatic with a 1 GiB fit reserve; qualification by sampled nvidia-smi peaks",
+          "configured_context_tokens": 262144,
+          "llama_fit_target_mib": 18169,
+          "source_artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-02-qwen3-vl-8b-q8-complete/results.json"
         }
       ]
     }

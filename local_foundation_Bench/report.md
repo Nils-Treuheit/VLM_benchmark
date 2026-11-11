@@ -22,7 +22,7 @@ The full-suite macro is the unweighted mean of eight task scores. It is reported
 | 12 GiB | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | verified | 58.54% | 128,000 tokens | 5.164 GiB | 5.554 GiB | 5.554 GiB |
 | 12 GiB | unsloth/LFM2.5-VL-3B-GGUF | verified | 58.44% | 32,768 tokens | 4.547 GiB | 4.554 GiB | 4.554 GiB |
 
-All seven listed runs completed all eight shared tasks under their measured whole-device limits. The 10 GiB [LFM3 NVFP4 report](results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/report.md) and [raw results](results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/results.json), and [LFM2.5 3B report](results/runs/20261104-223616/edge_10gib/lfm25_3b/report.md) and [raw results](results/runs/20261104-223616/edge_10gib/lfm25_3b/results.json) were independently reviewed. The [8 GiB LFM3 NVFP4 report](results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/report.md) and [raw results](results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/results.json), the [LFM2.5 3B report](results/runs/20261104-201747/edge_8gib/lfm25_3b/report.md) and [raw results](results/runs/20261104-201747/edge_8gib/lfm25_3b/results.json), and the [LFM3 Q4 report](results/runs/20261104-202426/edge_8gib/lfm3_2b/report.md) and [raw results](results/runs/20261104-202426/edge_8gib/lfm3_2b/results.json) preserve the 8 GiB evidence. The [12 GiB LFM3 NVFP4 report](results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/report.md) and [raw results](results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/results.json) were independently reviewed. Two earlier LFM3 12 GiB attempts remain preserved under `results/runs/results/runs/edge_refinement/12gib/` and `results/runs/edge_refinement/12gib/lfm3_2b_nvfp4/`; their evidence gaps are resolved by the verified retry. The [12 GiB LFM2.5 3B report](results/runs/edge_refinement/12gib/lfm25_3b/report.md) and [raw results](results/runs/edge_refinement/12gib/lfm25_3b/results.json) were also independently reviewed. Other selected candidates and 14/16 GiB cap stages remain pending.
+All seven listed runs completed all eight shared tasks under their measured whole-device limits. The 10 GiB [LFM3 NVFP4 report](results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published), and [LFM2.5 3B report](results/runs/20261104-223616/edge_10gib/lfm25_3b/report.md) and raw results (local artifact; not published) were independently reviewed. The [8 GiB LFM3 NVFP4 report](results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published), the [LFM2.5 3B report](results/runs/20261104-201747/edge_8gib/lfm25_3b/report.md) and raw results (local artifact; not published), and the [LFM3 Q4 report](results/runs/20261104-202426/edge_8gib/lfm3_2b/report.md) and raw results (local artifact; not published) preserve the 8 GiB evidence. The [12 GiB LFM3 NVFP4 report](results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published) were independently reviewed. Two earlier LFM3 12 GiB attempts remain preserved under `results/runs/results/runs/edge_refinement/12gib/` and `results/runs/edge_refinement/12gib/lfm3_2b_nvfp4/`; their evidence gaps are resolved by the verified retry. The [12 GiB LFM2.5 3B report](results/runs/edge_refinement/12gib/lfm25_3b/report.md) and raw results (local artifact; not published) were also independently reviewed. Other selected candidates and 14/16 GiB cap stages remain pending.
 
 ## Quality results
 
@@ -144,7 +144,7 @@ Backend: Ollama OpenAI-compatible multimodal chat API; context: 131072 tokens; s
 Quantization: UD Q4_K_XL; MTP4.
 Generation settings: `{"num_predict": 512, "seed": 3407, "temperature": 0, "think": false, "top_p": 1}`.
 Runtime versions: `{"ollama": "local managed service; version unavailable via benchmark API"}`.
-Raw outputs, scores, errors, latency, token counts, and memory samples: [results JSON](results/runs/20261103-180832/qwen3_8_mtp4_ud_q4_k_xl_128k/results.json).
+Raw outputs, scores, errors, latency, token counts, and memory samples: results JSON (local artifact; not published).
 
 ### `unsloth/LFM2.5-VL-3B-GGUF`
 
@@ -157,7 +157,7 @@ Image processing: `{"image_format": "JPEG quality 92", "image_max_tokens": "llam
 Generation settings: `{"max_new_tokens": 512, "min_p": 0.0, "repeat_penalty": 1.0, "seed": 3407, "temperature": 0.2, "top_k": 50, "top_p": 1.0}`.
 Runtime versions: `{"CUDA": "13.2", "llama.cpp": "b12097"}`.
 Cached model and projector size: 2.39 GiB.
-Raw outputs, scores, errors, latency, token counts, and memory samples: [results JSON](results/runs/20261104-124950/lfm25_3b/results.json).
+Raw outputs, scores, errors, latency, token counts, and memory samples: results JSON (local artifact; not published).
 
 ### `LiquidAI/LFM3-VL-2B-GGUF`
 
@@ -170,7 +170,7 @@ Image processing: `{"image_format": "JPEG quality 92", "image_max_tokens": "llam
 Generation settings: `{"max_new_tokens": 4096, "min_p": 0.0, "repeat_penalty": 1.1, "seed": 3407, "temperature": 0.1, "top_k": 50, "top_p": 1.0}`.
 Runtime versions: `{"CUDA": "13.2", "llama.cpp": "b12097"}`.
 Cached model and projector size: 1.38 GiB.
-Raw outputs, scores, errors, latency, token counts, and memory samples: [results JSON](results/runs/20261104-125616/lfm3_2b/results.json).
+Raw outputs, scores, errors, latency, token counts, and memory samples: results JSON (local artifact; not published).
 
 ### `LiquidAI/LFM3-VL-2B-GGUF:NVFP4`
 
@@ -184,7 +184,7 @@ Generation settings: `{"max_new_tokens": 4096, "min_p": 0.0, "repeat_penalty": 1
 Runtime versions: `{"CUDA": "13.2", "llama.cpp": "b12097"}`.
 Cached model and projector size: 1.55 GiB.
 Recovery: 1 failed request(s) were retried and scored; the original error remains recorded in `repair_attempts` in the results JSON.
-Raw outputs, scores, errors, latency, token counts, and memory samples: [results JSON](results/runs/20261104-135212/lfm3_2b_nvfp4/results.json).
+Raw outputs, scores, errors, latency, token counts, and memory samples: results JSON (local artifact; not published).
 
 ### `unsloth/LFM2.5-VL-1.6B-GGUF`
 
@@ -197,7 +197,7 @@ Image processing: `{"image_format": "JPEG quality 92", "image_max_tokens": 64, "
 Generation settings: `{"max_new_tokens": 512, "min_p": 0.15, "repeat_penalty": 1.05, "seed": 3407, "temperature": 0.1, "top_k": 50, "top_p": 1.0}`.
 Runtime versions: `{"CUDA": "13.2", "llama.cpp": "b12097"}`.
 Cached model and projector size: 2.98 GiB.
-Raw outputs, scores, errors, latency, token counts, and memory samples: [results JSON](results/runs/20261104-145550/lfm25_1_6b/results.json).
+Raw outputs, scores, errors, latency, token counts, and memory samples: results JSON (local artifact; not published).
 
 ## Limitations
 

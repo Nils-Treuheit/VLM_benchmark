@@ -67,12 +67,25 @@ REFERENCES = {
 }
 
 
+def _recorded_model_load(run: dict[str, Any]) -> tuple[float | None, str | None]:
+    duration = run.get("model_load_duration_s")
+    timing = run.get("model_load_timing")
+    if duration is None and run.get("groundanything_service_startup_duration_s") is not None:
+        duration = run["groundanything_service_startup_duration_s"]
+        timing = run.get("groundanything_service_startup_timing") or timing
+    return duration, timing
+
+
 def load_runs() -> dict[str, dict[str, Any]]:
     result = {}
     for model_id in MODEL_ORDER:
+        domain_task_metadata = {}
         path = RUNS / (model_id.replace("/", "--") + ".json")
         if path.is_file():
             result[model_id] = json.loads(path.read_text(encoding="utf-8"))
+            load_duration, load_timing = _recorded_model_load(result[model_id])
+            result[model_id]["model_load_duration_s"] = load_duration
+            result[model_id]["model_load_timing"] = load_timing
         for run_group in ("locateany_tf457", "specialists"):
             coco_path = (HERE / "results" / "domain_runs" / "coco_val2017" /
                          run_group / (model_id.replace("/", "--") + ".json"))
@@ -80,10 +93,21 @@ def load_runs() -> dict[str, dict[str, Any]]:
                 coco_run = json.loads(coco_path.read_text(encoding="utf-8"))
                 result.setdefault(model_id, {"model_id": model_id, "tasks": {}})
                 result[model_id].setdefault("tasks", {}).update(coco_run.get("tasks", {}))
+                coco_load_duration, coco_load_timing = _recorded_model_load(coco_run)
+                for task in coco_run.get("tasks", {}):
+                    domain_task_metadata[task] = {
+                        "model_load_duration_s": coco_load_duration,
+                        "model_load_timing": coco_load_timing,
+                        "max_new_tokens": coco_run.get("max_new_tokens_by_task", {}).get(task),
+                        "image_token_limit": coco_run.get("image_token_limit_by_task", {}).get(task),
+                        "input_size": coco_run.get("input_size"),
+                        "source_run": coco_path.parent.name,
+                    }
         model = result.get(model_id)
         if not model:
             continue
         task_metadata = model.setdefault("task_run_metadata", {})
+        task_metadata.update(domain_task_metadata)
         model_path = path
         for task, task_run in model.get("tasks", {}).items():
             task_metadata.setdefault(task, {
@@ -106,9 +130,11 @@ def load_runs() -> dict[str, dict[str, Any]]:
                 current_count = int(current.get("summary", {}).get("completed", 0) or 0)
                 if candidate_count <= current_count:
                     continue
+                candidate_load_duration, candidate_load_timing = _recorded_model_load(candidate)
                 model["tasks"][task] = candidate_task
                 model["task_run_metadata"][task] = {
-                    "model_load_duration_s": candidate.get("model_load_duration_s"),
+                    "model_load_duration_s": candidate_load_duration,
+                    "model_load_timing": candidate_load_timing,
                     "max_new_tokens": candidate.get("max_new_tokens_by_task", {}).get(task),
                     "image_token_limit": candidate.get("image_token_limit_by_task", {}).get(task),
                     "input_size": candidate.get("input_size"),
@@ -487,15 +513,15 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
         {"dataset": "COCO val2017", "status": "100-image shared manifest; YOLOE, YOLO26, SAM 3.1, LocateAnything, and GroundAnything runs complete",
          "task": "Shared detection, classification, instance segmentation, and speed",
          "note": "Every available vision baseline uses the same 100 annotated images and all 80 COCO classes. Grounding specialists are scored on boxes; models without confidence scores use uniform scores for COCO AP."},
-        {"dataset": "DOTA v1.0 validation", "status": "Shared HBB runs complete for YOLOE, YOLO26-L, SAM 3.1, and GroundAnything; LocateAnything native-input attempt partial (51/100), 4,096-patch recovery 100/100 but parser-invalid; full-split YOLO26-L-OBB complete",
+        {"dataset": "DOTA v1.0 validation", "status": "Shared HBB runs complete for YOLOE, YOLO26-L, SAM 3.1, and GroundAnything; LocateAnything native-input attempt partial (51/100), 4,096-patch recovery 100/100 with 41 parser-valid; full-split YOLO26-L-OBB complete",
          "task": "Shared aerial detection plus native OBB for YOLO26-L",
-         "note": "100 of 456 labeled validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and available grounding specialists. GroundAnything completed all 100 items with five outputs truncated at 2,048 tokens; official COCO AP was unavailable because three predicted labels did not map to annotation categories. LocateAnything's native-input 2,048-token run completed 51/100 before 49 CUDA OOM failures. A separate run caps the image processor at 4,096 patches and completes 100/100, but all 100 outputs include invalid records; COCOeval AP is unavailable. Keep the two LocateAnything settings separate. YOLO26-L-OBB uses the full 458-file validation split, including two background-only images, for the separate native OBB reference. Its clean rerun recorded 8.6 ms/image and 2.351 GiB peak whole-device VRAM. DOTA terms restrict use to academic purposes and prohibit commercial use."},
+         "note": "100 of 456 labeled validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and available grounding specialists. GroundAnything completed all 100 items with five outputs truncated at 2,048 tokens; official COCO AP was unavailable because three predicted labels did not map to annotation categories. LocateAnything's native-input 2,048-token run completed 51/100 before 49 CUDA OOM failures; its 51 completed items include 33 parser-valid outputs and yield COCOeval AP 0.046%. A separate run caps the image processor at 4,096 patches and completes 100/100, with 41 parser-valid outputs; 62 responses were truncated at 2,048 tokens. COCOeval AP is unavailable because one predicted label did not map to a category. Keep the two LocateAnything settings separate. YOLO26-L-OBB uses the full 458-file validation split, including two background-only images, for the separate native OBB reference. Its clean rerun recorded 8.6 ms/image and 2.351 GiB peak whole-device VRAM. DOTA terms restrict use to academic purposes and prohibit commercial use."},
         {"dataset": "BOP-H3 HOPE v2 validation", "status": "50-image shared manifest; LocateAnything, GroundAnything, SAM 3.1, and YOLOE complete; closed-vocabulary YOLO26 omitted because its COCO label set does not cover HOPE classes",
          "task": "Object-centric 2D detection; instance masks where supported",
          "note": "All 50 local validation images are shared by YOLOE, SAM 3.1, and both grounding specialists. GroundAnything's official COCO AP is unavailable because one predicted label did not map to the annotation categories; its class-aware F1 remains reportable. Mask AP is shown only for models that return masks. This is the 2D HOPE v2 subset, not the full BOP-H3 pose/onboarding protocol."},
-        {"dataset": "KITTI object detection", "status": "Local inference complete for YOLOE, YOLO26, SAM 3.1, LocateAnything, and GroundAnything; official AP_R40 pending",
+        {"dataset": "KITTI object detection", "status": "Deprioritized; local training-panel inference complete",
          "task": "Automotive 2D detection",
-         "note": "The fixed 100-image panel is sampled from a deterministic 80/20 partition of labeled training images and uses Car, Pedestrian, and Cyclist boxes. It excludes Van, Person_sitting, Truck, Tram, Misc, and DontCare labels; its COCO-shaped annotations support local comparative AP/F1, not official KITTI AP_R40. LocateAnything used a 2,048-token response cap; 98 outputs reached the cap, and one unmapped label prevented official COCOeval AP. GroundAnything query latency excludes the approximately 10-second shared service startup. Public test labels are unavailable, and the official KITTI object devkit or a verified equivalent is still needed for AP_R40."},
+         "note": "The fixed 100-image panel is sampled from a deterministic 80/20 partition of labeled training images and uses Car, Pedestrian, and Cyclist boxes. It excludes Van, Person_sitting, Truck, Tram, Misc, and DontCare labels; its COCO-shaped annotations support local comparative AP/F1, not official KITTI AP_R40. LocateAnything used a 2,048-token response cap; 98 outputs reached the cap, and one unmapped label prevented official COCOeval AP. GroundAnything query latency excludes the approximately 10-second shared service startup. Public test labels are unavailable. Per scope, KITTI remains a local exploratory panel and has no remaining benchmark work or official AP_R40 completion gate."},
         {"dataset": "LVIS v1 validation", "status": "GroundAnything, LocateAnything, SAM 3.1, and YOLOE-26-L complete at 100/100; YOLO26-L and YOLO26-L-seg have no supported detections for the selected categories",
          "task": "Long-tail detection and instance segmentation",
          "note": "This exploratory panel uses 10 rare, 10 common, and 10 frequent categories across 100 fixed LVIS val images sourced from COCO 2017 train/val. It uses official LVIS AP and frequency-group metrics, not the full 1,203-category leaderboard; COCO-trained baselines may have seen some train images. YOLO26-L and YOLO26-L-seg were run on the same panel, but their fixed COCO vocabulary produced no detections for these selected long-tail categories, so LVIS AP is unsupported."},
@@ -506,15 +532,39 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
          "task": "Unseen-object detection, onboarding, and 6D pose",
          "note": "Keep separate from class-name box AP. Use the official BOP protocol for pose tasks and review each dataset's terms before expanding beyond local HOPE v2."},
     ]
+    rf_rows = [row for row in domain_summaries(domain_runs or {}, vision_runs or {})
+               if row["dataset"].startswith("RF100-VL:")]
+    rf_panels = sorted({row["dataset"] for row in rf_rows})
+    rf_panel_total = sum(1 for path in (HERE / "data" / "domain_manifests" / "rf100_vl").glob("*/coco.json"))
+    all_rf_complete = False
+    if rf_panels:
+        required_rf_models = ("nvidia/LocateAnything-3B", "GroundingPI/GroundAnything-VLM", "yoloe26l-seg")
+        completed = {model: sum(row["status"] == "complete" for row in rf_rows if row["model_id"] == model)
+                     for model in required_rf_models}
+        rf_track = next(row for row in dataset_tracks if row["dataset"] == "RF100-VL")
+        all_rf_complete = rf_panel_total == 100 and all(count == rf_panel_total for count in completed.values())
+        coverage = ", ".join(f"{model}: {completed[model]}/{rf_panel_total}" for model in required_rf_models)
+        rf_track["status"] = (f"All-subset runs complete across {rf_panel_total} panels" if all_rf_complete
+                              else f"Expanded local panel coverage recorded; required-model completion: {coverage}")
+        rf_track["note"] = (
+            f"The local test export contains {rf_panel_total} subsets. Per-subset panels use up to 20 shared "
+            "seeded test images. " + coverage + ". All local test exports contain bounding boxes but no "
+            "instance masks, including subsets whose names mention segmentation; mask AP is unsupported. "
+            "Closed-vocabulary YOLO26 results remain limited to panels with matching labels."
+            + (" Live all-subset run status is tracked in PLAN.md." if not all_rf_complete else "")
+        )
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "status": "complete" if winner else "not run" if not runs else "partial",
+        "status": "complete" if winner and all_rf_complete else "not run" if not runs else "partial",
         "tested_model_count": tested_model_count,
-        "data_status": "all core tasks have recorded results" if models and all(m["complete_suite"] for m in models) else
-                       "some prepared tasks have recorded runs" if runs else
+        "data_status": ("core tasks complete; expanded RF100-VL coverage pending"
+                        if models and all(m["complete_suite"] for m in models) and not all_rf_complete else
+                        "all core and expanded RF100-VL tasks have recorded results"
+                        if models and all(m["complete_suite"] for m in models) and all_rf_complete else
+                        "some prepared tasks have recorded runs" if runs else
                        "local auxiliary manifests prepared" if prepared_aux_manifests else
                        "some local manifests prepared" if prepared_any_manifests else
-                       "not present in inspected cache",
+                       "not present in inspected cache"),
         "prepared_tasks": prepared_tasks,
         "candidate_model_count": len(MODEL_ORDER),
         "sample_plan": {"grounding_each": 100, "vqa_each": 25, "textvqa": 100, "vision_each": 100},
@@ -699,6 +749,51 @@ def write_report(data: dict[str, Any]) -> None:
                      f"{grounding_cell} | "
                      f"{fmt(runtime.get('latency_mean_s'))} / {fmt(runtime.get('latency_median_s'))} | {fmt(runtime.get('images_per_s'))} | "
                      f"{fmt(runtime.get('peak_whole_device_vram_gib'))} GiB |")
+    vision_by_id = {model["model_id"]: model for model in data["vision"]}
+    locate = vision_by_id.get("nvidia/LocateAnything-3B", {})
+    ground = vision_by_id.get("GroundingPI/GroundAnything-VLM", {})
+    yoloe = vision_by_id.get("yoloe26l-seg", {})
+    yolo = vision_by_id.get("yolo26l", {})
+    comparison_models = (locate, ground, yoloe, yolo)
+    if all(model.get("status") == "complete" for model in comparison_models):
+        yoloe_time = yoloe.get("runtime", {}).get("latency_mean_s")
+        comparison = []
+        for model in (locate, ground):
+            latency = model.get("runtime", {}).get("latency_mean_s")
+            ratio = latency / yoloe_time if latency is not None and yoloe_time else None
+            comparison.append((model, latency, ratio))
+        locate_grounding = next((model for model in data["models"]
+                                 if model["model_id"] == "nvidia/LocateAnything-3B"), {}).get("tasks", {}).get("refcocog", {})
+        ground_grounding = next((model for model in data["models"]
+                                 if model["model_id"] == "GroundingPI/GroundAnything-VLM"), {}).get("tasks", {}).get("refcocog", {})
+        vision_grounding = {model["model_id"]: model for model in data["vision"]}
+        yoloe_grounding = vision_grounding.get("yoloe26l-seg", {}).get("grounding", {})
+        if yoloe_grounding.get("sample_count") == data["sample_plan"]["grounding_each"]:
+            loc_iou = locate_grounding.get("metrics", {}).get("acc_iou_05")
+            gr_iou = ground_grounding.get("metrics", {}).get("acc_iou_05")
+            y_iou = yoloe_grounding.get("acc_iou_05")
+            loc_time = locate_grounding.get("mean_latency_s")
+            gr_time = ground_grounding.get("mean_latency_s")
+            y_time = yoloe_grounding.get("mean_latency_s")
+            lines.extend([
+                "", "### Accuracy and query-time comparison", "",
+                f"On the shared 100-image COCO panel, YOLOE-26-L reached {fmt(yoloe.get('detection', {}).get('AP'), True)} box AP "
+                f"at {fmt(yoloe_time)} s/query. LocateAnything reached {fmt(locate.get('detection', {}).get('AP'), True)} AP "
+                f"at {fmt(comparison[0][1])} s/query ({fmt(comparison[0][2])}× the YOLOE query time), and GroundAnything "
+                f"reached {fmt(ground.get('detection', {}).get('AP'), True)} AP at {fmt(comparison[1][1])} s/query "
+                f"({fmt(comparison[1][2])}×). Neither grounding VLM improved COCO AP on this panel. Closed-vocabulary "
+                f"YOLO26-L reached {fmt(yolo.get('detection', {}).get('AP'), True)} AP at "
+                f"{fmt(yolo.get('runtime', {}).get('latency_mean_s'))} s/query. These COCO AP values use uniform VLM box scores, "
+                "and the per-model query timing boundaries differ as described below.",
+            ])
+            if all(value is not None for value in (loc_iou, gr_iou, y_iou, loc_time, gr_time, y_time)):
+                lines.append(
+                    f"On the adapted RefCOCOg panel, YOLOE-26-L reached {fmt(y_iou, True)} Acc@IoU 0.5 at "
+                    f"{fmt(y_time)} s/query; LocateAnything reached {fmt(loc_iou, True)} at {fmt(loc_time)} s/query, "
+                    f"and GroundAnything reached {fmt(gr_iou, True)} at {fmt(gr_time)} s/query. The VLMs did not "
+                    "exceed the YOLOE score on this panel. Cold-start load is separate: it was captured for these "
+                    "RefCOCOg runs, while the older VLM COCO runs have no recoverable model-load duration."
+                )
     lines.extend([
         "", "YOLOE-26 and SAM 3.1 receive the same full COCO category-name list per image. SAM latency includes "
         "one text-prompt query per category; YOLOE latency includes prompt setup and one image pass. YOLO26 "
@@ -710,13 +805,13 @@ def write_report(data: dict[str, Any]) -> None:
         "do not provide confidence scores, so their COCO AP uses uniform scores and is less informative than "
         "class-aware F1 for direct comparison. No overall rank combines these metrics.",
         "", "## Selection guide", "",
-        (f"Best complete model: `{data['best_complete']['model_id']}` with local task macro "
+        (f"Best complete grounding specialist: `{data['best_complete']['model_id']}` with local task macro "
          f"{fmt(data['best_complete']['local_macro'], True)}." if data["best_complete"] else
          "No complete model is eligible for a quality recommendation yet."),
         "The local task macro weights the four task scores equally. RefCOCOg uses Acc@IoU 0.5, "
         "COCO uses sampled-image COCO AP when available and otherwise local micro F1@IoU 0.5, "
         "GUI uses point-in-target accuracy, and HierText uses detection F1. It is a local comparison metric.",
-        "", "| Task | Best complete model | Primary score |",
+        "", "| Task | Best grounding specialist | Primary score |",
         "|---|---|---:|",
     ])
     for task_id, task in TASKS.items():
@@ -758,10 +853,11 @@ def write_report(data: dict[str, Any]) -> None:
         )
     rf_rows = [row for row in data["domain_benchmarks"] if row["dataset"].startswith("RF100-VL:")]
     rf_models = sorted({row["model_id"] for row in rf_rows})
+    rf_panel_total = sum(1 for path in (HERE / "data" / "domain_manifests" / "rf100_vl").glob("*/coco.json"))
     if rf_rows:
         lines.extend([
             "", "#### RF100-VL macro comparison", "",
-            "Each macro metric averages reportable values from complete 20/20 panels; a metric that is unsupported for one panel omits that panel. Mean query time averages per-domain means equally and excludes model initialization. Latency ratios compare each model with the fastest complete YOLO detector or segmenter on that same panel. LocateAnything's five-panel macro uses the uniform 4,096-patch image cap and 2,048-token output cap; earlier native-input OOM attempts remain preserved. AP from panels with zero successful inference is shown as unavailable.",
+            f"Each macro metric averages reportable values from complete per-subset panels, each containing up to 20 shared images. Coverage is shown against all {rf_panel_total} local subsets; a metric that is unsupported for one panel omits that panel. Mean query time averages per-domain means equally and excludes model initialization. Latency ratios compare each model with the fastest complete YOLO detector or segmenter on the same panel. LocateAnything's all-subset run uses the 4,096-patch image cap and 2,048-token output cap; earlier native-input OOM attempts remain preserved. AP from panels with zero successful inference is unavailable.",
             "", "| Model | Complete panels | AP panels | Macro box AP | F1 panels | Macro class-aware F1 | Mean query s | Mean model load s | Mean ratio to fastest YOLO |",
             "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
         ])
@@ -774,8 +870,8 @@ def write_report(data: dict[str, Any]) -> None:
                 values = metric_values(key)
                 return sum(values) / len(values) if values else None
             lines.append(
-                f"| {group[0]['model']} | {len(complete)}/5 | {len(metric_values('AP'))}/5 | "
-                f"{fmt(mean_metric('AP'), True)} | {len(metric_values('class_aware_F1_IoU50'))}/5 | "
+                f"| {group[0]['model']} | {len(complete)}/{rf_panel_total} | {len(metric_values('AP'))}/{rf_panel_total} | "
+                f"{fmt(mean_metric('AP'), True)} | {len(metric_values('class_aware_F1_IoU50'))}/{rf_panel_total} | "
                 f"{fmt(mean_metric('class_aware_F1_IoU50'), True)} | {fmt(mean_metric('latency_s'))} | "
                 f"{fmt(mean_metric('model_load_duration_s'))} | "
                 f"{fmt(mean_metric('latency_ratio_to_fastest_yolo'))}× |"
@@ -810,6 +906,7 @@ def write_report(data: dict[str, Any]) -> None:
         "RefCOCOg reports mean IoU and Acc@IoU 0.5. COCO reports COCOeval AP on the selected image IDs "
         "when local COCO annotations and category mappings are available, plus local micro F1 at IoU 0.5. "
         "COCO predictions use a uniform confidence score of 1.0 because these models do not emit box confidence. "
+        "For category-list prompts, a labeled None is parser-valid only when that category has no ground-truth box in the image. "
         "GUI grounding reports point-in-target accuracy and box Acc@IoU 0.5. HierText reports corpus-level "
         "one-to-one detection precision, recall, and F1 at IoU 0.5. Empty, malformed, truncated, and duplicate "
         "outputs are counted. Whole-device VRAM includes the desktop baseline.",
@@ -842,7 +939,7 @@ def write_report(data: dict[str, Any]) -> None:
         "## Runtime and artifacts", "",
         "Per-item results preserve the prompt, raw output, canonical predictions, parser state, error, query latency, "
         "token counts, image dimensions, and scores in `results/runs/`. LocateAnything model-load peak and "
-        "per-task peaks are recorded separately. Model initialization is excluded from query timing; report its duration separately when captured. Existing LocateAnything results time only `model.generate()`, excluding local image reading, processor encoding, output decoding, and parsing. The updated runner records the full adapter query from local image reading and processor encoding through decoded and parsed output; it also saves pure generation latency separately for token-rate calculations. GroundAnything timing in the saved runs starts after local image reading, base64 encoding, and request serialization, then spans the HTTP response; YOLO timing includes single-image loading, preprocessing, prompt setup, and inference, with warmup images excluded. These model-specific scopes still differ, so latency ratios are indicative rather than fully matched end-to-end measurements. GroundAnything load duration is recorded for the ScreenSpot-Pro run at approximately 10 s from service startup through API readiness; older service-preloaded runs without a captured startup interval leave this value unavailable. "
+        "per-task peaks are recorded separately. Model initialization is excluded from query timing; report its duration separately when captured. Existing LocateAnything results time only `model.generate()`, excluding local image reading, processor encoding, output decoding, and parsing. The updated runner records the full adapter query from local image reading and processor encoding through decoded and parsed output; it also saves pure generation latency separately for token-rate calculations. GroundAnything timing in the saved runs starts after local image reading, base64 encoding, and request serialization, then spans the HTTP response; YOLO timing includes single-image loading, preprocessing, prompt setup, and inference, with warmup images excluded. These model-specific scopes still differ, so latency ratios are indicative rather than fully matched end-to-end measurements. The combined GroundAnything run measured one 624 s service startup shared by its RefCOCOg, HierText, VQAv2, and TextVQA tasks; the repeated task-table value refers to that single load. GroundAnything load duration is recorded for the ScreenSpot-Pro run at approximately 10 s from service startup through API readiness; older preloaded-service COCO, DOTA, HOPE, and LVIS runs lack a captured startup interval, which remains unavailable. "
         "This folder is excluded from the site. "
         "The site includes aggregate metrics only. Whole-device VRAM is sampled every 0.5 seconds with "
         "`nvidia-smi`; the reported maximum includes all processes and desktop use. Package versions describe "

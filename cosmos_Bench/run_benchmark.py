@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 HERE = Path(__file__).resolve().parent
 QWEN_DIR = ROOT / "qwenVL_Bench"
 sys.path.insert(0, str(QWEN_DIR))
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
 import benchmark_runners as runner  # noqa: E402
 
 HF_HUB = Path("/mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub")
@@ -195,4 +197,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_queued(main, "cosmos-edge"))

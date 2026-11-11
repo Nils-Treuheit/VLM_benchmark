@@ -1,6 +1,6 @@
 # Benchmark plan index
 
-Completed suites are tracked in their reports and the repository [README](../README.md). This index keeps only active benchmark work and shared reporting guidance.
+Completed suites are tracked in their reports and the repository [README](../README.md). This index lists active benchmark work, completed plan records, and shared reporting guidance.
 
 ## Shared benchmark contract
 
@@ -15,14 +15,19 @@ Keep the same prepared examples, question text, answer constraints, image resize
 
 The shared task prompts and score definitions are in [qwenVL_Bench/README.md](../qwenVL_Bench/README.md). The current runner and report format are in [benchmark.py](../qwenVL_Bench/benchmark.py) and [benchmark_runners.py](../qwenVL_Bench/benchmark_runners.py). Dataset preparation lives in [prepare_vqa_panel.py](../qwenVL_Bench/prepare_vqa_panel.py) and [prepare_graph_panel.py](../qwenVL_Bench/prepare_graph_panel.py). Existing prepared data under `qwenVL_Bench/data/` should be reused.
 
-## Plans
+## Active plans
 
 | Group | Plan |
 |---|---|
 | Grounding specialists | [grounding-specialists.md](grounding-specialists.md) |
 | Image Scene Graph Generation | [image-sgg-benchmark.md](image-sgg-benchmark.md) |
 | Video Scene Graph Generation | [video-sgg-benchmark.md](video-sgg-benchmark.md) |
-| Selective Edge Limited refinement | [selective-edge-refinement.md](selective-edge-refinement.md) |
+
+## Completed plan records
+
+| Group | Record |
+|---|---|
+| Selective Edge Limited refinement | [Completed refinement record](selective-edge-refinement.md) |
 
 The completed General Transformers, local-foundation, Qwen-VL reference, and video comparisons are documented in their benchmark reports. Candidates excluded by cache, compatibility, or hardware gates remain listed in the relevant report inventory; they are not pending runs.
 

@@ -13,8 +13,8 @@ The completed full score run is reused. Its configured ceiling was 61,440 tokens
 
 ## Verification
 
-- Context probe attempt: 58,368 tokens, 58,360 input plus 8 output, 31 samples, no sampling error.
+- Selected original context-probe attempt: 58,368 tokens, 58,360 input plus 8 output, 31 samples, no sampling error. This is reused evidence, not a fresh lower-context probe process.
 - Scored examples: 825/825 complete; largest actual input-plus-output context: 12618 tokens.
 - Score-run peak: 15.907 GiB. Selected probe peak: 15.446 GiB. Combined verified peak: 15.907 GiB.
 - The original broad context search included higher attempts that exceeded 16 GiB; those attempts remain in the original source artifact and are excluded from this selected-context qualification.
-- Full scored artifact: [`../results.json`](../results.json).
+- Full scored artifact: `../results.json` (local artifact; not published).

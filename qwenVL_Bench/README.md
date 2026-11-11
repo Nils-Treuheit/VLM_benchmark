@@ -68,6 +68,10 @@ uv run python prepare_graph_panel.py
 
 Run the graph specialist, Qwen3-VL-2B baseline, and the final best-overall and long-context picks with `--tasks graph_grab_lite --samples 500 --seed 3407 --output-dir results/graph_panel --resume`. The site combines graph results with the VQA results and shows the graph specialist’s mean score across all eight benchmark measures, GRAB-Lite score, configured context, and peak VRAM.
 
+## Image scene graph generation
+
+The separate [image SGG benchmark](image_SGG_Bench/README.md) evaluates direct image-to-graph generation on fixed VG-150, Open Images V7, and PSG panels. It discovers runnable entries from the requested local Qwen VL cache folders, includes supported GGUF quantizations, and never downloads models. Prepare the panels once, then run the suite serially on the GPU.
+
 ## Measures and limits
 
 - Each task scores 100 requests. Calls run serially with one image per request; no benchmark batching is used.

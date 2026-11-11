@@ -172,6 +172,11 @@
           <p>Qwen vision models across image QA, visual skills, graph reasoning, and resource profiles.</p>
           <span class="path">/qwenVL_Bench/</span>
         </a>
+        <a class="report-link" href="qwenVL_Bench/image_SGG_Bench/">
+          <h3>Image Scene Graph Generation</h3>
+          <p>Direct image-to-graph results on fixed VG-150, Open Images V7, and PSG panels. Model coverage is labeled while the comparison continues.</p>
+          <span class="path">/qwenVL_Bench/image_SGG_Bench/</span>
+        </a>
         <a class="report-link" href="llava_Bench/">
           <h3>LLaVA</h3>
           <p>LLaVA model variants compared on the shared image benchmark tasks.</p>
@@ -244,7 +249,7 @@
           </tbody>
         </table>
       </div>
-      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded from the shared image-task rankings. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-04.</p>
+      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded from the shared image-task rankings. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-07.</p>
       <div class="specialist-leaders" aria-live="polite">
         <div>
           <h3>Video VLM categories</h3>
@@ -260,7 +265,7 @@
 
     <section class="edge-limited" aria-labelledby="edge-limited-title">
       <h2 id="edge-limited-title">Edge Limited</h2>
-      <p class="intro">Choose a VRAM ceiling to view measured full-suite and category results verified under that whole-device limit. Leader labels rank currently verified runs while refinement continues.</p>
+      <p class="intro">Choose a VRAM ceiling to view measured full-suite and category results verified under that whole-device limit. The 16 GiB results now include Qwen3-VL-8B Q8 at 59.91% across 825 examples and 262,144 measured context tokens. LLaVA Mistral 7B remains excluded after repeated context-probe OOMs; see the <a href="implementation_plans/selective-edge-refinement.md">refinement record</a>.</p>
       <div class="edge-controls">
         <label for="edge-vram-limit">VRAM restriction</label>
         <select id="edge-vram-limit" name="vram-limit">
@@ -276,12 +281,12 @@
       <div id="edge-overall" class="edge-overall" aria-live="polite"></div>
       <h3>Best currently verified result per category under this cap</h3>
       <div id="edge-categories" class="edge-table-wrap" role="region" aria-label="Best model scores by category under the selected VRAM cap" tabindex="0"></div>
-      <p class="edge-method">Overall leaders require a passing real-image context probe and a complete eight-task run under the selected cap. Category leaders require verified cap measurements and complete coverage for that task. The page reports measured context, probe peak VRAM, scoring-run peak VRAM, and task coverage. Video and grounding results use separate metrics and do not enter these shared image-task rankings.</p>
+      <p class="edge-method">Overall leaders require a passing real-image context probe and a complete eight-task run under the selected cap. Category leaders require verified cap measurements and complete coverage for that task. The page reports measured context, context-probe peak, model-load peak, scoring-run peak, whole-device peak across the run, and task coverage. Video and grounding results use separate metrics and do not enter these shared image-task rankings.</p>
     </section>
 
     <aside class="edge-disclaimer" aria-labelledby="edge-disclaimer-title">
       <h2 id="edge-disclaimer-title">Edge Limited measurement disclaimer</h2>
-      <p>Cap-specific refinement is in progress. Results are ranked among the candidates verified so far, so leaders can change as selected candidates finish. A model qualifies for the overall ranking only after a complete shared-task run and its real-image context probe both pass under the same measured whole-device limit. Category rows require complete coverage for their listed task.</p>
+      <p>Results are ranked among candidates with verified cap-specific measurements. Blocked and unavailable candidates remain excluded. A model qualifies for the overall ranking only after a complete shared-task run and its real-image context probe both pass under the same measured whole-device limit. Category rows require complete coverage for their listed task. See the linked refinement record for candidate outcomes.</p>
       <ul>
         <li>Existing suite scores and memory records screen candidates only; they do not establish that a run fits any selected cap.</li>
         <li>Candidate context must be measured with the model's real image path. Checkpoint metadata and estimated KV-cache profiles do not qualify.</li>

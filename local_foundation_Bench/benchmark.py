@@ -20,6 +20,8 @@ HERE = Path(__file__).resolve().parent
 ROBOTICS = Path("/mnt/HDD1/Project_Code/robotics_VLM")
 sys.path.insert(0, str(ROOT / "qwenVL_Bench"))
 sys.path.insert(0, str(ROBOTICS / "src"))
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
 import benchmark as common  # noqa: E402
 import benchmark_runners as shared  # noqa: E402
 
@@ -360,4 +362,4 @@ def fmt_score(value):
 
 
 if __name__ == "__main__":
-    run()
+    raise SystemExit(run_queued(run, "local-foundation"))

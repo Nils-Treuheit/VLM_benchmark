@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aggregate-only image scene graph generation benchmark results.">
+  <title>Image SGG Benchmark</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar"><a href="../../index.html" class="brand"><span class="mark">SGG</span><span>VLM Benchmark</span></a><a class="back-link" href="../../index.html">All reports ↗</a></header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">IMAGE SCENE GRAPH GENERATION</p>
+      <h1>Objects, grounded<br><span>and connected.</span></h1>
+      <p class="lede">Direct image-to-graph results on three fixed 200-image panels. These are small local subset comparisons, reported separately by dataset.</p>
+      <div class="meta"><span id="updated">Loading report data…</span><span id="coverage"></span><span>Batch size one · offline model snapshots</span></div>
+    </section>
+    <div id="run-state" class="run-state" role="status"></div>
+    <section class="summary" aria-label="Benchmark coverage">
+      <article class="card"><span class="label">Models completed</span><strong id="model-count">—</strong><span class="foot">Full panels, including recorded item failures</span></article>
+      <article class="card"><span class="label">Panel coverage</span><strong>3 × 200</strong><span class="foot">VG-150 · Open Images V7 · PSG</span></article>
+      <article class="card"><span class="label">Optional suite macro</span><strong id="macro">—</strong><span class="foot">Unweighted dataset mR@50; full panels only</span></article>
+    </section>
+    <section class="method panel">
+      <p class="eyebrow">PROTOCOL</p><h2>Scene graph detection from pixels</h2>
+      <p>Models receive images and dataset vocabularies, then return object labels, normalized boxes, and directed relations. Objects match one-to-one at IoU ≥ 0.5. A relation counts only when both endpoints and its directed predicate match.</p>
+      <p>Invalid JSON and runtime failures remain in each panel denominator. PSG uses boxes and is labeled <b>box-adapted SGG</b>; it is not the official mask-grounded PSG score. Source provenance, predicate supports, full metrics, and limitations are in the <a href="report.md">Markdown report</a>.</p>
+    </section>
+    <section id="datasets" aria-live="polite"><p class="loading">Loading aggregate results…</p></section>
+    <footer><span>Aggregate metrics only · no prompts, images, annotations, or predictions are included here.</span><a href="report.md">Full report ↗</a></footer>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

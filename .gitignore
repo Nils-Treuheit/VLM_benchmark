@@ -1,4 +1,10 @@
-data
+# Dataset trees are stored outside this checkout and linked locally when needed.
+/data
+/classification_Bench/data
+/grounding_Bench/data
+/qwenVL_Bench/data
+/qwenVL_Bench/image_SGG_Bench/data
+/.agentic_workflow/
 /mobileclip2_b.ts
 
 # Byte-compiled / optimized / DLL files
@@ -225,8 +231,17 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Grounding benchmark inputs and per-item outputs stay local.
+# Model checkpoints and per-run records stay local.
+*.pth
+
+# Keep Markdown reports and the aggregate record linked by the Cosmos page.
+**/results/**/*
+!**/results/**/
+!**/results/**/report.md
+!/cosmos_Bench/results/results.json
+
+# Local benchmark inputs and caches.
 grounding_Bench/data/source/
 grounding_Bench/data/manifests/
-grounding_Bench/results/
 grounding_Bench/models/
+.benchmark_service/

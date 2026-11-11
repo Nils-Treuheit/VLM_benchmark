@@ -18,6 +18,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 QWEN_BENCH = ROOT / "qwenVL_Bench"
 sys.path.insert(0, str(QWEN_BENCH))
+sys.path.insert(0, str(ROOT))
+from gpu_queue import run_queued  # noqa: E402
 import benchmark as common  # noqa: E402
 import benchmark_runners as shared  # noqa: E402
 
@@ -592,4 +594,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_queued(main, "phi"))

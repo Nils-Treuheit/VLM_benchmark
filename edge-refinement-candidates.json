@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T08:12:00+01:00",
+  "generated_at": "2026-11-07T05:16:38+01:00",
   "selection_source": "Current completed suite results and the pre-refinement eligibility rules. This file is a screening roster, not measured edge results.",
   "selection_rule": "Run every complete screening candidate that leads the eight-task macro or any shared category at its cap, including ties. Keep unavailable leaders visible and mark nonleaders not selected.",
   "caps": [
@@ -1031,7 +1031,7 @@
           "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         }
       ],
-      "verified_count": 5
+      "verified_count": 6
     },
     {
       "cap_gib": 14,
@@ -1512,7 +1512,7 @@
           "note": "Screening candidate does not lead the overall macro or a shared category at this cap."
         }
       ],
-      "verified_count": 5
+      "verified_count": 6
     },
     {
       "cap_gib": 16,
@@ -1557,9 +1557,9 @@
           "leader_categories": [
             "vqa_affordance"
           ],
-          "execution_status": "unverified_cap",
-          "note": "Complete suite preserved but excluded: the 65,536-token context probe peaked at 16.073 GiB and exceeded the 16 GiB whole-device cap; whole-run peak was 16.073 GiB.",
-          "execution_artifact": "cosmos_Bench/results/edge_refinement/16gib/results.json"
+          "execution_status": "verified",
+          "note": "825-item score run independently reviewed and reused under the user-authorized slight context adjustment; selected 58,368-token probe measured 15.446 GiB; score peak 15.907 GiB; whole-device peak 15.907 GiB. The original exploratory over-cap attempts remain preserved separately.",
+          "execution_artifact": "cosmos_Bench/results/edge_refinement/16gib/context58368_score_reused/results.json"
         },
         {
           "model_id": "llava-hf/LLaVA-NeXT-Video-7B-hf",
@@ -1600,8 +1600,45 @@
           "leader_categories": [
             "vqa_description"
           ],
-          "execution_status": "pending",
-          "note": "Selected screening leader; cap-specific run remains pending."
+          "execution_status": "blocked_cap_fit",
+          "note": "Selected screening leader; seven 16 GiB attempts with allocator reserves 0.75, 0.70, 0.60, 0.65, 0.64, 0.64 with expandable segments, and 0.62 with expandable segments failed their controlled context probes. The 0.60 attempt exceeded the device cap; the final 0.62 attempt peaked at 15.996 GiB with only about 4 MiB of whole-device headroom. Further reserve tuning is not cap-safe and is not recommended.",
+          "attempt_history": [
+            {
+              "artifact": "llava_Bench/results/edge_refinement/16gib/20261106-01-llava-mistral/results.json",
+              "status": "context_probe_failed",
+              "note": "Initial 0.75 reserve attempt OOMed across all 100 AI2D selection samples; no scored tasks."
+            },
+            {
+              "artifact": "llava_Bench/results/edge_refinement/16gib/20261106-02-llava-mistral-reserve070-incomplete/attempt.md",
+              "status": "context_probe_failed",
+              "note": "All 100 image-selection samples passed, but all 15 real context-probe attempts OOMed; no context or scored tasks. Whole-device peak 15.869 GiB."
+            },
+            {
+              "artifact": "llava_Bench/results/edge_refinement/16gib/20261106-03-llava-mistral-reserve060-over-cap/attempt.md",
+              "status": "context_probe_failed_over_cap",
+              "note": "All 100 image-selection samples passed; all 15 context attempts OOMed. Whole-device peak 16.013 GiB, over cap."
+            },
+            {
+              "artifact": "llava_Bench/results/edge_refinement/16gib/20261106-04-llava-mistral-reserve065-direct/results.json",
+              "status": "context_probe_failed",
+              "note": "All 100 image-selection samples passed; all 15 context attempts OOMed. Whole-device peak 15.955 GiB."
+            },
+            {
+              "artifact": "llava_Bench/results/edge_refinement/16gib/20261106-05-llava-mistral-reserve064-direct/results.json",
+              "status": "context_probe_failed",
+              "note": "All 100 image-selection samples passed; all 15 context attempts OOMed. Whole-device peak 15.971 GiB."
+            },
+            {
+              "artifact": "llava_Bench/results/edge_refinement/16gib/20261106-06-llava-mistral-reserve064-expandable-segments/results.json",
+              "status": "context_probe_failed",
+              "note": "Direct host run with expandable segments; 100/100 image-selection samples passed, but all 15 context attempts OOMed, including the 3,012-token zero-filler case. Whole-device peak 15.975 GiB; independent review found no meaningful end-to-end improvement."
+            },
+            {
+              "artifact": "llava_Bench/results/edge_refinement/16gib/20261106-07-llava-mistral-reserve062-expandable-final/results.json",
+              "status": "context_probe_failed",
+              "note": "Final direct host run with expandable segments; 100/100 image-selection samples passed, but all 15 context attempts OOMed, including the 3,012-token zero-filler case. Whole-device peak 15.996 GiB, leaving about 4 MiB under the cap. Independent review ruled out further reserve tuning as cap-safe."
+            }
+          ]
         },
         {
           "model_id": "xtuner/llava-phi-3-mini-hf",
@@ -1664,8 +1701,10 @@
             "ai2d",
             "graph_grab_lite"
           ],
-          "execution_status": "pending",
-          "note": "Selected screening leader; cap-specific run remains pending."
+          "execution_status": "verified",
+          "note": "Complete 825-item 16 GiB run independently reviewed and eligible for aggregation. Measured context 128,000 tokens; context-probe peak 5.305 GiB; scoring and whole-run peak 5.981 GiB. Earlier failed attempts remain preserved separately.",
+          "execution_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm3_2b_nvfp4/results.json",
+          "result_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm3_2b_nvfp4/results.json"
         },
         {
           "model_id": "unsloth/LFM2.5-VL-3B-GGUF",
@@ -1686,8 +1725,10 @@
           "leader_categories": [
             "textvqa"
           ],
-          "execution_status": "pending",
-          "note": "Selected screening leader; cap-specific run remains pending."
+          "execution_status": "verified",
+          "note": "Complete 825-item 16 GiB run independently reviewed and eligible for aggregation. Measured context 32,768 tokens; context-probe peak 4.644 GiB; reconciled scoring and whole-run peak 5.158 GiB. Original runner JSON preserved as results.runner_raw.json.",
+          "result_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm25_3b/results.json",
+          "execution_artifact": "local_foundation_Bench/results/runs/edge_refinement/16gib/b12097_20261106/lfm25_3b/results.json"
         },
         {
           "model_id": "bartowski/OpenGVLab_InternVL3_5-14B-GGUF:Q4_K_M",
@@ -1728,8 +1769,22 @@
           "leader_categories": [
             "vqa_count"
           ],
-          "execution_status": "pending",
-          "note": "Selected screening leader; cap-specific run remains pending."
+          "execution_status": "verified",
+          "note": "Complete 825-item 16 GiB run independently reviewed and eligible for aggregation. Macro 54.525%; measured context 8,189 tokens; probe and whole-device peak 15.693 GiB. The initial over-cap attempt is preserved separately and excluded.",
+          "execution_artifact": "general_transformers_Bench/results/edge_refinement/16gib/20261106-02-paligemma2-clean/results.json",
+          "result_artifact": "general_transformers_Bench/results/edge_refinement/16gib/20261106-02-paligemma2-clean/results.json",
+          "attempt_history": [
+            {
+              "artifact": "general_transformers_Bench/results/edge_refinement/16gib/20261106-01-paligemma2/results.json",
+              "status": "context_probe_failed",
+              "note": "Preserved over-cap attempt; independent review found abrupt whole-device peak discontinuity and no scored suite. Not aggregated."
+            },
+            {
+              "artifact": "general_transformers_Bench/results/edge_refinement/16gib/20261106-02-paligemma2-clean/results.json",
+              "status": "verified",
+              "note": "Complete 825-item run independently reviewed; 54.525% macro; 8,189 measured context tokens; 15.693 GiB whole-device peak."
+            }
+          ]
         },
         {
           "model_id": "unsloth/Llama-3.2-11B-Vision-Instruct-bnb-4bit",
@@ -1858,22 +1913,37 @@
           "suite": "Qwen-VL",
           "suite_href": "qwenVL_Bench/",
           "scores": {
-            "ai2d": 0.85,
-            "textvqa": 0.811,
+            "ai2d": 0.83,
+            "textvqa": 0.781,
             "vqa_truth": 1.0,
             "vqa_count": 0.764,
-            "vqa_description": 0.624,
+            "vqa_description": 0.588,
             "vqa_affordance": 0.04,
             "vqa_negation": 0.64,
-            "graph_grab_lite": null
+            "graph_grab_lite": 0.15
           },
           "screening_peak_gib": 23.065,
           "selection_status": "selected_leader",
           "leader_categories": [
             "vqa_truth"
           ],
-          "execution_status": "pending",
-          "note": "Selected screening leader; cap-specific run remains pending."
+          "execution_status": "verified",
+          "note": "Complete 825-item 16 GiB run independently reviewed and eligible for aggregation. Macro 59.9125%; measured context 262,144 tokens; whole-device peak 15.753 GiB. The earlier incomplete service attempt is preserved as an adjudication summary.",
+          "run_context_tokens": 262144,
+          "execution_artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-02-qwen3-vl-8b-q8-complete/results.json",
+          "result_artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-02-qwen3-vl-8b-q8-complete/results.json",
+          "attempt_history": [
+            {
+              "artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-01-qwen3-vl-8b-q8-incomplete/attempt.md",
+              "status": "incomplete_server_disconnect",
+              "note": "Probe passed at 131,072 tokens and device peak stayed under 16 GiB, but GRAB-Lite completed only 162/500 before llama-server disconnected. The service reset removed the raw run files; this summary records the independent review."
+            },
+            {
+              "artifact": "qwenVL_Bench/results/edge_refinement/16gib/20261106-02-qwen3-vl-8b-q8-complete/results.json",
+              "status": "verified",
+              "note": "Complete 825-item run independently reviewed; 59.9125% macro; 262,144 measured context tokens; 15.753 GiB whole-device peak."
+            }
+          ]
         },
         {
           "model_id": "microsoft/Phi-3-vision-128k-instruct",
