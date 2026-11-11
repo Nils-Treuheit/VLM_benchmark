@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c1218">
-  <meta name="description" content="Local specialist VLM benchmark results for grounding, OCR, VQA, counting, object detection, classification, segmentation, and speed.">
+  <meta name="description" content="Current local grounding and vision benchmark results with fixed samples, clear coverage, and run provenance.">
   <title>Grounding Specialists · VLM Benchmark</title>
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
@@ -13,61 +13,62 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="../" aria-label="VLM benchmark reports home"><img src="assets/mark.svg" alt=""><span>Local model evaluation</span></a>
-    <nav aria-label="Report navigation"><a href="#results">Results</a><a href="#method">Method</a><a href="report.md">Full report</a></nav>
+    <a class="brand" href="../" aria-label="VLM benchmark reports home"><img src="assets/mark.svg" alt=""><span>Model Bench</span></a>
+    <nav aria-label="Report navigation"><a href="#grounding">Grounding</a><a href="#vision">Vision</a><a href="#method">Method</a><a href="report.md">Full report ↗</a></nav>
   </header>
-  <main>
+  <main id="top">
     <section class="hero" aria-labelledby="title">
-      <p class="eyebrow">Grounding specialists · Localization benchmark</p>
-      <h1 id="title">Measure where<br><span>models look.</span></h1>
-      <p class="intro">A separate comparison of specialist checkpoints across grounding, OCR, VQA, counting, detection, classification, segmentation, and speed.</p>
+      <p class="eyebrow">Grounding specialists · fixed-sample evaluation</p>
+      <h1 id="title">Where models<br><span>find the target.</span></h1>
+      <p class="intro">A focused comparison of two pinned grounding checkpoints, with task scores kept separate and coverage shown beside every result.</p>
       <div class="hero-meta" id="hero-meta" aria-live="polite"></div>
     </section>
 
     <section class="summary-grid" id="summary" aria-label="Benchmark summary"></section>
 
-    <section class="panel selection" id="selection">
-      <div><p class="eyebrow">Selection guide</p><h2>Evidence before picks</h2></div>
-      <div id="selection-content"></div>
+    <section class="section-block" aria-labelledby="highlights-title">
+      <div class="section-head"><div><p class="eyebrow">Task leaders</p><h2 id="highlights-title">Read each task on its own</h2><p class="section-copy">These are task-specific results, not a combined ranking across different metrics.</p></div></div>
+      <div id="selection" class="selection-grid"></div>
     </section>
 
-    <section id="method" class="section">
-      <div class="section-head"><div><p class="eyebrow">Protocol</p><h2>Localization and answer tasks</h2></div><a href="report.md">Read the full report ↗</a></div>
-      <div class="method-grid" id="method-grid"></div>
-    </section>
-
-    <section id="results" class="section">
-      <div class="section-head"><div><p class="eyebrow">Results</p><h2>Task scorecard</h2></div><p class="section-note">Scores stay separate by task. Incomplete models remain visible.</p></div>
+    <section id="grounding" class="section-block" aria-labelledby="grounding-title">
+      <div class="section-head"><div><p class="eyebrow">01 / Grounding</p><h2 id="grounding-title">Localization and text regions</h2><p class="section-copy">Fixed 100-example panels. Scores are reported with coverage, and output issues remain visible.</p></div></div>
       <div id="task-results"></div>
     </section>
 
-    <section id="answer-results" class="section">
-      <div class="section-head"><div><p class="eyebrow">Reading and reasoning</p><h2>OCR, VQA, and counting</h2></div><p class="section-note">TextVQA is OCR-dependent question answering. HierText adds direct word transcription scores to the text-region task.</p></div>
-      <div id="answer-task-results"></div>
-    </section>
-
-    <section id="vision-results" class="section">
-      <div class="section-head"><div><p class="eyebrow">COCO quality and speed</p><h2>Open vocabulary first</h2></div><p class="section-note">YOLOE-26-L is the primary detector and segmenter; YOLO26-L closed-vocabulary models are additional baselines.</p></div>
+    <section id="vision" class="section-block" aria-labelledby="vision-title">
+      <div class="section-head"><div><p class="eyebrow">02 / Vision baselines</p><h2 id="vision-title">Detection, segmentation, and domains</h2><p class="section-copy">COCO and domain results use their stated image panels. Unsupported metrics stay blank.</p></div></div>
       <div id="vision-task-results"></div>
+      <div id="domain-summary"></div>
+      <details class="detail-disclosure" id="rf100-details">
+        <summary>View current RF100-VL results for all 100 subsets</summary>
+        <div id="rf-summary"></div>
+        <p class="detail-copy">Each subset uses up to 20 shared test images. Macro scores weight each subset equally. AP is unavailable where a model produced no successful detections.</p>
+        <div id="rf100-table"></div>
+      </details>
     </section>
 
-    <section id="dataset-results" class="section">
-      <div class="section-head"><div><p class="eyebrow">Beyond COCO</p><h2>Dataset fit and OBB track</h2></div><p class="section-note">Long-tail labels, aerial imagery, and pose-estimation datasets answer different questions, so their scores stay separate.</p></div>
-      <div id="dataset-track-results"></div>
-    </section>
+    <details class="detail-disclosure" id="exploratory-results">
+      <summary>Exploratory VQA transfer results</summary>
+      <p class="detail-copy">These checkpoints are grounding models and do not document general VQA as a native task. All current panels score 0.0%; treat them as transfer checks, not grounding results.</p>
+      <div id="answer-task-results"></div>
+    </details>
 
-    <section class="section" id="runtime">
-      <div class="section-head"><div><p class="eyebrow">Execution</p><h2>Runtime and output quality</h2></div></div>
-      <div id="runtime-results"></div>
-      <p class="note">Latency is per generation call. Whole-device VRAM includes desktop baseline use. Token throughput is shown only when the server reported output token counts.</p>
+    <section id="method" class="section-block">
+      <div class="section-head"><div><p class="eyebrow">03 / Method and provenance</p><h2>How to read these measurements</h2><p class="section-copy">Metric definitions, runtime boundaries, and dataset limits accompany the scores.</p></div></div>
+      <div class="method-grid" id="method-grid"></div>
+      <div id="method-notes" class="panel notes"></div>
+      <details class="detail-disclosure">
+        <summary>Runtime, checkpoint, and per-task measurements</summary>
+        <div id="runtime-results"></div>
+      </details>
+      <details class="detail-disclosure">
+        <summary>Dataset coverage and limitations</summary>
+        <div id="limitations-content"></div>
+        <ul class="source-links" id="source-links"></ul>
+      </details>
     </section>
-
-    <section class="section limitations" id="limits">
-      <p class="eyebrow">Provenance and limits</p><h2>Keep the evidence in view</h2>
-      <div id="limitations-content"></div>
-      <ul id="source-links"></ul>
-    </section>
-    <footer><span>Grounding Specialists</span><a href="report.md">Source report</a><a href="../">All benchmark reports</a></footer>
+    <footer><span>Grounding Specialists · aggregate results only</span><a href="report.md">Full report and run details</a><a href="../">All benchmark reports</a></footer>
   </main>
 </body>
 </html>

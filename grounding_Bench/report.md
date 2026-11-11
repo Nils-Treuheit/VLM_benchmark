@@ -2,7 +2,7 @@
 
 **Evaluation status:** complete
 
-**Generated:** 2026-11-09T01:10:21.644730+00:00
+**Generated:** 2026-11-11T17:00:57.099713+00:00
 
 ## Scope
 
@@ -181,13 +181,9 @@ Every row uses the prepared image IDs and category list for its domain. Query la
 | RF100-VL: Actions | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 5.4% / 8.5% / 7.1% | — | 10.0% | — | — / — / — | 0.077 | 0.055 | 0.079 | — | 13.009 | 1.000× |
 | RF100-VL: Activity diagrams | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 0.9% / 3.0% / 0.6% | — | 12.0% | — | — / — / — | 3.407 | 3.128 | 4.750 | 1 / 0 / 0 | 0.293 | 47.168× |
 | RF100-VL: Activity diagrams | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | 0.0% / 0.0% / 0.0% | — | 0.0% | — | — / — / — | 5.802 | 5.795 | 7.917 | 10 / 0 / 19 | 0.172 | 80.321× |
-| RF100-VL: Activity diagrams | SAM 3.1 | complete | 20/20 | 8.907 | native image dimensions; YOLO imgsz=640; batch=1 | 2.2% / 3.1% / 2.2% | — | 2.4% | — | — / — / — | 0.368 | 0.364 | 0.386 | — | 2.717 | 5.094× |
 | RF100-VL: Activity diagrams | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 0.6% / 1.1% / 0.5% | — | 2.9% | — | — / — / — | 0.072 | 0.057 | 0.096 | — | 13.843 | 1.000× |
 | RF100-VL: Aerial airport aircraft | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 12.0% / 35.8% / 4.1% | — | 55.1% | — | — / — / — | 0.929 | 0.748 | 2.075 | 0 / 0 / 0 | 1.077 | 121.234× |
 | RF100-VL: Aerial airport aircraft | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | 2.3% / 5.0% / 2.3% | — | 10.0% | — | — / — / — | 5.068 | 5.524 | 6.136 | 2 / 2 / 18 | 0.197 | 661.439× |
-| RF100-VL: Aerial airport aircraft | SAM 3.1 | complete | 20/20 | 8.993 | native image dimensions; YOLO imgsz=640; batch=1 | 43.8% / 85.5% / 41.5% | — | 84.0% | — | — / — / — | 0.089 | 0.084 | 0.107 | — | 11.224 | 11.628× |
-| RF100-VL: Aerial airport aircraft | YOLO26-L | complete | 20/20 | 1.450 | native image dimensions; YOLO imgsz=640; batch=1 | 6.3% / 9.8% / 7.3% | — | 23.5% | — | — / — / — | 0.008 | 0.008 | 0.009 | — | 130.514 | 1.000× |
-| RF100-VL: Aerial airport aircraft | YOLO26-L-seg | complete | 20/20 | 1.514 | native image dimensions; YOLO imgsz=640; batch=1 | 5.8% / 9.0% / 6.8% | — | 19.9% | — | — / — / — | 0.011 | 0.011 | 0.013 | — | 88.993 | 1.467× |
 | RF100-VL: Aerial airport aircraft | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 9.8% / 20.3% / 8.8% | — | 16.2% | — | — / — / — | 0.054 | 0.034 | 0.066 | — | 18.464 | 7.068× |
 | RF100-VL: Aerial Cows | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 16.9% / 42.0% / 11.6% | — | 61.9% | — | — / — / — | 1.136 | 1.137 | 1.792 | 0 / 0 / 0 | 0.880 | 13.060× |
 | RF100-VL: Aerial Cows | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | 1.2% / 3.2% / 1.2% | — | 7.5% | — | — / — / — | 5.538 | 6.123 | 6.278 | 3 / 2 / 18 | 0.181 | 63.642× |
@@ -227,7 +223,6 @@ Every row uses the prepared image IDs and category list for its domain. Query la
 | RF100-VL: Buoy Onboarding | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 23.1% / 50.8% / 21.6% | — | 29.1% | — | — / — / — | 0.050 | 0.035 | 0.058 | — | 19.989 | 1.000× |
 | RF100-VL: Cable damage | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 3.3% / 12.2% / 1.4% | — | 25.7% | — | — / — / — | 0.514 | 0.405 | 0.722 | 0 / 0 / 0 | 1.947 | 9.827× |
 | RF100-VL: Cable damage | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | 2.9% / 6.4% / 1.2% | — | 15.4% | — | — / — / — | 2.773 | 0.266 | 6.270 | 9 / 8 / 9 | 0.361 | 53.044× |
-| RF100-VL: Cable damage | SAM 3.1 | complete | 20/20 | 9.385 | native image dimensions; YOLO imgsz=640; batch=1 | — / — / — | — | 0.0% | — | — / — / — | 0.121 | 0.119 | 0.144 | — | 8.295 | 2.306× |
 | RF100-VL: Cable damage | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 0.1% / 0.7% / 0.0% | — | 3.6% | — | — / — / — | 0.052 | 0.035 | 0.060 | — | 19.128 | 1.000× |
 | RF100-VL: Canalstenosis | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 0.0% / 0.0% / 0.0% | — | 0.0% | — | — / — / — | 1.125 | 0.972 | 1.848 | 0 / 0 / 0 | 0.889 | 26.147× |
 | RF100-VL: Canalstenosis | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | — / — / — | — | 0.0% | — | — / — / — | 5.471 | 5.452 | 5.660 | 0 / 0 / 20 | 0.183 | 127.123× |
@@ -345,9 +340,6 @@ Every row uses the prepared image IDs and category list for its domain. Query la
 | RF100-VL: Mahjong | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 0.1% / 0.1% / 0.1% | — | 1.0% | — | — / — / — | 0.104 | 0.085 | 0.169 | — | 9.627 | 1.000× |
 | RF100-VL: Marine sharks | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 15.6% / 26.8% / 10.3% | — | 22.4% | — | — / — / — | 1.210 | 0.993 | 2.220 | 0 / 0 / 0 | 0.826 | 36.245× |
 | RF100-VL: Marine sharks | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | 39.7% / 44.6% / 42.5% | — | 27.7% | — | — / — / — | 3.785 | 5.993 | 6.287 | 8 / 5 / 12 | 0.264 | 113.384× |
-| RF100-VL: Marine sharks | SAM 3.1 | complete | 20/20 | 9.749 | native image dimensions; YOLO imgsz=640; batch=1 | 43.2% / 60.1% / 47.5% | — | 53.7% | — | — / — / — | 0.200 | 0.195 | 0.222 | — | 5.008 | 5.981× |
-| RF100-VL: Marine sharks | YOLO26-L | complete | 20/20 | 1.473 | native image dimensions; YOLO imgsz=640; batch=1 | 32.4% / 38.0% / 35.0% | — | 9.1% | — | — / — / — | 0.033 | 0.027 | 0.078 | — | 29.955 | 1.000× |
-| RF100-VL: Marine sharks | YOLO26-L-seg | complete | 20/20 | 1.481 | native image dimensions; YOLO imgsz=640; batch=1 | 31.7% / 36.5% / 34.5% | — | 8.7% | — | — / — / — | 0.034 | 0.023 | 0.074 | — | 29.780 | 1.006× |
 | RF100-VL: Marine sharks | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 11.4% / 13.6% / 13.0% | — | 9.2% | — | — / — / — | 0.081 | 0.062 | 0.101 | — | 12.418 | 2.412× |
 | RF100-VL: Needle Base Tip Min Max | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 17.4% / 31.5% / 12.4% | — | 33.2% | — | — / — / — | 1.010 | 1.028 | 1.065 | 0 / 0 / 0 | 0.990 | 15.281× |
 | RF100-VL: Needle Base Tip Min Max | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | — / — / — | — | 36.5% | — | — / — / — | 5.359 | 6.115 | 6.738 | 1 / 0 / 17 | 0.187 | 81.053× |
@@ -414,7 +406,6 @@ Every row uses the prepared image IDs and category list for its domain. Query la
 | RF100-VL: Stomata Cells | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 5.1% / 9.5% / 4.4% | — | 21.9% | — | — / — / — | 0.041 | 0.023 | 0.048 | — | 24.680 | 1.000× |
 | RF100-VL: TACO trash | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 8.5% / 10.8% / 8.8% | — | 6.2% | — | — / — / — | 5.039 | 4.266 | 7.235 | 0 / 0 / 0 | 0.198 | 66.567× |
 | RF100-VL: TACO trash | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | 15.3% / 15.8% / 15.8% | — | 11.9% | — | — / — / — | 2.819 | 0.919 | 6.640 | 13 / 8 / 7 | 0.355 | 37.240× |
-| RF100-VL: TACO trash | SAM 3.1 | complete | 20/20 | 9.024 | native image dimensions; YOLO imgsz=640; batch=1 | 32.1% / 34.5% / 31.9% | — | 23.5% | — | — / — / — | 0.671 | 0.671 | 0.692 | — | 1.491 | 8.860× |
 | RF100-VL: TACO trash | YOLOE-26-L | complete | 20/20 | 7.798 | native image dimensions; YOLO imgsz=640; batch=1 | 9.7% / 10.8% / 9.3% | — | 4.0% | — | — / — / — | 0.076 | 0.055 | 0.106 | — | 13.210 | 1.000× |
 | RF100-VL: The Dreidel Project | GroundAnything-VLM | complete | 20/20 | 71.045 | native model processor | 17.6% / 22.4% / 17.3% | — | 31.5% | — | — / — / — | 1.376 | 1.284 | 1.626 | 0 / 0 / 0 | 0.727 | 34.329× |
 | RF100-VL: The Dreidel Project | LocateAnything-3B | complete | 20/20 | 12.532 | native processor; max image patches=4096 | — / — / — | — | 22.5% | — | — / — / — | 4.339 | 5.995 | 6.681 | 7 / 3 / 13 | 0.230 | 108.234× |
@@ -488,19 +479,11 @@ Each macro metric averages reportable values from complete per-subset panels, ea
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | GroundAnything-VLM | 100/100 | 97/100 | 11.8% | 100/100 | 29.4% | 1.793 | 71.045 | 33.068× |
 | LocateAnything-3B | 100/100 | 80/100 | 6.5% | 100/100 | 13.0% | 4.661 | 12.532 | 91.998× |
-| SAM 3.1 | 5/100 | 4/100 | 30.3% | 5/100 | 32.7% | 0.290 | 9.212 | 6.774× |
-| YOLO26-L | 2/100 | 2/100 | 19.4% | 2/100 | 16.3% | 0.021 | 1.462 | 1.000× |
-| YOLO26-L-seg | 2/100 | 2/100 | 18.8% | 2/100 | 14.3% | 0.022 | 1.498 | 1.236× |
 | YOLOE-26-L | 100/100 | 100/100 | 9.0% | 100/100 | 11.2% | 0.060 | 7.798 | 1.075× |
 For LVIS official AP, both grounding specialists receive a uniform confidence score of 1.0 because neither emits per-box confidence; YOLOE and SAM use their model scores. Treat specialist AP comparisons as quality references rather than confidence-calibrated rankings.
 Model-load warning for SAM 3.1 on COCO val2017: SAM 3.1 model builder reported: loaded /mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--facebook--sam3.1/blobs/0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6 and found missing and/or unexpected keys: missing_keys=['backbone.vision_backbone.convs.3.conv_1x1.weight', 'backbone.vision_backbone.convs.3.conv_1x1.bias', 'backbone.vision_backbone.convs.3.conv_3x3.weight', 'backbone.vision_backbone.convs.3.conv_3x3.bias']
 Model-load warning for SAM 3.1 on LVIS v1 validation (30-category stratified panel): SAM 3.1 model builder reported four missing checkpoint parameters: backbone.vision_backbone.convs.3.conv_1x1.weight, backbone.vision_backbone.convs.3.conv_1x1.bias, backbone.vision_backbone.convs.3.conv_3x3.weight, backbone.vision_backbone.convs.3.conv_3x3.bias.
 Model-load warning for SAM 3.1 on KITTI object training (local 2D panel): SAM 3.1 model builder reported: loaded /mnt/HDD1/unsloth_and_hugging_face_models/huggingface/hub/models--facebook--sam3.1/blobs/0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6 and found missing and/or unexpected keys: missing_keys=['backbone.vision_backbone.convs.3.conv_1x1.weight', 'backbone.vision_backbone.convs.3.conv_1x1.bias', 'backbone.vision_backbone.convs.3.conv_3x3.weight', 'backbone.vision_backbone.convs.3.conv_3x3.bias']
-Model-load warning for SAM 3.1 on RF100-VL: Activity diagrams: SAM 3.1 model builder reported four missing checkpoint parameters: backbone.vision_backbone.convs.3.conv_1x1.weight, backbone.vision_backbone.convs.3.conv_1x1.bias, backbone.vision_backbone.convs.3.conv_3x3.weight, backbone.vision_backbone.convs.3.conv_3x3.bias.
-Model-load warning for SAM 3.1 on RF100-VL: Aerial airport aircraft: SAM 3.1 model builder reported four missing checkpoint parameters: backbone.vision_backbone.convs.3.conv_1x1.weight, backbone.vision_backbone.convs.3.conv_1x1.bias, backbone.vision_backbone.convs.3.conv_3x3.weight, backbone.vision_backbone.convs.3.conv_3x3.bias.
-Model-load warning for SAM 3.1 on RF100-VL: Cable damage: SAM 3.1 model builder reported four missing checkpoint parameters: backbone.vision_backbone.convs.3.conv_1x1.weight, backbone.vision_backbone.convs.3.conv_1x1.bias, backbone.vision_backbone.convs.3.conv_3x3.weight, backbone.vision_backbone.convs.3.conv_3x3.bias.
-Model-load warning for SAM 3.1 on RF100-VL: Marine sharks: SAM 3.1 model builder reported four missing checkpoint parameters: backbone.vision_backbone.convs.3.conv_1x1.weight, backbone.vision_backbone.convs.3.conv_1x1.bias, backbone.vision_backbone.convs.3.conv_3x3.weight, backbone.vision_backbone.convs.3.conv_3x3.bias.
-Model-load warning for SAM 3.1 on RF100-VL: TACO trash: SAM 3.1 model builder reported four missing checkpoint parameters: backbone.vision_backbone.convs.3.conv_1x1.weight, backbone.vision_backbone.convs.3.conv_1x1.bias, backbone.vision_backbone.convs.3.conv_3x3.weight, backbone.vision_backbone.convs.3.conv_3x3.bias.
 
 ### DOTA v1.0 result
 

@@ -7,7 +7,7 @@
   <meta name="description" content="Sortable Qwen vision-language model benchmark report.">
   <title>Qwen-VL VLM Benchmark</title>
   <link rel="icon" type="image/png" href="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Qwen_logo.svg/250px-Qwen_logo.svg.png">
-  <link rel="stylesheet" href="styles.css?v=shared-header-3">
+  <link rel="stylesheet" href="styles.css?v=sgg-coverage-1">
 </head>
 <body>
   <header class="topbar">
@@ -27,7 +27,7 @@
 
     <section class="stat-grid summary-pair" aria-label="Benchmark summary">
       <article class="stat-card summary-card variants-card"><span class="stat-label">Model variants</span><strong>Qwen2-VL · Qwen2.5-VL · Qwen3-VL</strong><span class="stat-foot"><b id="model-count">—</b> models tested</span></article>
-      <article class="stat-card summary-card accent-card coverage-card"><span class="stat-label">Task coverage</span><strong>AI2D · VQAv2 · TextVQA · PercepTaxBench · NegVQA</strong><span class="stat-foot">AI2D: 100; TextVQA/OCR: 100; VQAv2 truth, counting, description: 25 each; PercepTax affordance: 25; NegVQA negation: 25.</span></article>
+      <article class="stat-card summary-card accent-card coverage-card"><span class="stat-label">General VLM task coverage</span><strong>AI2D · VQAv2 · TextVQA · PercepTaxBench · NegVQA · GRAB-Lite</strong><span class="stat-foot">AI2D/TextVQA: 100 each; new VQA categories: 25 each; GRAB-Lite: 500. GRAB-Lite is scientific-graph VQA. Scene-graph generation has its own benchmark below.</span></article>
     </section>
 
     <section class="section-block recommendations" aria-labelledby="recommendations-title">
@@ -45,7 +45,7 @@
         <article class="method-card"><p class="eyebrow">VQAv2 · VISUAL DESCRIPTION</p><h3>Validation, 25 questions</h3><p>Open “other” questions are filtered to direct questions about visible objects, attributes, and scenes.</p><p><b>Score:</b> normalized human-answer consensus.</p><a href="https://visualqa.org/download.html" target="_blank" rel="noreferrer">VQAv2 official data ↗</a></article>
         <article class="method-card"><p class="eyebrow">PERCEPTAX · AFFORDANCE</p><h3>Real test split, 25 questions</h3><p>Questions cover object affordance, intended function, and repurposing in real images.</p><p><b>Score:</b> normalized answer match. Question-type scores remain available in the source dataset.</p><a href="https://huggingface.co/datasets/RyanWW/PercepTaxBench" target="_blank" rel="noreferrer">PercepTax dataset ↗</a></article>
         <article class="method-card"><p class="eyebrow">NEGVQA · NEGATION</p><h3>Dev split, 25 questions</h3><p>Each item asks a negated two-choice question. Models return A or B.</p><p><b>Score:</b> exact option accuracy; an unparsable answer is incorrect.</p><a href="https://arxiv.org/abs/2505.22946" target="_blank" rel="noreferrer">NegVQA paper ↗</a> · <a href="https://huggingface.co/datasets/yuhuizhang/NegVQA" target="_blank" rel="noreferrer">Dataset ↗</a></article>
-        <article class="method-card"><p class="eyebrow">GRAB-LITE · GRAPH ANALYSIS</p><h3>Full test split, 500 questions</h3><p>One graph image per question, balanced across properties, functions, series, transformations, and real figures.</p><p><b>Score:</b> normalized exact-match accuracy, overall and by task.</p><a href="https://grab-benchmark.github.io/" target="_blank" rel="noreferrer">GRAB benchmark ↗</a> · <a href="https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite" target="_blank" rel="noreferrer">GRAB-Lite data ↗</a></article>
+        <article class="method-card"><p class="eyebrow">GRAB-LITE · SCIENTIFIC-GRAPH VQA</p><h3>Full test split, 500 questions</h3><p>One scientific graph image per question, balanced across properties, functions, series, transformations, and real figures. Models answer questions about the graph.</p><p><b>Score:</b> normalized exact-match accuracy, overall and by task. This evaluates graph-image understanding through VQA; it does not evaluate scene-graph generation.</p><a href="https://grab-benchmark.github.io/" target="_blank" rel="noreferrer">GRAB benchmark ↗</a> · <a href="https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite" target="_blank" rel="noreferrer">GRAB-Lite data ↗</a></article>
       </div>
       <div class="method-footer"><p><b>Sampling:</b> 100 examples for AI2D and TextVQA. Each new VQA category uses 25 fixed examples, sampled with seed 3407 and reused across models.</p><p><b>Panel total:</b> the six VQA category scores are averaged equally. This macro average is a local comparison measure; it is not an official score from any one source dataset.</p><p><b>Runtime:</b> requests run serially, one image and one request at a time. The generation limit is 256 tokens, or 2,048 for Thinking models. Observed whole-GPU peak includes desktop baseline. Mean seconds is per generation call; output tokens/second divides generated tokens by that call time.</p><p><b>Context:</b> model runs use their listed configured context. Q8 KV-cache memory profiles estimate 8K/default/maximum fit under a 30 GiB budget; edge tables add a 1 GiB desktop reserve. They are not additional edge-device accuracy runs.</p><p><b>Answer handling:</b> Thinking text is removed before scoring. AI2D and NegVQA use the final answer letter; open answers are normalized before consensus scoring.</p></div>
     </section>
@@ -56,27 +56,33 @@
     </section>
 
     <section class="section-block">
-      <div class="section-head"><div><p class="eyebrow">02 / GRAPH REASONING</p><h2>GRAB-Lite graph benchmark</h2><p class="section-copy">All four models completed the 500-example comparison. Results show exact-match accuracy overall and across five balanced task types; deltas use Qwen3-VL-2B-Instruct as the baseline.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">02 / GENERAL VLM · SCIENTIFIC-GRAPH VQA</p><h2>GRAB-Lite graph question answering</h2><p class="section-copy">This is one image-understanding task within the broader general VLM capability evaluation. Models answer questions about scientific graph images; the results do not measure direct scene-graph generation. All four models completed the 500-example comparison, with exact-match accuracy overall and across five balanced task types.</p></div></div>
       <div id="graph-table"></div>
     </section>
 
+    <section class="section-block" aria-labelledby="sgg-title">
+      <div class="section-head"><div><p class="eyebrow">03 / SPECIALIZED STRUCTURED OUTPUT</p><h2 id="sgg-title">Image scene-graph generation</h2><p class="section-copy">A separate evaluation asks models to produce objects, grounded boxes, and directed relations directly from images. Its VG-150, Open Images V7, and PSG results are independent of GRAB-Lite graph VQA.</p></div><a class="sgg-report-link" href="image_SGG_Bench/">Open the scene-graph benchmark ↗</a></div>
+      <p id="sgg-run-state" class="section-copy" aria-live="polite">Loading current scene-graph benchmark status…</p>
+      <div id="sgg-summary"></div>
+    </section>
+
     <section class="section-block">
-      <div class="section-head"><div><p class="eyebrow">03 / QUALITY</p><h2>Task scores and deltas</h2><p class="section-copy">Deltas compare a quantized or fine-tuned version with its listed reference when that reference has a completed result.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">04 / QUALITY</p><h2>Task scores and deltas</h2><p class="section-copy">Deltas compare a quantized or fine-tuned version with its listed reference when that reference has a completed result.</p></div></div>
       <div id="scores-table"></div>
     </section>
 
     <section class="section-block">
-      <div class="section-head"><div><p class="eyebrow">04 / RUNTIME</p><h2>Per-task VRAM and speed</h2><p class="section-copy">Peak GPU use is the maximum sampled during that task. Context is the runner configuration used for the benchmark.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">05 / RUNTIME</p><h2>Per-task VRAM and speed</h2><p class="section-copy">Peak GPU use is the maximum sampled during that task. Context is the runner configuration used for the benchmark.</p></div></div>
       <div id="runtime-table"></div>
     </section>
 
     <section class="section-block">
-      <div class="section-head"><div><p class="eyebrow">05 / MEMORY</p><h2>VRAM and context profiles</h2><p class="section-copy">Estimated residency at 8K, default context, and largest estimated context under the 30 GiB model budget.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">06 / MEMORY</p><h2>VRAM and context profiles</h2><p class="section-copy">Estimated residency at 8K, default context, and largest estimated context under the 30 GiB model budget.</p></div></div>
       <div id="context-table"></div>
     </section>
 
     <section class="section-block edge-section">
-      <div class="section-head"><div><p class="eyebrow">06 / EDGE FIT</p><h2>Reduced-VRAM candidates</h2><p class="section-copy">Select models whose estimated 8K residency plus desktop reserve fits each limit. Context is interpolated from the Q8 KV profile.</p></div></div>
+      <div class="section-head"><div><p class="eyebrow">07 / EDGE FIT</p><h2>Reduced-VRAM candidates</h2><p class="section-copy">Select models whose estimated 8K residency plus desktop reserve fits each limit. Context is interpolated from the Q8 KV profile.</p></div></div>
       <div class="edge-grid">
         <article class="edge-card"><div class="edge-title"><div><span class="limit-tag">12 GiB LIMIT</span><h3>Compact edge tier</h3></div><span id="edge12-count" class="edge-count"></span></div><div id="edge12-table"></div></article>
         <article class="edge-card"><div class="edge-title"><div><span class="limit-tag">16 GiB LIMIT</span><h3>Balanced edge tier</h3></div><span id="edge16-count" class="edge-count"></span></div><div id="edge16-table"></div></article>
@@ -84,8 +90,8 @@
       <p class="edge-caveat">Scores and speed use the benchmark context listed in each row. Some GGUF runs used 128K or 256K and therefore peaked well above the edge limit; the smaller-context profile is an estimate, not a fresh constrained-memory run.</p>
     </section>
 
-    <footer><span>Qwen VLM benchmark · AI2D, VQA skill panel, and GRAB-Lite</span><span>Aggregate results only · no prompt-level outputs</span></footer>
+    <footer><span>Qwen VLM benchmark · general visual QA, including GRAB-Lite graph VQA</span><span>Scene-graph generation is reported separately · aggregate results only</span></footer>
   </main>
-  <script src="app.js?v=coverage-note-1" defer></script>
+  <script src="app.js?v=sgg-coverage-2" defer></script>
 </body>
 </html>

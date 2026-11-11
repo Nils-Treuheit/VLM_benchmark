@@ -278,8 +278,8 @@ def main() -> None:
             + [graph_specialist.get("graph_peak_gpu_used_gib") or 0]
         )
         graph_specialist_rec = recommendation(
-            "Graph specialist", graph_specialist,
-            "G-Substrate is a graph-reasoning fine-tune. Mean Score equally averages AI2D, the six VQA panel measures, and GRAB-Lite. GRAB-Lite covers properties, functions, series, transformations, and real figures.",
+            "G-Substrate · graph VQA result", graph_specialist,
+            "Mean score averages eight general VLM capability tasks: AI2D, six VQA panel measures, and GRAB-Lite graph VQA. GRAB-Lite tests question answering about scientific graph images, not scene-graph generation. Image scene-graph results are reported in a separate benchmark.",
             {"graph_score": graph_specialist["graph_score"],
              "graph_task_scores": graph_specialist.get("graph_task_scores", {}),
              "all_benchmark_mean_score": sum(all_scores) / len(all_scores),
@@ -288,8 +288,8 @@ def main() -> None:
         )
     else:
         graph_specialist_rec = recommendation(
-            "Graph specialist", graph_specialist,
-            "G-Substrate is a graph-reasoning fine-tune for relational visual structure; GRAB-Lite results are not available yet.")
+            "G-Substrate · graph VQA result", graph_specialist,
+            "GRAB-Lite measures question answering about scientific graph images, not scene-graph generation. Image scene-graph results are reported in a separate benchmark; GRAB-Lite results are not available yet.")
 
     graph_rows = []
     baseline_id = "Qwen/Qwen3-VL-2B-Instruct"
@@ -327,7 +327,7 @@ def main() -> None:
 
     data = {
         "generated_at": datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"),
-        "coverage_note": "GRAB-Lite covers the four models selected for that benchmark. Some large-model rows have incomplete VQA task coverage; partial rows are marked and excluded from complete-score recommendations.",
+        "coverage_note": "GRAB-Lite is scientific-graph visual question answering within the general VLM capability evaluation; it does not measure scene-graph generation. It covers the four models selected for that task. Some large-model rows have incomplete VQA task coverage; partial rows are marked and excluded from complete-score recommendations.",
         "samples_per_task": result["samples_per_task"],
         "seed": result["seed"],
         "memory_cap_gib": result.get("memory_cap_gib"),
@@ -335,7 +335,7 @@ def main() -> None:
         "panel_tasks": list(PANEL_TASKS),
         "panel_samples_per_category": panel.get("samples_per_task", 25),
         "graph_benchmark": {
-            "title": "GRAB-Lite graph analysis",
+            "title": "GRAB-Lite scientific-graph VQA",
             "url": "https://huggingface.co/datasets/jonathan-roberts1/GRAB-lite",
             "homepage": "https://grab-benchmark.github.io/",
             "samples": 500,

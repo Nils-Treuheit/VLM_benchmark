@@ -2,6 +2,7 @@ const TASKS = { ai2d: 'AI2D', textvqa: 'TextVQA' };
 const states = new Map();
 
 const esc = value => String(value ?? '—');
+const htmlEsc = value => esc(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const pct = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
 const pp = value => value == null ? '—' : `${value > 0 ? '+' : ''}${value.toFixed(1)} pp`;
 const n = (value, digits = 2, suffix = '') => value == null ? '—' : `${Number(value).toFixed(digits)}${suffix}`;
@@ -305,9 +306,9 @@ function renderRecommendations(data) {
       const dd = document.createElement('dd'); dd.textContent = value;
       wrapper.append(dt, dd); metrics.append(wrapper);
     };
-    if (item.label === 'Graph specialist') {
-      addMetric('Mean Score · all benchmarks', pct(item.all_benchmark_mean_score));
-      addMetric('Graph Specific Benchmark Score', pct(item.graph_score));
+    if (item.label === 'G-Substrate · graph VQA result') {
+      addMetric('Mean · general capability tasks', pct(item.all_benchmark_mean_score));
+      addMetric('GRAB-Lite graph VQA', pct(item.graph_score));
       addMetric('Configured context', context(item.context));
       addMetric('Peak VRAM', `${n(item.peak_gpu_gib, 2)} GiB`);
     } else {
@@ -320,7 +321,7 @@ function renderRecommendations(data) {
       addMetric('Max context fit', context(item.edge_max_context));
     } else if (item.label === 'Fastest average generation with acceptable quality') {
       addMetric('Mean output speed', `${n(item.mean_tokens_s, 1)} tok/s`);
-    } else if (item.label !== 'Graph specialist') {
+    } else if (item.label !== 'G-Substrate · graph VQA result') {
       addMetric('Mean score', pct(item.combined_score));
       if (item.context) addMetric('Configured context', context(item.context));
     }
@@ -329,13 +330,39 @@ function renderRecommendations(data) {
   });
 }
 
+function renderSceneGraphResults(data) {
+  const state = document.getElementById('sgg-run-state');
+  const target = document.getElementById('sgg-summary');
+  if (!data) {
+    state.textContent = 'Current scene-graph aggregate data could not be loaded. Open the dedicated report for its latest status.';
+    return;
+  }
+  const pending = data.pending_models || [];
+  state.textContent = data.run_complete
+    ? `Comparison complete: ${data.completed_model_count} of ${data.candidate_count} candidates have full three-panel results.`
+    : `Comparison in progress: ${data.completed_model_count} of ${data.candidate_count} candidates have full three-panel results. ${pending.length} candidate${pending.length === 1 ? ' is' : 's are'} pending.`;
+  const labels = {vg150: 'VG-150 canonical test', openimages_v7: 'Open Images V7 relationships', psg: 'PSG box-adapted SGG'};
+  const metric = value => value == null ? '—' : `${(100 * value).toFixed(2)}%`;
+  target.innerHTML = Object.entries(labels).map(([key, label]) => {
+    const panel = data.datasets?.[key];
+    const rows = (panel?.models || []).map(model => {
+      const m = model.metrics || {};
+      return `<tr><th scope="row">${htmlEsc(model.id)}</th><td>${metric(m.mr_at_k?.['50'])}</td><td>${metric(m.r_at_k?.['50'])}</td><td>${metric(m.triplet_f1_at_50)}</td><td>${metric(m.object_recall_at_50)}</td><td>${model.valid_json ?? 0}/${model.requested ?? 0}</td><td>${model.completed ?? 0}/${model.requested ?? 0}</td></tr>`;
+    }).join('');
+    return `<h3 class="sgg-panel-title">${label}</h3><div class="table-shell sgg-table"><table><caption>${label} current full-panel aggregates (${panel?.panel_n ?? '—'} images)</caption><thead><tr><th scope="col">Model</th><th scope="col">mR@50</th><th scope="col">R@50</th><th scope="col">Triplet F1@50</th><th scope="col">Object R@50</th><th scope="col">Valid JSON</th><th scope="col">Completed</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No complete panel aggregates available yet.</td></tr>'}</tbody></table></div>`;
+  }).join('');
+}
+
 const percentColumns = (key, label, best = 'max', rankGroup = null) => ({ key, label, numeric: true, best, rankGroup, sortValue: row => row[key], display: row => pct(row[key]), className: row => row[key] == null ? 'dim' : '' });
 const numberColumn = (key, label, digits = 2, suffix = '', best = null, rankGroup = null) => ({ key, label, numeric: true, best, rankGroup, sortValue: row => row[key], display: row => n(row[key], digits, suffix) });
 const contextColumn = (key, label) => ({ key, label, numeric: true, best: 'max', sortValue: row => row[key], display: row => context(row[key]) });
 const plainColumn = (key, label, className) => ({ key, label, sortValue: row => row[key], display: row => esc(row[key]), className: className ? () => className : null });
 
 async function init() {
-  const response = await fetch('data.json?v=coverage-note-1');
+  fetch('image_SGG_Bench/data.json?v=sgg-coverage-2').then(response => response.ok ? response.json() : Promise.reject(new Error(`SGG data returned ${response.status}`)))
+    .then(renderSceneGraphResults)
+    .catch(() => renderSceneGraphResults(null));
+  const response = await fetch('data.json?v=sgg-coverage-2');
   if (!response.ok) throw new Error(`Could not load benchmark data (${response.status})`);
   const data = await response.json();
   const models = data.models;
@@ -369,7 +396,7 @@ async function init() {
     percentColumns('affordance','Affordance / function'), percentColumns('negation','Negation'),
   ], 'vqa-panel');
 
-  renderTable('graph-table', 'GRAB-Lite graph scores', buildGraphRows(data.graph_benchmark), [
+  renderTable('graph-table', 'GRAB-Lite scientific-graph VQA scores', buildGraphRows(data.graph_benchmark), [
     plainColumn('model_id','Model'), percentColumns('score','Overall'),
     {key:'delta_vs_qwen3_2b',label:'Δ vs Qwen3-2B',numeric:true,best:'max',sortValue:r=>r.delta_vs_qwen3_2b,display:r=>pp(r.delta_vs_qwen3_2b)},
     percentColumns('properties','Properties'), percentColumns('function','Functions'),

@@ -1,6 +1,6 @@
 # Qwen VLM benchmark
 
-This project compares runnable local Qwen2-VL, Qwen2.5-VL, and Qwen3-VL checkpoints on diagram reasoning and a broader six-category visual-question panel. A focused GRAB-Lite graph-analysis comparison evaluates G-Substrate against the Qwen3-VL baseline, best-overall, and long-context recommendations. Runs use one image and one request at a time, without batching.
+This project compares runnable local Qwen2-VL, Qwen2.5-VL, and Qwen3-VL checkpoints on diagram reasoning and a broader visual-question panel. The general VLM evaluation also includes GRAB-Lite, a scientific-graph visual-question-answering task. It does not measure scene-graph generation. Runs use one image and one request at a time, without batching.
 
 The benchmark includes cached Unsloth GGUF quantizations, original Qwen Transformers checkpoints, G-Substrate, and the complete Unsloth Qwen3-VL-8B Thinking BNB exports. GGUF files run through llama.cpp with Q8_0 K/V cache and MTP requested when available. BNB safetensors cannot be loaded as GGUF, so those two cached exports follow their Transformers model-card path with the same HQQ 8-bit KV cache used by the Transformers baselines.
 
@@ -56,7 +56,7 @@ The report site joins these results with AI2D and TextVQA. The “Fastest averag
 
 ### Graph analysis
 
-The graph specialist evaluation uses the complete 500-question GRAB-Lite split from `jonathan-roberts1/GRAB-lite`. Its five balanced task groups cover graph properties, functions, series, transformations, and real figures. The overall score is exact-match accuracy across all 500 examples; the report also gives per-group scores and deltas against `Qwen/Qwen3-VL-2B-Instruct`.
+The scientific-graph VQA evaluation uses the complete 500-question GRAB-Lite split from `jonathan-roberts1/GRAB-lite`. Its five balanced task groups cover graph properties, functions, series, transformations, and real figures. The overall score is exact-match accuracy across all 500 examples; the report also gives per-group scores and deltas against `Qwen/Qwen3-VL-2B-Instruct`.
 
 In the completed four-model comparison, `unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL` scored 14.0%, `Qwen/Qwen2.5-VL-7B-Instruct` scored 12.6%, the Qwen3-VL-2B baseline scored 6.2%, and G-Substrate scored 4.4%. On this split, G-Substrate did not outperform its Qwen3-VL-2B baseline; the UD Q4 8B model led overall and on properties and real-figure questions.
 
@@ -66,7 +66,7 @@ Prepare the local image set before running the graph comparison:
 uv run python prepare_graph_panel.py
 ```
 
-Run the graph specialist, Qwen3-VL-2B baseline, and the final best-overall and long-context picks with `--tasks graph_grab_lite --samples 500 --seed 3407 --output-dir results/graph_panel --resume`. The site combines graph results with the VQA results and shows the graph specialist’s mean score across all eight benchmark measures, GRAB-Lite score, configured context, and peak VRAM.
+Run G-Substrate, the Qwen3-VL-2B baseline, and the final best-overall and long-context picks with `--tasks graph_grab_lite --samples 500 --seed 3407 --output-dir results/graph_panel --resume`. The site includes GRAB-Lite among general VLM capability results. Its G-Substrate mean equally averages AI2D, the six VQA panel measures, and GRAB-Lite. Direct image scene-graph generation is evaluated separately in [Image SGG](image_SGG_Bench/README.md).
 
 ## Image scene graph generation
 

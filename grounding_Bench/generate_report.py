@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import statistics
 from datetime import datetime, timezone
 from pathlib import Path
@@ -179,6 +180,7 @@ def load_domain_runs() -> dict[str, dict[str, dict[str, Any]]]:
         key = (domain, model_id)
         rank = (completed, path.stat().st_mtime)
         if rank >= coverage.get(key, (-1, -1.0)):
+            payload["_source_path"] = str(path.relative_to(HERE))
             result.setdefault(domain, {})[model_id] = payload
             coverage[key] = rank
     return result
@@ -525,24 +527,27 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
         {"dataset": "LVIS v1 validation", "status": "GroundAnything, LocateAnything, SAM 3.1, and YOLOE-26-L complete at 100/100; YOLO26-L and YOLO26-L-seg have no supported detections for the selected categories",
          "task": "Long-tail detection and instance segmentation",
          "note": "This exploratory panel uses 10 rare, 10 common, and 10 frequent categories across 100 fixed LVIS val images sourced from COCO 2017 train/val. It uses official LVIS AP and frequency-group metrics, not the full 1,203-category leaderboard; COCO-trained baselines may have seen some train images. YOLO26-L and YOLO26-L-seg were run on the same panel, but their fixed COCO vocabulary produced no detections for these selected long-tail categories, so LVIS AP is unsupported."},
-        {"dataset": "RF100-VL", "status": "YOLOE-26-L, SAM 3.1, GroundAnything, and LocateAnything complete on all five 20-image panels; YOLO26-L and YOLO26-L-seg complete on the airplane, boat, and person panels",
+        {"dataset": "RF100-VL", "status": "Current all-subset comparison is built from the highest-coverage saved run for each model and subset",
          "task": "Multi-domain open-vocabulary detection",
-         "note": "The five local test subsets are aerial-airport, activity-diagrams, cable-damage, marine-sharks, and TACO trash. YOLOE-26-L, SAM 3.1, GroundAnything-VLM, and LocateAnything use the same seeded images on every panel. Closed-vocabulary YOLO26-L and YOLO26-L-seg were added on the aerial-airport and marine-sharks panels, where airplane, boat, and person labels overlap their COCO vocabulary; results are not extrapolated to panels without matching labels. The LocateAnything recovery caps image patches at 4,096 and output tokens at 2,048; it completed all five 20-image panels, while native-input attempts remain preserved with OOMs. Its detection quality remains low and parser-invalid outputs are shown in the detailed table. GroundAnything's shared SGLang service startup took about 10 seconds and is excluded from per-query latency. SAM checkpoint warnings are retained."},
+         "note": "Per-subset panels use up to 20 shared seeded test images. Only models with complete coverage across all local subsets appear in the current macro comparison. The local test exports contain boxes but no masks; mask AP is unsupported. Closed-vocabulary results are limited to panels with matching labels."},
         {"dataset": "BOP-H3 HOT3D/HANDAL", "status": "separate follow-up",
          "task": "Unseen-object detection, onboarding, and 6D pose",
          "note": "Keep separate from class-name box AP. Use the official BOP protocol for pose tasks and review each dataset's terms before expanding beyond local HOPE v2."},
     ]
-    rf_rows = [row for row in domain_summaries(domain_runs or {}, vision_runs or {})
-               if row["dataset"].startswith("RF100-VL:")]
+    domain_results = domain_summaries(domain_runs or {}, vision_runs or {})
+    rf_rows = [row for row in domain_results if row["dataset"].startswith("RF100-VL:")]
     rf_panels = sorted({row["dataset"] for row in rf_rows})
     rf_panel_total = sum(1 for path in (HERE / "data" / "domain_manifests" / "rf100_vl").glob("*/coco.json"))
     all_rf_complete = False
+    rf_summary: dict[str, Any] = {"panel_count": len(rf_panels), "panel_total": rf_panel_total, "models": []}
+    current_rf_models: set[str] = set()
     if rf_panels:
         required_rf_models = ("nvidia/LocateAnything-3B", "GroundingPI/GroundAnything-VLM", "yoloe26l-seg")
         completed = {model: sum(row["status"] == "complete" for row in rf_rows if row["model_id"] == model)
                      for model in required_rf_models}
         rf_track = next(row for row in dataset_tracks if row["dataset"] == "RF100-VL")
         all_rf_complete = rf_panel_total == 100 and all(count == rf_panel_total for count in completed.values())
+        current_rf_models = {model for model, count in completed.items() if count == rf_panel_total and rf_panel_total}
         coverage = ", ".join(f"{model}: {completed[model]}/{rf_panel_total}" for model in required_rf_models)
         rf_track["status"] = (f"All-subset runs complete across {rf_panel_total} panels" if all_rf_complete
                               else f"Expanded local panel coverage recorded; required-model completion: {coverage}")
@@ -553,6 +558,42 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
             "Closed-vocabulary YOLO26 results remain limited to panels with matching labels."
             + (" Live all-subset run status is tracked in PLAN.md." if not all_rf_complete else "")
         )
+        # Keep the published RF100 table focused on the current, comparable all-subset run set.
+        if current_rf_models:
+            rf_rows = [row for row in rf_rows if row["model_id"] in current_rf_models]
+            domain_results = [row for row in domain_results
+                              if not row["dataset"].startswith("RF100-VL:") or row["model_id"] in current_rf_models]
+
+        def macro(model_rows: list[dict[str, Any]], key: str) -> float | None:
+            values = [float(row[key]) for row in model_rows
+                      if row["status"] == "complete" and row.get(key) is not None]
+            return sum(values) / len(values) if values else None
+
+        rf_summary["models"] = []
+        for model_id in sorted(current_rf_models):
+            model_rows = [row for row in rf_rows if row["model_id"] == model_id]
+            complete_rows = [row for row in model_rows if row["status"] == "complete"]
+            rf_summary["models"].append({
+                "model_id": model_id,
+                "model": model_rows[0]["model"],
+                "complete_panels": len(complete_rows),
+                "ap_panels": sum(row.get("AP") is not None for row in complete_rows),
+                "macro_AP": macro(model_rows, "AP"),
+                "f1_panels": sum(row.get("class_aware_F1_IoU50") is not None for row in complete_rows),
+                "macro_F1": macro(model_rows, "class_aware_F1_IoU50"),
+            })
+        date_values = []
+        for model_id in current_rf_models:
+            for payload in (domain_runs or {}).values():
+                run = payload.get(model_id, {})
+                if "rf100_" not in run.get("_source_path", ""):
+                    continue
+                match = re.search(r"20\d{6}", run["_source_path"])
+                if match:
+                    date_values.append(match.group(0))
+        if date_values:
+            latest = max(date_values)
+            rf_summary["latest_result_date"] = f"{latest[:4]}-{latest[4:6]}-{latest[6:8]}"
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": "complete" if winner and all_rf_complete else "not run" if not runs else "partial",
@@ -582,7 +623,9 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
         "vision": vision_summary(vision_runs or {}, runs, expected_images=100),
         "dota_track": dota_summary,
         "dataset_tracks": dataset_tracks,
-        "domain_benchmarks": domain_summaries(domain_runs or {}, vision_runs or {}),
+        "domain_benchmarks": domain_results,
+        "rf100_summary": rf_summary,
+        "latest_rf100_result_date": rf_summary.get("latest_result_date"),
         "references": REFERENCES,
     }
 
