@@ -1,13 +1,13 @@
 # Local foundation and GGUF VLM benchmark
 
-Updated: 2026-11-05 04:17 CET
-Run timestamps: 2026-11-03 18:08:32 +0100, 2026-11-04 12:49:50 +0100, 2026-11-04 12:56:16 +0100, 2026-11-04 13:52:12 +0100, 2026-11-04 14:55:50 +0100, 2026-11-04 19:17:55 +0100, 20:17:47 +0100, 20:24:26 +0100 (8 GiB Edge refinement), 21:41:32 and 22:36:16 +0100 (10 GiB Edge refinement), and 04:09:40 and 04:17:15 +0100 (12 GiB Edge refinement).
-Completion: 5 of 5 latest model runs completed all 825 requests.
+Updated: 2026-11-12 19:30 CET
+Run timestamps: 2026-11-03 18:08:32 +0100, 2026-11-04 12:49:50 +0100, 2026-11-04 12:56:16 +0100, 2026-11-04 13:52:12 +0100, 2026-11-04 14:55:50 +0100, 2026-11-04 19:17:55 +0100, 20:17:47 +0100, 20:24:26 +0100 (8 GiB Edge refinement), 21:41:32 and 22:36:16 +0100 (10 GiB Edge refinement), and 04:09:40 and 04:17:15 +0100 (12 GiB Edge refinement), and 2026-11-12 15:38:09 +0100 (Transformers LFM3).
+Completion: 6 of 6 latest model runs completed all 825 requests.
 Execution: serial, one image per request, fixed examples, no batching.
 
 ## Summary
 
-Measured candidates include the configured Qwen3.8 Ollama route and four Liquid VLM GGUF variants. The corrected LFM2.5-VL 1.6B run is the current result for that model ID; its earlier run remains in the attempt history.
+Measured candidates now include the official LiquidAI/LFM3-VL-2B Transformers checkpoint, the configured Qwen3.8 Ollama route, and four Liquid VLM GGUF variants. The corrected LFM2.5-VL 1.6B run is the current result for that model ID; its earlier run remains in the attempt history.
 The full-suite macro is the unweighted mean of eight task scores. It is reported only for models that completed every requested example.
 
 ## Edge refinement
@@ -22,7 +22,15 @@ The full-suite macro is the unweighted mean of eight task scores. It is reported
 | 12 GiB | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | verified | 58.54% | 128,000 tokens | 5.164 GiB | 5.554 GiB | 5.554 GiB |
 | 12 GiB | unsloth/LFM2.5-VL-3B-GGUF | verified | 58.44% | 32,768 tokens | 4.547 GiB | 4.554 GiB | 4.554 GiB |
 
-All seven listed runs completed all eight shared tasks under their measured whole-device limits. The 10 GiB [LFM3 NVFP4 report](results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published), and [LFM2.5 3B report](results/runs/20261104-223616/edge_10gib/lfm25_3b/report.md) and raw results (local artifact; not published) were independently reviewed. The [8 GiB LFM3 NVFP4 report](results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published), the [LFM2.5 3B report](results/runs/20261104-201747/edge_8gib/lfm25_3b/report.md) and raw results (local artifact; not published), and the [LFM3 Q4 report](results/runs/20261104-202426/edge_8gib/lfm3_2b/report.md) and raw results (local artifact; not published) preserve the 8 GiB evidence. The [12 GiB LFM3 NVFP4 report](results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published) were independently reviewed. Two earlier LFM3 12 GiB attempts remain preserved under `results/runs/results/runs/edge_refinement/12gib/` and `results/runs/edge_refinement/12gib/lfm3_2b_nvfp4/`; their evidence gaps are resolved by the verified retry. The [12 GiB LFM2.5 3B report](results/runs/edge_refinement/12gib/lfm25_3b/report.md) and raw results (local artifact; not published) were also independently reviewed. Other selected candidates and 14/16 GiB cap stages remain pending.
+All seven listed runs completed all eight shared tasks under their measured whole-device limits. The 10 GiB [LFM3 NVFP4 report](results/runs/20261104-214132/edge_10gib/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published), and [LFM2.5 3B report](results/runs/20261104-223616/edge_10gib/lfm25_3b/report.md) and raw results (local artifact; not published) were independently reviewed. The [8 GiB LFM3 NVFP4 report](results/runs/20261104-191755/edge_8gib/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published), the [LFM2.5 3B report](results/runs/20261104-201747/edge_8gib/lfm25_3b/report.md) and raw results (local artifact; not published), and the [LFM3 Q4 report](results/runs/20261104-202426/edge_8gib/lfm3_2b/report.md) and raw results (local artifact; not published) preserve the 8 GiB evidence. The [12 GiB LFM3 NVFP4 report](results/runs/edge_refinement/12gib/evidence_retry_20261105/lfm3_2b_nvfp4/report.md) and raw results (local artifact; not published) were independently reviewed. Two earlier LFM3 12 GiB attempts remain preserved under `results/runs/results/runs/edge_refinement/12gib/` and `results/runs/edge_refinement/12gib/lfm3_2b_nvfp4/`; their evidence gaps are resolved by the verified retry. The [12 GiB LFM2.5 3B report](results/runs/edge_refinement/12gib/lfm25_3b/report.md) and raw results (local artifact; not published) were also independently reviewed. The [Edge Limited results](../index.html#edge-limited-title) include the later 14 and 16 GiB stages.
+
+## Original Transformers LFM3-VL-2B
+
+The official BF16 checkpoint completed all 825 examples at 63.33% full-suite macro. The AI2D and TextVQA real-image preflights passed. Revision: `23387beda43c60310348e83e25f78f33c3140d3a`. Runtime: Transformers 5.22.1 AutoModelForImageTextToText, CUDA 13.0. Configured context: 8,192 tokens. Peak whole-device VRAM: 14.638 GiB.
+
+Generation followed the model card: temperature 0.1, top-p 1.0, top-k 50, repetition penalty 1.1. The benchmark allowed 4,096 new tokens per request to match the existing LFM3 comparisons. It recorded 69 length-limited GRAB-Lite responses. The raw run preserves every item output and prompt.
+
+See the [aggregate site data](data.json) for per-task scores and runtime. The raw results and run log are retained locally under `results/runs/lfm3_refresh_20261112/transformers-original/`.
 
 ## Quality results
 
@@ -32,15 +40,16 @@ All seven listed runs completed all eight shared tasks under their measured whol
 | unsloth/LFM2.5-VL-3B-GGUF (llama.cpp b12097 CUDA 13.2 OpenAI-compatible server) | complete | 825/825 | 58.4% | 63.5% | 73.0% | 84.3% | 93.2% | 64.0% | 67.6% | 8.0% | 64.0% | 13.4% |
 | LiquidAI/LFM3-VL-2B-GGUF (llama.cpp b12097 CUDA 13.2 OpenAI-compatible server) | complete | 825/825 | 55.7% | 55.4% | 86.0% | 74.2% | 61.2% | 72.4% | 60.4% | 8.0% | 56.0% | 27.6% |
 | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 (llama.cpp b12097 CUDA 13.2 OpenAI-compatible server) | complete | 825/825 | 58.5% | 57.1% | 92.0% | 78.5% | 54.4% | 75.6% | 66.0% | 4.0% | 64.0% | 33.8% |
+| LiquidAI/LFM3-VL-2B (Transformers 5.22.1 AutoModelForImageTextToText, CUDA 13.0) | complete | 825/825 | 63.33% | 63.37% | 93.0% | 81.0% | 83.6% | 83.2% | 60.4% | 8.0% | 64.0% | 33.4% |
 | unsloth/LFM2.5-VL-1.6B-GGUF (llama.cpp b12097 CUDA 13.2 OpenAI-compatible server) | complete | 825/825 | 37.5% | 39.8% | 56.0% | 62.0% | 68.8% | 13.2% | 58.8% | 4.0% | 32.0% | 4.8% |
 
 ## Selection guide
 
 Best complete full-suite macro: `qwen3.8:27b-mtp4-ud_q4_K_XL-128k` at 63.5%.
-Best complete result for AI2D: `LiquidAI/LFM3-VL-2B-GGUF:NVFP4` at 92.0%.
+Best complete result for AI2D: `LiquidAI/LFM3-VL-2B` at 93.0%.
 Best complete result for TextVQA / OCR: `unsloth/LFM2.5-VL-3B-GGUF` at 84.3%.
 Best complete result for Truth: `unsloth/LFM2.5-VL-3B-GGUF` at 93.2%.
-Best complete result for Counting: `qwen3.8:27b-mtp4-ud_q4_K_XL-128k` at 81.6%.
+Best complete result for Counting: `LiquidAI/LFM3-VL-2B` at 83.2%.
 Best complete result for Description: `qwen3.8:27b-mtp4-ud_q4_K_XL-128k` at 69.2%.
 Best complete result for Affordance: `qwen3.8:27b-mtp4-ud_q4_K_XL-128k` at 8.0%.
 Best complete result for Negation: `qwen3.8:27b-mtp4-ud_q4_K_XL-128k` at 64.0%.
@@ -55,6 +64,7 @@ Picks use only full-suite-complete models; ties retain the first listed model.
 | unsloth/LFM2.5-VL-3B-GGUF | pass | pass |
 | LiquidAI/LFM3-VL-2B-GGUF | pass | pass |
 | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | pass | pass |
+| LiquidAI/LFM3-VL-2B (Transformers) | pass | pass |
 | unsloth/LFM2.5-VL-1.6B-GGUF | pass | pass |
 
 ## Runtime and resources
@@ -65,6 +75,7 @@ Picks use only full-suite-complete models; ties retain the first listed model.
 | unsloth/LFM2.5-VL-3B-GGUF | 8192 | 4.16 | nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline |
 | LiquidAI/LFM3-VL-2B-GGUF | 8192 | 4.37 | nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline |
 | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | 8192 | 4.90 | nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline |
+| LiquidAI/LFM3-VL-2B (Transformers) | 8192 | 14.638 | nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline |
 | unsloth/LFM2.5-VL-1.6B-GGUF | 8192 | 5.13 | nvidia-smi query-gpu sampled every 0.5 seconds, including desktop baseline |
 
 ### Per-task latency and throughput
@@ -103,6 +114,14 @@ Picks use only full-suite-complete models; ties retain the first listed model.
 | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | Affordance | 25/25 | 2.63 | 365.38 |
 | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | Negation | 25/25 | 4.80 | 370.69 |
 | LiquidAI/LFM3-VL-2B-GGUF:NVFP4 | GRAB-Lite | 500/500 | 5.47 | 419.21 |
+| LiquidAI/LFM3-VL-2B (Transformers) | AI2D | 100/100 | 6.00 | 91.24 |
+| LiquidAI/LFM3-VL-2B (Transformers) | TextVQA / OCR | 100/100 | 4.39 | 91.56 |
+| LiquidAI/LFM3-VL-2B (Transformers) | Truth | 25/25 | 4.03 | 92.07 |
+| LiquidAI/LFM3-VL-2B (Transformers) | Counting | 25/25 | 11.04 | 91.97 |
+| LiquidAI/LFM3-VL-2B (Transformers) | Description | 25/25 | 2.05 | 91.55 |
+| LiquidAI/LFM3-VL-2B (Transformers) | Affordance | 25/25 | 8.24 | 91.60 |
+| LiquidAI/LFM3-VL-2B (Transformers) | Negation | 25/25 | 11.88 | 91.89 |
+| LiquidAI/LFM3-VL-2B (Transformers) | GRAB-Lite | 500/500 | 23.49 | 90.74 |
 | unsloth/LFM2.5-VL-1.6B-GGUF | AI2D | 100/100 | 0.15 | 33.85 |
 | unsloth/LFM2.5-VL-1.6B-GGUF | TextVQA / OCR | 100/100 | 0.19 | 30.47 |
 | unsloth/LFM2.5-VL-1.6B-GGUF | Truth | 25/25 | 0.17 | 15.84 |

@@ -340,7 +340,7 @@ function renderSceneGraphResults(data) {
   const pending = data.pending_models || [];
   state.textContent = data.run_complete
     ? `Comparison complete: ${data.completed_model_count} of ${data.candidate_count} candidates have full three-panel results.`
-    : `Comparison in progress: ${data.completed_model_count} of ${data.candidate_count} candidates have full three-panel results. ${pending.length} candidate${pending.length === 1 ? ' is' : 's are'} pending.`;
+    : `Partial comparison: ${data.completed_model_count} of ${data.candidate_count} candidates have full three-panel results. ${pending.length} candidate${pending.length === 1 ? ' lacks' : 's lack'} a complete record.`;
   const labels = {vg150: 'VG-150 canonical test', openimages_v7: 'Open Images V7 relationships', psg: 'PSG box-adapted SGG'};
   const metric = value => value == null ? '—' : `${(100 * value).toFixed(2)}%`;
   target.innerHTML = Object.entries(labels).map(([key, label]) => {
@@ -359,7 +359,7 @@ const contextColumn = (key, label) => ({ key, label, numeric: true, best: 'max',
 const plainColumn = (key, label, className) => ({ key, label, sortValue: row => row[key], display: row => esc(row[key]), className: className ? () => className : null });
 
 async function init() {
-  fetch('image_SGG_Bench/data.json?v=sgg-coverage-2').then(response => response.ok ? response.json() : Promise.reject(new Error(`SGG data returned ${response.status}`)))
+  fetch('image_SGG_Bench/data.json?v=sgg-coverage-3').then(response => response.ok ? response.json() : Promise.reject(new Error(`SGG data returned ${response.status}`)))
     .then(renderSceneGraphResults)
     .catch(() => renderSceneGraphResults(null));
   const response = await fetch('data.json?v=sgg-coverage-2');

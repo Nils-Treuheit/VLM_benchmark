@@ -1,9 +1,11 @@
 {
-  "generated_at": "2026-11-07T03:48:57+00:00",
+  "generated_at": "2026-11-13T17:35:52+00:00",
   "run_complete": false,
   "candidate_count": 8,
   "completed_model_count": 3,
-  "incomplete_models": [],
+  "incomplete_models": [
+    "bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS"
+  ],
   "pending_models": [
     "bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS",
     "unsloth/Qwen3-VL-30B-A3B-Thinking-1M-GGUF:UD-Q4_K_XL",
@@ -21,6 +23,11 @@
       "id": "Qwen/Qwen2.5-VL-7B-Instruct",
       "backend": "Transformers (model card)",
       "revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5"
+    },
+    {
+      "id": "bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS",
+      "backend": "llama.cpp (IQ2_XXS)",
+      "revision": "2b2dc80ac1a8727d8d90f86308d849318c8ef311"
     },
     {
       "id": "zmli/G-Substrate-Qwen3-VL-2B",
@@ -186,6 +193,82 @@
             "triplet_recall_at_50": 0.0,
             "triplet_f1_at_50": 0.0,
             "object_recall_at_50": 0.000859106529209622
+          }
+        },
+        {
+          "id": "bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS",
+          "backend": "llama.cpp (IQ2_XXS)",
+          "requested": 200,
+          "completed": 200,
+          "valid_json": 0,
+          "failures": 200,
+          "metrics": {
+            "r_at_k": {
+              "20": 0.0,
+              "50": 0.0,
+              "100": 0.0
+            },
+            "mr_at_k": {
+              "20": 0.0,
+              "50": 0.0,
+              "100": 0.0
+            },
+            "predicate_support": {
+              "above": 17,
+              "across": 3,
+              "against": 2,
+              "along": 2,
+              "and": 4,
+              "at": 2,
+              "attached to": 31,
+              "behind": 26,
+              "belonging to": 15,
+              "between": 3,
+              "carrying": 7,
+              "covered in": 1,
+              "covering": 3,
+              "eating": 6,
+              "flying in": 19,
+              "for": 13,
+              "from": 1,
+              "growing on": 13,
+              "hanging from": 1,
+              "has": 210,
+              "holding": 39,
+              "in": 74,
+              "in front of": 12,
+              "laying on": 7,
+              "looking at": 4,
+              "lying on": 3,
+              "made of": 1,
+              "mounted on": 7,
+              "near": 46,
+              "of": 130,
+              "on": 401,
+              "on back of": 1,
+              "over": 7,
+              "painted on": 2,
+              "parked on": 1,
+              "part of": 9,
+              "playing": 1,
+              "riding": 13,
+              "says": 1,
+              "sitting on": 22,
+              "standing on": 9,
+              "to": 3,
+              "under": 14,
+              "using": 2,
+              "walking in": 6,
+              "walking on": 4,
+              "watching": 3,
+              "wearing": 187,
+              "wears": 15,
+              "with": 29
+            },
+            "triplet_precision_at_50": 0.0,
+            "triplet_recall_at_50": 0.0,
+            "triplet_f1_at_50": 0.0,
+            "object_recall_at_50": 0.0
           }
         },
         {
@@ -359,6 +442,50 @@
             "triplet_recall_at_50": 0.0,
             "triplet_f1_at_50": 0.0,
             "object_recall_at_50": 0.0
+          }
+        },
+        {
+          "id": "bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS",
+          "backend": "llama.cpp (IQ2_XXS)",
+          "requested": 200,
+          "completed": 200,
+          "valid_json": 2,
+          "failures": 198,
+          "metrics": {
+            "r_at_k": {
+              "20": 0.0024691358024691358,
+              "50": 0.0024691358024691358,
+              "100": 0.0024691358024691358
+            },
+            "mr_at_k": {
+              "20": 0.002777777777777778,
+              "50": 0.002777777777777778,
+              "100": 0.002777777777777778
+            },
+            "predicate_support": {
+              "at": 3,
+              "contain": 74,
+              "dance": 7,
+              "drink": 1,
+              "hang": 1,
+              "holds": 66,
+              "hug": 46,
+              "inside_of": 12,
+              "interacts_with": 18,
+              "kiss": 20,
+              "on": 37,
+              "plays": 39,
+              "read": 1,
+              "ride": 31,
+              "skateboard": 1,
+              "ski": 1,
+              "snowboard": 1,
+              "wears": 46
+            },
+            "triplet_precision_at_50": 0.041666666666666664,
+            "triplet_recall_at_50": 0.0024691358024691358,
+            "triplet_f1_at_50": 0.004662004662004662,
+            "object_recall_at_50": 0.0040650406504065045
           }
         },
         {

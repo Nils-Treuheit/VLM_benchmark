@@ -19,6 +19,11 @@ PROJECT_ROOT = next(
     parent for parent in Path(__file__).resolve().parents
     if (parent / "qwenVL_Bench").is_dir() and (parent / ".agentic_workflow").is_dir()
 )
+LEASE_MODULE_DIR = Path.home() / ".local/share/model-unload/benchmark-lease"
+if str(LEASE_MODULE_DIR) not in sys.path:
+    sys.path.insert(0, str(LEASE_MODULE_DIR))
+from benchmark_lease import benchmark_lease  # noqa: E402
+
 SGG_SOURCE = PROJECT_ROOT / "qwenVL_Bench" / "image_SGG_Bench"
 if str(SGG_SOURCE) not in sys.path:
     sys.path.insert(0, str(SGG_SOURCE))
@@ -428,7 +433,7 @@ def run(args: argparse.Namespace) -> Path:
     return args.output_dir
 
 
-def main() -> None:
+def _main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model-id", required=True)
     parser.add_argument("--model-revision", required=True)
@@ -444,6 +449,11 @@ def main() -> None:
     signal.signal(signal.SIGTERM, interrupt)
     result = run(args)
     print(f"RESULT_DIR {result}", flush=True)
+
+
+def main() -> None:
+    with benchmark_lease():
+        _main()
 
 
 if __name__ == "__main__":

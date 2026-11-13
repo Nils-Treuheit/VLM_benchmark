@@ -18,6 +18,7 @@ PROJECT_ROOT = next(
     parent for parent in Path(__file__).resolve().parents
     if (parent / "qwenVL_Bench").is_dir() and (parent / ".agentic_workflow").is_dir()
 )
+EXPECTED_OFFICIAL_COMMIT = "68d00d258e2be282abca41ef4912b323f747f31c"
 OFFICIAL_ROOT = PROJECT_ROOT / ".agentic_workflow" / "workspace" / "g-substrate-official"
 OFFICIAL_INFERENCE = OFFICIAL_ROOT / "inference"
 SCORING_DEPS = PROJECT_ROOT / ".agentic_workflow/workspace/g-substrate-cross-task/scoring-dependencies"
@@ -397,11 +398,8 @@ def render_report(metrics: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--run-dir", type=Path, required=True)
-    args = parser.parse_args()
-    run_dir = args.run_dir.resolve()
+def _score_legacy(run_dir: Path) -> None:
+    run_dir = run_dir.resolve()
     run_manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
     implementation_sha256 = {
         "runner": launched_runner_sha256(run_manifest),
@@ -560,6 +558,257 @@ def main() -> None:
     atomic_json(run_dir / "run_manifest.json", run_manifest)
     print(f"METRICS {run_dir / 'metrics.json'}", flush=True)
     print(f"REPORT {run_dir / 'report.md'}", flush=True)
+
+
+def get_fixed_predictions(run_dir: Path, run_manifest: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    from argparse import Namespace
+    from run_official_subsample import prepare_fixed_panel
+
+    if run_manifest.get("status") not in {"inference_complete", "complete"}:
+        raise ValueError("only a complete inference panel can be scored")
+    panel_path = Path(run_manifest["panel_path"])
+    panel_manifest_path = Path(run_manifest["panel_manifest_path"])
+    ns = Namespace(panel=panel_path, panel_manifest=panel_manifest_path,
+                   dataset_dir=Path(run_manifest["dataset_dir"]),
+                   families=run_manifest["families"], model_id=run_manifest["model_id"],
+                   model_revision=run_manifest["requested_model_revision"])
+    implementation = run_manifest.get("implementation_sha256", {})
+    runner_path = Path(__file__).with_name("run_official_subsample.py")
+    qualification_runner_path = PROJECT_ROOT / "qwenVL_Bench/gsubstrate_Bench/run_qualification.py"
+    if (implementation.get("runner") != sha256_file(runner_path)
+            or implementation.get("scorer") != sha256_file(Path(__file__).resolve())
+            or implementation.get("qualification_runner") != sha256_file(qualification_runner_path)):
+        raise ValueError("runner or scorer implementation hash differs from inference provenance")
+    if (sha256_file(panel_path) != run_manifest.get("panel_source_sha256")
+            or sha256_file(panel_manifest_path) != run_manifest.get("qualification_panel_manifest_sha256")
+            or run_manifest.get("official_repository_commit") != EXPECTED_OFFICIAL_COMMIT):
+        raise ValueError("original panel, panel-manifest, or official evaluator provenance mismatch")
+    expected_panel, expected_manifest, expected_gates = prepare_fixed_panel(ns)
+    panel_file = run_dir / "panel.json"
+    panel_manifest_file = run_dir / "panel_manifest.json"
+    predictions_file = run_dir / "predictions.jsonl"
+    if (sha256_file(panel_file) != run_manifest.get("panel_sha256")
+            or sha256_file(panel_manifest_file) != run_manifest.get("panel_manifest_sha256")
+            or sha256_file(predictions_file) != run_manifest.get("predictions_sha256")):
+        raise ValueError("run panel or prediction digest mismatch")
+    saved_panel = json.loads(panel_file.read_text(encoding="utf-8"))
+    saved_manifest = json.loads(panel_manifest_file.read_text(encoding="utf-8"))
+    if saved_panel != expected_panel or saved_manifest != expected_manifest:
+        raise ValueError("run-local panel differs from the frozen requested subset")
+    if run_manifest.get("qualification_gates") != expected_gates:
+        raise ValueError("qualification gate provenance changed after inference")
+    rows = [json.loads(line) for line in predictions_file.read_text(encoding="utf-8").splitlines() if line]
+    ids = [row.get("sample_id") for row in saved_panel]
+    if len(rows) != len(ids) or len(set(ids)) != len(ids) or [row.get("sample_id") for row in rows] != ids:
+        raise ValueError("predictions are missing, duplicated, or out of frozen panel order")
+    join_fields = ("sample_id", "source_file", "source_sha256", "source_index", "task_tag", "family",
+                   "reported_subtask", "task", "subtask", "prompt_text", "label", "images")
+    for i, (source, pred) in enumerate(zip(saved_panel, rows), 1):
+        if any(pred.get(field) != source.get(field) for field in join_fields):
+            raise ValueError(f"prediction row {i} does not match its frozen source row")
+        gate = expected_gates[source["family"]]
+        expected_prompt = source["prompt_text"].rstrip() + "\n\nOutput requirement: " + gate["prompt_variants"][source["task_tag"]] if gate["prompt_variants"][source["task_tag"]] else source["prompt_text"]
+        if (pred.get("inference_prompt") != expected_prompt
+                or pred.get("inference_prompt_sha256") != hashlib.sha256(expected_prompt.encode("utf-8")).hexdigest()
+                or pred.get("qualification_attempt") != gate["attempt"]
+                or pred.get("qualification_gate_path") != gate["path"]
+                or pred.get("qualification_gate_sha256") != gate["sha256"]):
+            raise ValueError(f"prediction row {i} prompt or qualification provenance mismatch")
+        if pred.get("error") or not pred.get("valid_for_aggregate"):
+            raise ValueError("infrastructure-incomplete panel cannot be scored")
+        if pred.get("cap_hit") != (pred.get("finish_reason") == "length"):
+            raise ValueError(f"row {i} cap accounting is inconsistent")
+    return rows, saved_manifest
+
+
+def fixed_per_example_metrics(rows: list[dict[str, Any]], expected_task_counts: dict[str, int]) -> tuple[dict[str, Any], dict[str, Any]]:
+    selected_tags = set(expected_task_counts)
+    gar_tasks = [key for key in GAR_TO_LABEL if f"graph_search:{key}" in selected_tags]
+    ere_tasks = [key for key in ERE_TO_LABEL if f"event_graph:{key}" in selected_tags]
+    gar: dict[str, list[float]] = {task: [] for task in gar_tasks}
+    mgd_bleu: list[float] = []
+    mgd_rouge: list[float] = []
+    ere: dict[str, list[float]] = {task: [] for task in ere_tasks}
+    ere_edge_counts = {task: {"parsed_rows": 0, "predicted_edges": 0, "gold_edges": 0} for task in ere_tasks}
+    cap_counts = {family: 0 for family in ("GAR", "MGD", "ERE")}
+    empty_counts = {family: 0 for family in ("GAR", "MGD", "ERE")}
+    shape_valid = {family: 0 for family in ("GAR", "MGD", "ERE")}
+    graph_facts_converted = 0
+    actual_tag_counts: dict[str, int] = {}
+    for row in rows:
+        tag = row["task_tag"]
+        actual_tag_counts[tag] = actual_tag_counts.get(tag, 0) + 1
+        family = row["family"]
+        raw = row.get("raw_prediction", "")
+        if not isinstance(raw, str):
+            raise ValueError("raw prediction must be saved as text, including empty strings")
+        if row.get("cap_hit"):
+            cap_counts[family] += 1
+        if not raw.strip():
+            empty_counts[family] += 1
+        pred = extract_answer_content(raw)
+        label = row["label"]
+        if family == "GAR":
+            task = row["reported_subtask"]
+            valid_shape = ((task in {"connectivity", "cycle"} and re.fullmatch(r"(?:yes|no)[.!]?", pred.strip(), re.I) is not None)
+                           or (task == "shortest_path" and re.fullmatch(r"\d+(?:\s*->\s*\d+)+[.]?", pred.strip()) is not None)
+                           or (task == "matching" and re.fullmatch(r"\d+[.]?", pred.strip()) is not None))
+            shape_valid[family] += int(valid_shape)
+            if task not in gar:
+                raise ValueError(f"unsupported or unselected GAR subtask: {task}")
+            gar[task].append(float(eval_graph_search({"predict": pred, "label": label})))
+        elif family == "MGD":
+            text = pred.strip()
+            valid_shape = bool(text) and len(text) >= 20 and re.search(r"\b(molecule|molecular|compound|chemical|structure|atom|bond|ring|group|formula)\b", text, re.I) is not None
+            shape_valid[family] += int(valid_shape)
+            score = eval_molecular({"predict": pred, "label": label})
+            mgd_bleu.append(float(score["bleu"]))
+            mgd_rouge.append(float(score["rouge_l"]))
+        elif family == "ERE":
+            tag_name = tag.split(":", 1)[1]
+            if tag_name not in ere:
+                raise ValueError(f"unsupported or unselected ERE task tag: {tag_name}")
+            graph_facts_markers = ("[Graph Facts]", "entity(", "event(", "relation(")
+            if any(marker in pred or marker in label for marker in graph_facts_markers):
+                if any(marker in pred for marker in graph_facts_markers):
+                    pred = convert_official_graph_facts_event(pred)
+                if any(marker in label for marker in graph_facts_markers):
+                    label = convert_official_graph_facts_event(label)
+                graph_facts_converted += 1
+            if any(marker in pred or marker in label for marker in ("<graph>", "<nodes>", "<edges>")):
+                raise ValueError("UGS event graphs require the pinned official UGS conversion path")
+            subtask = "Hievent" if tag_name == "hievents" else tag_name
+            score = evaluate_event_graph_original_metrics({"task": "event_graph", "subtask": subtask, "predict": pred, "label": label})
+            ere[tag_name].append(float(score["f1"]))
+            parsed = parse_event_graph_edges(pred)
+            gold = parse_event_graph_edges(label)
+            if parsed:
+                ere_edge_counts[tag_name]["parsed_rows"] += 1
+            ere_edge_counts[tag_name]["predicted_edges"] += len(parsed)
+            ere_edge_counts[tag_name]["gold_edges"] += len(gold)
+            shape_valid[family] += int(bool(parsed) or pred.strip().casefold() == "none")
+        else:
+            raise ValueError(f"unsupported family: {family}")
+    if actual_tag_counts != expected_task_counts:
+        raise ValueError(f"task denominator mismatch: actual {actual_tag_counts}, expected {expected_task_counts}")
+    return {"gar": gar, "mgd_bleu": mgd_bleu, "mgd_rouge": mgd_rouge, "ere": ere}, {
+        "empty_outputs": empty_counts, "cap_hits": cap_counts,
+        "shape_valid_n": shape_valid,
+        "shape_valid_rate": {f: (shape_valid[f] / sum(1 for r in rows if r["family"] == f) if any(r["family"] == f for r in rows) else None) for f in shape_valid},
+        "ere_edge_counts": ere_edge_counts,
+        "graph_facts_converted_rows": graph_facts_converted,
+    }
+
+
+def render_fixed_report(metrics: dict[str, Any]) -> str:
+    lines = ["# Fixed 50-row Qwen-VL cross-task panel", "",
+             f"Model: `{metrics['model_id']}` at revision `{metrics['model_revision']}`  ",
+             f"Dataset revision: `{metrics['dataset_revision']}`; source split: `test`; panel seed: `{metrics['panel_seed']}`.", "",
+             "| Metric | n | Estimate (%) | Advertised (%) | Difference (pp) | 95% bootstrap interval (%) | Advertised within interval? |",
+             "| --- | ---: | ---: | ---: | ---: | ---: | :---: |"]
+    for item in metrics["comparisons"]:
+        interval = item["ci95_percent"]
+        span = "—" if interval is None else f"[{interval[0]:.2f}, {interval[1]:.2f}]"
+        lines.append(f"| {item['metric']} | {item['n']} | {item['estimate_percent']:.2f} | {item['target_percent']:.2f} | {item['difference_percentage_points']:+.2f} | {span} | {'yes' if item['target_in_ci95'] else 'no'} |")
+    lines += ["", "## Task eligibility", "", "| Family | Status | Denominator | Qualification |",
+              "| --- | --- | ---: | --- |"]
+    for family in ("GAR", "MGD", "ERE"):
+        status = metrics["family_status"].get(family, {"status": "not_requested"})
+        denom = sum(v for tag, v in metrics["task_counts"].items() if (tag.startswith("graph_search:") if family == "GAR" else tag.startswith("molecule:") if family == "MGD" else tag.startswith("event_graph:")))
+        lines.append(f"| {family} | {status.get('status')} {status.get('reason','')} | {denom if status.get('status') == 'qualified' else '—'} | {status.get('verdict','qualified by gate' if status.get('status') == 'qualified' else '—')} |")
+    lines += ["", "## Output validity", "", f"Completed rows: {metrics['completed_rows']}/{metrics['panel_rows']}; infrastructure errors: {metrics['error_n']}; cap hits: `{json.dumps(metrics['validity']['cap_hits'], sort_keys=True)}`; empty outputs: `{json.dumps(metrics['validity']['empty_outputs'], sort_keys=True)}`; format-valid counts: `{json.dumps(metrics['validity']['shape_valid_n'], sort_keys=True)}`.",
+              f"ERE edge parse counts: `{json.dumps(metrics['validity']['ere_edge_counts'], sort_keys=True)}`; official Graph Facts conversions: {metrics['validity']['graph_facts_converted_rows']}.", "",
+              "## Provenance", "",
+              f"Panel SHA-256: `{metrics['panel_sha256']}`; ordered sample IDs SHA-256: `{metrics['ordered_sample_ids_sha256']}`.",
+              f"Run implementation hashes: `{json.dumps(metrics['implementation_sha256'], sort_keys=True)}`.",
+              f"Pinned evaluator hashes: `{json.dumps(metrics['scorer_sha256'], sort_keys=True)}`.",
+              "These deterministic 50-example-per-family panels are subsamples of the pinned test split. They are not full-test reproductions; intervals describe uncertainty within the sampled panel only.", ""]
+    return "\n".join(lines)
+
+
+def _score_fixed(run_dir: Path, run_manifest: dict[str, Any]) -> None:
+    rows, panel_manifest = get_fixed_predictions(run_dir, run_manifest)
+    official_path = run_dir / "official_predictions.jsonl"
+    with official_path.open("w", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps({"task": row["task"], "subtask": row["subtask"],
+                                     "prompt": row["prompt_text"], "predict": row["raw_prediction"],
+                                     "label": row["label"], "images": [], "sample_id": row["sample_id"],
+                                     "source_file": row["source_file"], "source_index": row["source_index"],
+                                     "task_tag": row["task_tag"]}, ensure_ascii=False) + "\n")
+    per_example, validity = fixed_per_example_metrics(rows, panel_manifest["task_tag_counts"])
+    rng = random.Random(20261111)
+    comparisons = []
+    counts = {}
+    for subtask, values in per_example["gar"].items():
+        label = GAR_TO_LABEL[subtask]
+        name = f"GAR-{label}"
+        interval = bootstrap_mean(values, rng, 2000)
+        comparisons.append(metric_line(name, sum(values) / len(values), TARGETS[name], interval) | {"n": len(values)})
+        counts[name] = len(values)
+    if per_example["gar"]:
+        vals = [sum(v) / len(v) for v in per_example["gar"].values()]
+        name = "GAR-mean"; tar = sum(TARGETS[f"GAR-{v}"] for v in GAR_TO_LABEL.values()) / 4
+        comparisons.append(metric_line(name, sum(vals) / len(vals), tar, None) | {"n": sum(len(v) for v in per_example["gar"].values())})
+        counts[name] = sum(len(v) for v in per_example["gar"].values())
+    if per_example["mgd_bleu"]:
+        for metric, vals, key in (("MGD-BLEU4", per_example["mgd_bleu"], "bleu"),
+                                  ("MGD-ROUGE-L", per_example["mgd_rouge"], "rouge")):
+            interval = bootstrap_mean(vals, rng, 2000)
+            comparisons.append(metric_line(metric, sum(vals) / len(vals), TARGETS[metric], interval) | {"n": len(vals)})
+            counts[metric] = len(vals)
+    for subtask, values in per_example["ere"].items():
+        metric = f"ERE-{ERE_TO_LABEL[subtask]}"
+        interval = bootstrap_mean(values, rng, 2000)
+        comparisons.append(metric_line(metric, sum(values) / len(values), TARGETS[metric], interval) | {"n": len(values)})
+        counts[metric] = len(values)
+    scorer_paths = {"evaluate.py": OFFICIAL_INFERENCE / "evaluate.py",
+                    "graph_search_eval.py": OFFICIAL_INFERENCE / "evaluators/graph_search_eval.py",
+                    "mol_eval.py": OFFICIAL_INFERENCE / "evaluators/mol_eval.py",
+                    "event_graph_eval.py": OFFICIAL_INFERENCE / "evaluators/event_graph_eval.py"}
+    metrics = {
+        "model_id": run_manifest["model_id"],
+        "model_revision": run_manifest["model"]["revision"],
+        "model_weights_sha256": run_manifest["model"]["model_weights_sha256"],
+        "dataset_revision": run_manifest["dataset_revision"],
+        "official_repository_commit": run_manifest["official_repository_commit"],
+        "panel_seed": panel_manifest["seed"], "panel_rows": len(rows),
+        "completed_rows": len(rows), "error_n": 0,
+        "family_status": run_manifest["family_status"],
+        "task_counts": panel_manifest["task_tag_counts"], "sample_counts": counts,
+        "comparisons": comparisons, "validity": validity,
+        "decoding": run_manifest["sampling"],
+        "implementation_sha256": run_manifest["implementation_sha256"],
+        "scorer_sha256": {name: sha256_file(path) for name, path in scorer_paths.items()},
+        "panel_sha256": run_manifest["panel_sha256"],
+        "panel_manifest_sha256": run_manifest["panel_manifest_sha256"],
+        "ordered_sample_ids_sha256": run_manifest["ordered_sample_ids_sha256"],
+        "predictions_sha256": sha256_file(run_dir / "predictions.jsonl"),
+        "qualification_gates": run_manifest["qualification_gates"],
+        "bootstrap": {"repetitions": 2000, "seed": 20261111, "unit": "example within task stratum"},
+    }
+    atomic_json(run_dir / "metrics.json", metrics)
+    report_path = run_dir / "report.md"
+    report_path.write_text(render_fixed_report(metrics), encoding="utf-8")
+    run_manifest["scorer_sha256"] = {name: sha256_file(path) for name, path in scorer_paths.items()}
+    run_manifest["metrics_sha256"] = sha256_file(run_dir / "metrics.json")
+    run_manifest["report_sha256"] = sha256_file(report_path)
+    run_manifest["status"] = "complete"
+    atomic_json(run_dir / "run_manifest.json", run_manifest)
+    print(f"METRICS {run_dir / 'metrics.json'}", flush=True)
+    print(f"REPORT {report_path}", flush=True)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run-dir", type=Path, required=True)
+    args = parser.parse_args()
+    run_dir = args.run_dir.resolve()
+    manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+    if manifest.get("benchmark_kind") == "fixed-50-text-panel":
+        _score_fixed(run_dir, manifest)
+    else:
+        _score_legacy(run_dir)
 
 
 if __name__ == "__main__":

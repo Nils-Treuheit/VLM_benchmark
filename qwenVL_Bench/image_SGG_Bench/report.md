@@ -11,6 +11,7 @@ Split: `canonical_test`; panel size: 200.
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Qwen/Qwen2-VL-7B-Instruct | Transformers (model card) | 0.0028 | 0.0028 | 0.0028 | 0.0003 | 0.0003 | 0.0003 | 0.0889 | 0.0028 | 0.0054 | 0.0125 | 22/200 | 200/200 | 178 |
 | Qwen/Qwen2.5-VL-7B-Instruct | Transformers (model card) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0009 | 2/200 | 200/200 | 198 |
+| bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS | llama.cpp (IQ2_XXS) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0/200 | 200/200 | 200 |
 | zmli/G-Substrate-Qwen3-VL-2B | Transformers (model card) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0/200 | 200/200 | 200 |
 
 ## Open Images V7 visual relationships
@@ -21,6 +22,7 @@ Split: `validation`; panel size: 200.
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Qwen/Qwen2-VL-7B-Instruct | Transformers (model card) | 0.0074 | 0.0074 | 0.0074 | 0.0617 | 0.0617 | 0.0617 | 0.0195 | 0.0074 | 0.0107 | 0.1057 | 75/200 | 200/200 | 125 |
 | Qwen/Qwen2.5-VL-7B-Instruct | Transformers (model card) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1/200 | 200/200 | 199 |
+| bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS | llama.cpp (IQ2_XXS) | 0.0025 | 0.0025 | 0.0025 | 0.0028 | 0.0028 | 0.0028 | 0.0417 | 0.0025 | 0.0047 | 0.0041 | 2/200 | 200/200 | 198 |
 | zmli/G-Substrate-Qwen3-VL-2B | Transformers (model card) | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0/200 | 200/200 | 200 |
 
 ## PSG box-adapted SGG
@@ -45,4 +47,8 @@ Unweighted mean of dataset-level mR@50; shown only for models with all three ful
 
 ## Protocol and limitations
 
-Each dataset is reported separately. Source hashes, source revisions, class support, and predicate support are recorded in `summary.json`. Malformed output and runtime failures remain in the denominator. The panels are small local subsets, not full-set leaderboard scores. PSG results are box-adapted and must not be compared as official mask scores.
+Each dataset is reported separately. Class and predicate counts are published in [data.json](data.json). Source hashes and revisions are retained in the local run records. Malformed output and runtime failures remain in the denominator. The panels are small local subsets, not full-set leaderboard scores. PSG results are box-adapted and must not be compared as official mask scores.
+
+Qwen2-VL-72B IQ2_XXS has full VG-150 and Open Images panels. Its PSG run stopped after 123/200 images, so it has no published PSG score or three-panel macro.
+
+The [native VG50 PCIS results](native-pcis-vg50.md) use a separate tuple-based scoring protocol.

@@ -20,7 +20,7 @@ fetch("data.json").then(response => {
   document.querySelector("#coverage").textContent = `${data.completed_model_count} of ${data.candidate_count} cached candidates have complete panels`;
   document.querySelector("#model-count").textContent = `${data.completed_model_count} / ${data.candidate_count}`;
   const macros = Object.values(data.suite_macro_mr_at_50 || {});
-  document.querySelector("#macro").textContent = macros.length ? fmt(macros[0]) : "Pending";
+  document.querySelector("#macro").textContent = macros.length ? fmt(Math.max(...macros)) : "Pending";
   const pending = data.pending_models || [];
   const state = document.querySelector("#run-state");
   if (data.run_complete) {
@@ -31,8 +31,8 @@ fetch("data.json").then(response => {
     state.className = "run-state pending";
     const detail = incomplete.length
       ? `${incomplete.length} model${incomplete.length === 1 ? " has" : "s have"} partial records (${incomplete.map(esc).join(", ")}); ${pending.length} candidate${pending.length === 1 ? "" : "s"} lack a complete three-panel record.`
-      : `${pending.length} model${pending.length === 1 ? " is" : "s are"} pending: ${pending.map(esc).join(", ") || "complete aggregate data"}.`;
-    state.innerHTML = `<b>Comparison in progress.</b> ${detail} Current results below include only available full-panel aggregates.`;
+      : `${pending.length} model${pending.length === 1 ? " has" : "s have"} no complete record: ${pending.map(esc).join(", ") || "complete aggregate data"}.`;
+    state.innerHTML = `<b>Partial comparison.</b> ${detail} The tables show available full-panel scores.`;
   }
   const labels = {vg150:"VG-150 canonical test", openimages_v7:"Open Images V7 relationships", psg:"PSG box-adapted SGG"};
   document.querySelector("#datasets").innerHTML = Object.entries(labels).map(([key, label]) => {

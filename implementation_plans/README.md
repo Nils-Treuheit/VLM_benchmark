@@ -1,6 +1,6 @@
 # Benchmark plan index
 
-Completed suites are tracked in their reports and the repository [README](../README.md). This index lists active benchmark work, completed plan records, and shared reporting guidance.
+Completed suites are tracked in their reports and the repository [README](../README.md). This index lists active benchmark work and shared reporting guidance.
 
 ## Shared benchmark contract
 
@@ -19,17 +19,10 @@ The shared task prompts and score definitions are in [qwenVL_Bench/README.md](..
 
 | Group | Plan |
 |---|---|
-| Grounding specialists | [grounding-specialists.md](grounding-specialists.md) |
 | Image Scene Graph Generation | [image-sgg-benchmark.md](image-sgg-benchmark.md) |
 | Video Scene Graph Generation | [video-sgg-benchmark.md](video-sgg-benchmark.md) |
 
-## Completed plan records
-
-| Group | Record |
-|---|---|
-| Selective Edge Limited refinement | [Completed refinement record](selective-edge-refinement.md) |
-
-The completed General Transformers, local-foundation, Qwen-VL reference, and video comparisons are documented in their benchmark reports. Candidates excluded by cache, compatibility, or hardware gates remain listed in the relevant report inventory; they are not pending runs.
+Completed work is documented in the benchmark reports, including [grounding specialists](../grounding_Bench/report.md) and the [Edge Limited comparisons](../index.html#edge-limited-title). Candidates excluded by cache, compatibility, or hardware gates remain listed in the relevant report inventory; they are not pending runs.
 
 Shared report-site guidance: [general VLM report-site guideline](general-vlm-report-site-guideline.md).
 

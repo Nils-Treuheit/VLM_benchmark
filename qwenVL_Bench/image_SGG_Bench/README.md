@@ -69,6 +69,10 @@ source provenance:
 uv run python qwenVL_Bench/image_SGG_Bench/aggregate.py
 ```
 
+The separate [VG50 native PCIS results](native-pcis-vg50.md) use the official
+G-Substrate relation-tuple scorer. They are not the shared box-grounded SGDet
+scores above, and model-specific prompt repairs limit direct comparison.
+
 The Markdown report contains aggregate metrics only. Per-item records retain
 failures in the denominator and preserve available timing, token, memory, and
 model revision metadata.

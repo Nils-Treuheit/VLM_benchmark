@@ -1,6 +1,6 @@
 # Image Scene Graph Generation benchmark
 
-**Status checked:** 2026-11-09. The data audit and all three fixed 200-image manifests are ready. The runner normalizes processor metadata recursively after an earlier `SizeDict` serialization error and isolates each model in a fresh process. Three of eight candidates have complete direct host-GPU panels: Qwen2-VL-7B, Qwen2.5-VL-7B, and G-Substrate-Qwen3-VL-2B. Their JSON-valid counts were 145/600, 4/600, and 0/600; malformed output remains in each denominator. The remaining five GGUF entries now run directly on the host GPU, with llama.cpp launched as an owned child process and no scheduler or model-control service. The current batch is `qwenVL_Bench/image_SGG_Bench/results/20261109_direct_host_detached/`; the 72B IQ2_XXS panel is in progress. llama.cpp uses automatic layer fitting, a 32,768-token context, and at least 1,024 image tokens for grounding. A prior interactive attempt was interrupted by the command-session limit after seven saved items; that partial attempt is retained separately and excluded from aggregation.
+**Status checked:** 2026-11-13. The three fixed 200-image manifests are ready. Three of eight candidates have all three box-grounded panels. Qwen2-VL-72B IQ2_XXS completed VG-150 and Open Images and stopped at 123/200 on PSG. Four other GGUF variants lack complete box-grounded panels. The [native VG50 PCIS track](../qwenVL_Bench/image_SGG_Bench/native-pcis-vg50.md) has scores for all eight configurations and uses a separate tuple-based protocol.
 
 ## Goal
 

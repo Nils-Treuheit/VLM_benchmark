@@ -20,13 +20,39 @@
     <section class="summary" aria-label="Benchmark coverage">
       <article class="card"><span class="label">Models completed</span><strong id="model-count">—</strong><span class="foot">Full panels, including recorded item failures</span></article>
       <article class="card"><span class="label">Panel coverage</span><strong>3 × 200</strong><span class="foot">VG-150 · Open Images V7 · PSG</span></article>
-      <article class="card"><span class="label">Optional suite macro</span><strong id="macro">—</strong><span class="foot">Unweighted dataset mR@50; full panels only</span></article>
+      <article class="card"><span class="label">Best complete suite macro</span><strong id="macro">—</strong><span class="foot">Unweighted dataset mR@50; full panels only</span></article>
     </section>
     <section class="method panel">
       <p class="eyebrow">PROTOCOL</p><h2>Scene graph detection from pixels</h2>
       <p>Models receive images and dataset vocabularies, then return object labels, normalized boxes, and directed relations. Objects match one-to-one at IoU ≥ 0.5. A relation counts only when both endpoints and its directed predicate match.</p>
       <p>Invalid JSON and runtime failures remain in each panel denominator. PSG uses boxes and is labeled <b>box-adapted SGG</b>; it is not the official mask-grounded PSG score. Source provenance, predicate supports, full metrics, and limitations are in the <a href="report.md">Markdown report</a>.</p>
     </section>
+    <section class="dataset panel" aria-labelledby="pcis-title">
+      <div class="section-head"><h2 id="pcis-title">Native Visual Genome PCIS</h2><a href="native-pcis-vg50.md">Protocol and run notes ↗</a></div>
+      <p>Eight configurations scored on the same fixed 50-image panel at threshold 0.6. Prompt repairs vary by model. Strict tuple validity is measured separately from official PCIS recall.</p>
+      <div class="table-wrap"><table><caption>Native VG50 relation-tuple scores</caption><thead><tr><th>Model</th><th>Prompt</th><th>R@50</th><th>mR@50</th><th>Strict-valid rows</th><th>Cap or inference errors</th></tr></thead><tbody>
+        <tr><th scope="row"><code>zmli/G-Substrate-Qwen3-VL-2B</code></th><td>v3 task-token variant</td><td>22.68%</td><td>8.06%</td><td>42/50</td><td>1 cap</td></tr>
+        <tr><th scope="row"><code>Qwen/Qwen2.5-VL-7B-Instruct</code></th><td>v3</td><td>3.90%</td><td>2.80%</td><td>0/50</td><td>0</td></tr>
+        <tr><th scope="row"><code>Qwen/Qwen2-VL-7B-Instruct</code></th><td>v3</td><td>0.98%</td><td>0.17%</td><td>35/50</td><td>1 capped/error row</td></tr>
+        <tr><th scope="row"><code>bartowski/Qwen2-VL-72B-Instruct-GGUF:IQ2_XXS</code></th><td>v3 repair 1</td><td>0.73%</td><td>0.09%</td><td>28/50</td><td>0</td></tr>
+        <tr><th scope="row"><code>unsloth/Qwen3-VL-30B-A3B-Thinking-GGUF:UD-Q4_K_XL</code></th><td>v3 repair 1</td><td>2.44%</td><td>1.11%</td><td>0/50</td><td>0</td></tr>
+        <tr><th scope="row"><code>unsloth/Qwen3-VL-30B-A3B-Thinking-1M-GGUF:UD-Q4_K_XL</code></th><td>v3 repair 2</td><td>4.15%</td><td>1.22%</td><td>0/50</td><td>1 capped/error row</td></tr>
+        <tr><th scope="row"><code>unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q4_K_XL</code></th><td>v3 repair 2</td><td>0.24%</td><td>0.02%</td><td>0/50</td><td>0</td></tr>
+        <tr><th scope="row"><code>unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL</code></th><td>v3 repair 3</td><td>4.39%</td><td>3.99%</td><td>0/50</td><td>0</td></tr>
+      </tbody></table></div>
+    </section>
+    <p><a href="../gsubstrate_Bench/report.md">GAR, MGD, and ERE subsample scores and provenance ↗</a></p>
+    <section class="dataset panel" aria-labelledby="screen-title">
+      <div class="section-head"><div><p class="eyebrow">PROMPT SCREEN</p><h2 id="screen-title">Matched VG baseline</h2></div><a href="native-pcis-vg50.md">Full scores and protocol ↗</a></div>
+      <p>Official PCIS scores use the same frozen ten images and threshold 0.6. All four screens are complete; none meets the prespecified gain gate, so no selective full 50-image rerun was started.</p>
+      <div class="table-wrap"><table><caption>Current-best baseline versus concise prompt · 4,096-token cap</caption><thead><tr><th>Model</th><th>Baseline R@50 / mR@50</th><th>Candidate R@50 / mR@50</th><th>Cap/error rows</th><th>Screen</th></tr></thead><tbody>
+        <tr><th scope="row"><code>G-Substrate Qwen3-VL 2B</code></th><td>23.60% / 16.98%</td><td>12.36% / 3.41%</td><td>0 → 1</td><td>Fail</td></tr>
+        <tr><th scope="row"><code>Qwen2.5-VL 7B</code></th><td>1.12% / 0.23%</td><td>0.00% / 0.00%</td><td>0 → 0</td><td>Fail</td></tr>
+        <tr><th scope="row"><code>Qwen3-VL 8B Q8</code></th><td>4.49% / 6.34%</td><td>1.12% / 0.23%</td><td>0 → 6</td><td>Fail</td></tr>
+        <tr><th scope="row"><code>Qwen3-VL 30B Thinking-1M</code></th><td>1.12% / 0.23%</td><td>0.00% / 0.00%</td><td>0 → 9</td><td>Fail</td></tr>
+      </tbody></table></div>
+    </section>
+    <p>Qwen2-VL-72B IQ2_XXS has full VG-150 and Open Images panels. Its PSG run stopped after 123/200 images, so it has no published PSG score or three-panel macro.</p>
     <section id="datasets" aria-live="polite"><p class="loading">Loading aggregate results…</p></section>
     <footer><span>Aggregate metrics only · no prompts, images, annotations, or predictions are included here.</span><a href="report.md">Full report ↗</a></footer>
   </main>

@@ -174,7 +174,7 @@
         </a>
         <a class="report-link" href="qwenVL_Bench/image_SGG_Bench/">
           <h3>Image Scene Graph Generation</h3>
-          <p>Direct image-to-graph results on fixed VG-150, Open Images V7, and PSG panels. Model coverage is labeled while the comparison continues.</p>
+          <p>Box-grounded results on fixed VG-150, Open Images V7, and PSG panels, plus native PCIS scores on 50 Visual Genome images.</p>
           <span class="path">/qwenVL_Bench/image_SGG_Bench/</span>
         </a>
         <a class="report-link" href="llava_Bench/">
@@ -226,6 +226,7 @@
         <p class="overall-note">Unweighted mean across AI2D, TextVQA/OCR, VQA truth, counting, description, affordance, negation, and GRAB-Lite.</p>
       </div>
 
+      <p class="leader-method">Best six-category VQA panel macro · <strong>67.33%</strong> · <a href="qwenVL_Bench/"><code>Qwen/Qwen2.5-VL-7B-Instruct</code></a></p>
       <h3>Best per category</h3>
       <div class="leader-table-wrap" role="region" aria-label="Best model scores by category" tabindex="0">
         <table class="leader-table">
@@ -234,7 +235,7 @@
             <tr><th scope="col">Category</th><th scope="col">Score</th><th scope="col">Model</th><th scope="col">Suite</th></tr>
           </thead>
           <tbody>
-            <tr><td>AI2D</td><td>92.0%</td><td><code>LiquidAI/LFM3-VL-2B-GGUF:NVFP4</code></td><td class="leader-suite"><a href="local_foundation_Bench/">Local foundation</a></td></tr>
+            <tr><td>AI2D</td><td>93.0%</td><td><code>LiquidAI/LFM3-VL-2B</code></td><td class="leader-suite"><a href="local_foundation_Bench/">Local foundation</a></td></tr>
             <tr><td>TextVQA / OCR</td><td>88.0%</td><td><code>Qwen/Qwen2-VL-7B-Instruct</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
             <tr><td>VQA truth</td><td>100.0%</td><td><code>unsloth/Qwen3-VL-8B-Instruct-GGUF:UD-Q8_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
             <tr><td>VQA counting</td><td>84.0%</td><td><code>unsloth/Qwen3-VL-32B-Instruct-GGUF:UD-Q4_K_XL</code></td><td class="leader-suite"><a href="qwenVL_Bench/">Qwen-VL</a></td></tr>
@@ -249,7 +250,7 @@
           </tbody>
         </table>
       </div>
-      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded from the shared image-task rankings. Scores are local comparisons, not leaderboard results. Based on published reports as of 2026-11-07.</p>
+      <p class="leader-method">Per-category leaders use the highest completed result for that task; ties are shown. Overall includes only models with complete results across all eight tasks. Video results are excluded from the shared image-task rankings. Scores are local comparisons, not leaderboard results. Results current through 2026-11-12.</p>
       <div class="specialist-leaders" aria-live="polite">
         <div>
           <h3>Video VLM categories</h3>
@@ -265,7 +266,7 @@
 
     <section class="edge-limited" aria-labelledby="edge-limited-title">
       <h2 id="edge-limited-title">Edge Limited</h2>
-      <p class="intro">Choose a VRAM ceiling to view measured full-suite and category results verified under that whole-device limit. The 16 GiB results now include Qwen3-VL-8B Q8 at 59.91% across 825 examples and 262,144 measured context tokens. LLaVA Mistral 7B remains excluded after repeated context-probe OOMs; see the <a href="implementation_plans/selective-edge-refinement.md">refinement record</a>.</p>
+      <p class="intro">Choose a VRAM ceiling to view measured full-suite and category results verified under that whole-device limit. The 16 GiB results now include Qwen3-VL-8B Q8 at 59.91% across 825 examples and 262,144 measured context tokens. LLaVA Mistral 7B remains excluded after repeated context-probe OOMs; see the <a href="llava_Bench/results/edge_refinement/16gib/20261106-07-llava-mistral-reserve062-expandable-final/report.md">final LLaVA attempt</a>.</p>
       <div class="edge-controls">
         <label for="edge-vram-limit">VRAM restriction</label>
         <select id="edge-vram-limit" name="vram-limit">
@@ -293,7 +294,7 @@
         <li>A stage with no verified cap-specific run displays an explicit empty state.</li>
       </ul>
       <p><b>Working hypothesis for refinement:</b> With model, inputs, context length, precision, and decoding held fixed, a VRAM ceiling alone should have little effect on answer quality; it mainly affects fit and speed. More context uses more KV-cache memory and can help or hurt task scores. We expect smaller context-driven changes on these mostly single-image tasks than on multi-image, video, or long-prompt tasks. This is a hypothesis to test, not a result established by current reports. See the <a href="https://huggingface.co/docs/transformers/kv_cache">KV-cache documentation</a> and <a href="https://arxiv.org/abs/2307.03172">long-context retrieval study</a>.</p>
-      <p>No provisional estimates are shown as Edge Limited results. See the <a href="implementation_plans/selective-edge-refinement.md">selective edge refinement plan</a> for the run protocol and current execution status.</p>
+      <p>No provisional estimates are shown as Edge Limited results. The <a href="edge-refinement-data.json">aggregate results</a> and <a href="edge-refinement-candidates.json">candidate inventory</a> record run evidence and exclusions.</p>
     </aside>
 
     <footer>Each report describes its own model set, task coverage, scoring rules, and measurement limits.</footer>
