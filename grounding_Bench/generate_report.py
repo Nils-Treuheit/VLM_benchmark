@@ -215,6 +215,7 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]],
         "sam3.1": "SAM 3.1",
         "nvidia/LocateAnything-3B": "LocateAnything-3B",
         "GroundingPI/GroundAnything-VLM": "GroundAnything-VLM",
+        "microsoft/Florence-2-large-ft": "Florence-2-large-ft",
     }
     summaries = []
     domain_paths = [(name, HERE / "data" / "domain_manifests" / name)
@@ -261,8 +262,11 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]],
                     "input_size": run.get("input_size"),
                     "AP": detection.get("AP"), "AP50": detection.get("AP50"),
                     "AP75": detection.get("AP75"), "AR_300": detection.get("AR_300"),
+                    "AR_1": detection.get("AR_1"), "AR_10": detection.get("AR_10"),
+                    "AR_100": detection.get("AR_100"),
                     "class_aware_F1_IoU50": detection.get("class_aware_F1_IoU50", class_aware_f1),
-                    "mask_AP": segmentation.get("AP"), "latency_s": runtime.get("latency_mean_s"),
+                    "mask_AP": segmentation.get("AP"), "mask_status": segmentation.get("status"),
+                    "latency_s": runtime.get("latency_mean_s"),
                     "latency_median_s": runtime.get("latency_median_s", timing["median"]),
                     "latency_p95_s": timing["p95"],
                     "model_load_duration_s": runtime.get("model_load_duration_s", run.get("model_load_duration_s")),
@@ -289,9 +293,11 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]],
                     "input_size": run.get("input_size", "native model processor"),
                     "AP": reportable_official.get("AP"), "AP50": reportable_official.get("AP50"),
                     "AP75": reportable_official.get("AP75"), "AR_300": reportable_official.get("AR_300"),
+                    "AR_1": reportable_official.get("AR_1"), "AR_10": reportable_official.get("AR_10"),
+                    "AR_100": reportable_official.get("AR_100"),
                     "class_aware_F1_IoU50": (summary.get("metrics", {}).get("micro_f1")
                                               if sample_count else None),
-                    "mask_AP": None, "latency_s": latency,
+                    "mask_AP": None, "mask_status": "unsupported", "latency_s": latency,
                     "latency_median_s": timing["median"], "latency_p95_s": timing["p95"],
                     "model_load_duration_s": run.get("model_load_duration_s"),
                     "parse_issues": (f"{summary.get('invalid_outputs', 0)} / "
@@ -318,7 +324,9 @@ def domain_summaries(runs: dict[str, dict[str, dict[str, Any]]],
                     "input_size": run.get("input_size"),
                     "AP": detection.get("AP"), "AP50": detection.get("AP50"),
                     "class_aware_F1_IoU50": detection.get("class_aware_F1_IoU50"),
-                    "mask_AP": segmentation.get("AP"),
+                    "AR_1": detection.get("AR_1"), "AR_10": detection.get("AR_10"),
+                    "AR_100": detection.get("AR_100"),
+                    "mask_AP": segmentation.get("AP"), "mask_status": segmentation.get("status"),
                     "latency_s": runtime.get("latency_mean_s", timing["mean"]),
                     "latency_median_s": runtime.get("latency_median_s", timing["median"]),
                     "latency_p95_s": timing["p95"],
@@ -351,7 +359,8 @@ def dota_track_summary(run: dict[str, Any]) -> dict[str, Any]:
 
 
 def vision_summary(runs: dict[str, dict[str, Any]], specialists: dict[str, dict[str, Any]],
-                   expected_images: int = 100) -> list[dict[str, Any]]:
+                   expected_images: int = 100,
+                   florence_run: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     models = []
     for model_id, label in VISION_MODELS.items():
         run = runs.get(model_id, {})
@@ -402,6 +411,22 @@ def vision_summary(runs: dict[str, dict[str, Any]], specialists: dict[str, dict[
                         "peak_whole_device_vram_gib": summary.get("peak_whole_device_vram_gib")},
             "model_load_duration_s": run.get("model_load_duration_s"),
             "query_timing_scope": run.get("query_timing_scope"),
+        })
+    if florence_run:
+        sample_count = int(florence_run.get("sample_count", 0))
+        tasks = florence_run.get("tasks", {})
+        runtime = florence_run.get("runtime", {})
+        models.append({
+            "model_id": "microsoft/Florence-2-large-ft",
+            "label": "Florence-2-large-ft zero-shot detector",
+            "status": "complete" if sample_count >= expected_images else "partial" if sample_count else "not run",
+            "sample_count": sample_count,
+            "detection": tasks.get("object_detection", {}),
+            "segmentation": tasks.get("instance_segmentation", {"status": "unsupported"}),
+            "classification": tasks.get("classification", {}),
+            "grounding": {}, "runtime": runtime,
+            "model_load_duration_s": runtime.get("model_load_duration_s"),
+            "query_timing_scope": runtime.get("timing_scope"),
         })
     return models
 
@@ -514,7 +539,7 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
     dataset_tracks = [
         {"dataset": "COCO val2017", "status": "100-image shared manifest; YOLOE, YOLO26, SAM 3.1, LocateAnything, and GroundAnything runs complete",
          "task": "Shared detection, classification, instance segmentation, and speed",
-         "note": "Every available vision baseline uses the same 100 annotated images and all 80 COCO classes. Grounding specialists are scored on boxes; models without confidence scores use uniform scores for COCO AP."},
+         "note": "Every available detector uses the same 100 annotated images and all 80 COCO classes. Florence-2 uses fixed <OD> without class prompts; YOLOE and grounding specialists receive text prompts, while YOLO26 uses its fixed vocabulary. Florence-2 and the grounding specialists have no confidence scores, so their AP uses tied uniform scores and is tie-sensitive."},
         {"dataset": "DOTA v1.0 validation", "status": "Shared HBB runs complete for YOLOE, YOLO26-L, SAM 3.1, and GroundAnything; LocateAnything native-input attempt partial (51/100), 4,096-patch recovery 100/100 with 41 parser-valid; full-split YOLO26-L-OBB complete",
          "task": "Shared aerial detection plus native OBB for YOLO26-L",
          "note": "100 of 456 labeled validation images are sampled for horizontal-box COCO AP across YOLOE, SAM 3.1, and available grounding specialists. GroundAnything completed all 100 items with five outputs truncated at 2,048 tokens; official COCO AP was unavailable because three predicted labels did not map to annotation categories. LocateAnything's native-input 2,048-token run completed 51/100 before 49 CUDA OOM failures; its 51 completed items include 33 parser-valid outputs and yield COCOeval AP 0.046%. A separate run caps the image processor at 4,096 patches and completes 100/100, with 41 parser-valid outputs; 62 responses were truncated at 2,048 tokens. COCOeval AP is unavailable because one predicted label did not map to a category. Keep the two LocateAnything settings separate. YOLO26-L-OBB uses the full 458-file validation split, including two background-only images, for the separate native OBB reference. Its clean rerun recorded 8.6 ms/image and 2.351 GiB peak whole-device VRAM. DOTA terms restrict use to academic purposes and prohibit commercial use."},
@@ -534,6 +559,17 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
          "task": "Unseen-object detection, onboarding, and 6D pose",
          "note": "Keep separate from class-name box AP. Use the official BOP protocol for pose tasks and review each dataset's terms before expanding beyond local HOPE v2."},
     ]
+    florence_coco_run = (domain_runs or {}).get("coco_val2017", {}).get("microsoft/Florence-2-large-ft", {})
+    florence_coco_items = florence_coco_run.get("items", [])
+    florence_coco_detection = florence_coco_run.get("tasks", {}).get("object_detection", {})
+    florence_coco_complete = (
+        int(florence_coco_run.get("sample_count", 0) or 0) == 100
+        and len(florence_coco_items) == 100
+        and all(item.get("status") == "complete" for item in florence_coco_items)
+        and florence_coco_detection.get("status") == "complete"
+    )
+    if florence_coco_complete:
+        dataset_tracks[0]["status"] += "; Florence-2 complete at 100/100"
     domain_results = domain_summaries(domain_runs or {}, vision_runs or {})
     rf_rows = [row for row in domain_results if row["dataset"].startswith("RF100-VL:")]
     rf_panels = sorted({row["dataset"] for row in rf_rows})
@@ -620,7 +656,10 @@ def assemble(runs: dict[str, dict[str, Any]], vision_runs: dict[str, dict[str, A
         })) or "Not run",
         "tasks": TASKS,
         "aux_tasks": AUX_TASKS,
-        "vision": vision_summary(vision_runs or {}, runs, expected_images=100),
+        "vision": vision_summary(
+            vision_runs or {}, runs, expected_images=100,
+            florence_run=(domain_runs or {}).get("coco_val2017", {}).get("microsoft/Florence-2-large-ft"),
+        ),
         "dota_track": dota_summary,
         "dataset_tracks": dataset_tracks,
         "domain_benchmarks": domain_results,
@@ -649,7 +688,7 @@ def write_report(data: dict[str, Any]) -> None:
         f"**Generated:** {data['generated_at']}", "",
         "## Scope", "",
         "This report combines grounding-specialist localization and answer tasks with large vision-model baselines. "
-        "Shared domain runs use the same image IDs and category labels across prompt-capable models. "
+        "Shared domain runs use the same image IDs and category labels where supported. Florence-2 uses its fixed `<OD>` task token without class prompts; YOLOE and the grounding specialists receive text prompts, while YOLO26 uses its fixed vocabulary. "
         "Detection, segmentation, grounding, OCR, and VQA remain separate measurements.", "",
         "| Task | Dataset and split | Sample | Primary measures |",
         "|---|---|---:|---|",
@@ -765,10 +804,11 @@ def write_report(data: dict[str, Any]) -> None:
     lines.extend([
         "This COCO val2017 scorecard uses open-vocabulary YOLOE-26-L as the primary detector/segmenter, "
         "with closed-vocabulary YOLO26-L detection and segmentation plus SAM 3.1 as additional references. "
-        "Detection and segmentation use COCO AP. Classification is label accuracy among predictions matched "
+        "Florence-2 uses its fixed `<OD>` task token without class prompts; YOLOE and the grounding specialists receive text prompts, and YOLO26 uses its fixed vocabulary. "
+        "Florence emits no masks and no confidence scores; its box AP uses uniform tied scores. Detection and segmentation use COCO AP. Classification is label accuracy among predictions matched "
         "to any ground-truth object at box IoU 0.5; it is not whole-image classification accuracy.", "",
-        "| Model | Status | Images | Box AP / AP50 | Mask AP / AP50 | Label accuracy / joint / class F1 | RefCOCOg Acc@0.5 / mean, median, p95, max query s / model load s | Mean / median COCO query (s) | Images/s | Peak VRAM |",
-        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| Model | Status | Images | Box AP / AP50 | AR@1 / @10 / @100 | Mask AP / AP50 | Label accuracy / joint / class F1 | RefCOCOg Acc@0.5 / mean, median, p95, max query s / model load s | Mean / median COCO query (s) | Images/s | Peak VRAM |",
+        "|---|---|---:|---:|---|---:|---:|---:|---:|---:|---:|",
     ])
     for model in data["vision"]:
         detection = model["detection"] or {}
@@ -783,9 +823,12 @@ def write_report(data: dict[str, Any]) -> None:
             f"{fmt(runtime.get('model_load_duration_s', model.get('model_load_duration_s')))}"
             if grounding.get("sample_count") else "—"
         )
+        mask_cell = ("unsupported" if segmentation.get("status") == "unsupported" else
+                     f"{fmt(segmentation.get('AP'), True)} / {fmt(segmentation.get('AP50'), True)}")
         lines.append(f"| `{model['model_id']}` | {model['status']} | {model['sample_count']} | "
                      f"{fmt(detection.get('AP'), True)} / {fmt(detection.get('AP50'), True)} | "
-                     f"{fmt(segmentation.get('AP'), True)} / {fmt(segmentation.get('AP50'), True)} | "
+                     f"{fmt(detection.get('AR_1'), True)} / {fmt(detection.get('AR_10'), True)} / {fmt(detection.get('AR_100'), True)} | "
+                     f"{mask_cell} | "
                      f"{fmt(classification.get('accuracy_on_matched_objects'), True)} / "
                      f"{fmt(classification.get('joint_detection_and_classification_accuracy'), True)} / "
                      f"{fmt(detection.get('class_aware_F1_IoU50'), True)} | "
@@ -876,8 +919,8 @@ def write_report(data: dict[str, Any]) -> None:
     lines.extend([
         "", "### Shared non-COCO domain runs", "",
         "Every row uses the prepared image IDs and category list for its domain. Query latency excludes model load. YOLO timing includes image loading, preprocessing, and prompt setup; GroundAnything timing in the saved runs starts after local image reading, base64 encoding, and request serialization, then covers the HTTP call through the full response. Historical LocateAnything timings cover only model.generate(), excluding image reading, processor encoding, decoding, and parsing. The ratios compare each model with the fastest complete YOLO detector or segmenter on that domain, but the saved timing scopes differ.",
-        "", "| Dataset | Model | Status | Images | Model load s | Input size | Box AP / AP50 / AP75 | AR@300 | Class-aware F1 | Mask AP | AP rare / common / frequent | Mean query s | Median query s | p95 query s | Parse invalid / empty / truncated | Images/s | Latency / fastest YOLO |",
-        "|---|---|---|---:|---:|---|---:|---:|---:|---:|---|---:|---:|---:|---|---:|---:|",
+        "", "| Dataset | Model | Status | Images | Model load s | Input size | Box AP / AP50 / AP75 | AR@300 / AR@1 / @10 / @100 | Class-aware F1 | Mask AP | AP rare / common / frequent | Mean query s | Median query s | p95 query s | Parse invalid / empty / truncated | Images/s | Latency / fastest YOLO |",
+        "|---|---|---|---:|---:|---|---:|---:|---:|---:|---:|---|---:|---:|---:|---|---:|---:|",
     ])
     for result in data["domain_benchmarks"]:
         lines.append(
@@ -885,8 +928,10 @@ def write_report(data: dict[str, Any]) -> None:
             f"{result['sample_count']}/{result['expected_count']} | {fmt(result.get('model_load_duration_s'))} | "
             f"{result.get('input_size') or '—'} | "
             f"{fmt(result.get('AP'), True)} / {fmt(result.get('AP50'), True)} / {fmt(result.get('AP75'), True)} | "
-            f"{fmt(result.get('AR_300'), True)} | "
-            f"{fmt(result.get('class_aware_F1_IoU50'), True)} | {fmt(result.get('mask_AP'), True)} | "
+            f"{fmt(result.get('AR_300'), True)} / {fmt(result.get('AR_1'), True)} / "
+            f"{fmt(result.get('AR_10'), True)} / {fmt(result.get('AR_100'), True)} | "
+            f"{fmt(result.get('class_aware_F1_IoU50'), True)} | "
+            f"{'unsupported' if result.get('mask_status') == 'unsupported' else fmt(result.get('mask_AP'), True)} | "
             f"{fmt(result.get('AP_rare'), True)} / {fmt(result.get('AP_common'), True)} / "
             f"{fmt(result.get('AP_frequent'), True)} | "
             f"{fmt(result.get('latency_s'))} | {fmt(result.get('latency_median_s'))} | "
